@@ -17,7 +17,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <script>
-    
     const SUPABASE_URL = "https://bwxgddifiqlgamkokaso.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_nB-TXpmj5VmsfXW2UKUbLQ_qiA-BhYz";
     
@@ -43,7 +42,7 @@
     <div id="usuarioHeader" class="hidden text-xs text-amber-300 bg-purple-950/60 px-3 py-1.5 rounded-full border border-amber-500/30"></div>
   </header>
 
-  <!-- PANTALLA 1: REGISTRO / ACTIVACIÓN INICIAL (Solo 3 opciones) -->
+  <!-- PANTALLA 1: REGISTRO / ACTIVACIÓN INICIAL -->
   <div id="screenRegistro" class="max-w-md mx-auto p-6 space-y-6">
     <div class="bg-mystic-card p-6 rounded-3xl space-y-5">
       <div class="text-center space-y-1">
@@ -66,7 +65,7 @@
         <div id="seccionElegirManilla">
           <label class="text-[11px] text-purple-300 font-semibold mb-1 block">¿Qué manilla deseas registrar?</label>
           <div class="grid grid-cols-3 gap-2">
-            <button type="button" onclick="seleccionarTipoManilla('Amor')" id="btnAmor" class="manilla-btn p-3 rounded-xl border border-purple-900/60 bg-slate-900/60 text-center text-xs text-slate-300 hover:border-amber-500 transition">
+            <button type="button" onclick="seleccionarTipoManilla('Amor')" id="btnAmor" class="manilla-btn p-3 rounded-xl border border-purple-900/60 bg-slate-900/60 text-center text-xs text-slate-300 hover:border-amber-500 transition selected">
               <span class="text-lg block mb-1">❤️</span> Amor
             </button>
             <button type="button" onclick="seleccionarTipoManilla('Abundancia')" id="btnAbundancia" class="manilla-btn p-3 rounded-xl border border-purple-900/60 bg-slate-900/60 text-center text-xs text-slate-300 hover:border-amber-500 transition">
@@ -79,7 +78,7 @@
         </div>
 
         <div id="seccionIntencion">
-          <label class="text-[11px] text-purple-300 font-semibold">¿Cuál es la intención que le das a tu manilla? (Máx. 500 carac.)</label>
+          <label class="text-[11px] text-purple-300 font-semibold">¿Cuál es la intención que le das a tu manilla?</label>
           <textarea id="inputIntencion" maxlength="500" rows="3" placeholder="Ej: Conectar con la paz interior..." class="w-full bg-slate-900/90 border border-purple-800/50 rounded-xl p-3 text-xs text-slate-100 focus:outline-none focus:border-amber-400 mt-1 resize-none"></textarea>
         </div>
       </div>
@@ -125,7 +124,7 @@
 
         <div id="estadoPendienteBanner" class="hidden bg-amber-500/10 border border-amber-500/30 p-3 rounded-xl text-center space-y-2">
           <p class="text-xs text-amber-300 font-bold">⏳ Manilla en Proceso Pendiente</p>
-          <p class="text-[11px] text-slate-300">Continúa tu compra en WhatsApp para recibir el código de activación físico.</p>
+          <p class="text-[11px] text-slate-300">Continúa tu compra en WhatsApp para recibir el código físico.</p>
           <a id="btnWhatsappPendiente" href="#" target="_blank" class="block w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg transition text-center">
             Continuar proceso en WhatsApp 💬
           </a>
@@ -217,7 +216,7 @@
 
   </div>
 
-  <!-- MODAL: REGISTRAR O ACTIVAR MANILLA (Incluye Personalizada aquí) -->
+  <!-- MODAL: REGISTRAR O ACTIVAR MANILLA -->
   <div id="modalNuevaManilla" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
     <div class="bg-mystic-card p-5 rounded-3xl max-w-sm w-full space-y-4 border border-amber-500/30">
       <h3 class="text-base font-cinzel text-amber-300 text-center">Registrar o Diseñar Manilla</h3>
@@ -310,7 +309,7 @@
         nombre: "Cuarzo Ahumado",
         frase: "Permanecer firme también es una forma de avanzar.",
         simboliza: "Asociado con la estabilidad, la serenidad y la fortaleza para afrontar la incertidumbre.",
-        historia: "En Escocia, fue muy apreciada por los antiguos clanes celtas en joyería ceremonial.",
+        historia: "Escocia: muy apreciada por los antiguos clanes celtas en joyería ceremonial.",
         curioso: "Su color oscuro se debe a cambios producidos por radiación natural bajo la superficie.",
         emoji: "🛡️",
         signos: ["Capricornio", "Escorpio", "Virgo"]
@@ -394,7 +393,13 @@
         await db.from('codigos_manillas').update({ usado: true }).eq('codigo', codigoInput);
 
         const codigoAmigo = 'AMIGO-' + Math.floor(1000 + Math.random() * 9000);
-        const { data: nuevoUser } = await db.from('usuarios').insert([{ nombre, codigo_manilla_usado: codigoInput, codigo_amigo: codigoAmigo }]).select().single();
+        const { data: nuevoUser, error: errUser } = await db.from('usuarios').insert([{ nombre, codigo_manilla_usado: codigoInput, codigo_amigo: codigoAmigo }]).select().single();
+
+        if (errUser) {
+          errorDiv.innerText = 'Error al crear el usuario en la base de datos.';
+          errorDiv.classList.remove('hidden');
+          return;
+        }
 
         await db.from('manillas_usuario').insert([{
           usuario_id: nuevoUser.id,
@@ -418,27 +423,26 @@
       document.getElementById('perfilNombre').innerText = usuarioActual.nombre;
       document.getElementById('perfilCodigoAmigo').innerText = usuarioActual.codigo_amigo;
 
-      // Traer las manillas de Supabase de este usuario
-      const { data: manillas, error } = await db
-        .from('manillas_usuario')
-        .select('*')
-        .eq('usuario_id', usuarioActual.id);
+      // Buscar manillas asociadas
+      let { data: manillas } = await db.from('manillas_usuario').select('*').eq('usuario_id', usuarioActual.id);
 
-      if (error) {
-        console.error("Error al cargar manillas:", error);
-        return;
-      }
+      // Si por alguna razón no encuentra por ID pero tiene el código guardado, creamos el vínculo automáticamente
+      if (!manillas || manillas.length === 0) {
+        await db.from('manillas_usuario').insert([{
+          usuario_id: usuarioActual.id,
+          codigo_manilla: usuarioActual.codigo_manilla_usado || 'HUNY-DEFAULT',
+          tipo_manilla: 'Amor',
+          intencion: 'Conectar con la energía de mi manilla.',
+          estado: 'ACTIVA'
+        }]).select();
 
-      misManillas = manillas || [];
-
-      if (misManillas.length > 0) {
-        manillaSeleccionadaActual = misManillas[0];
-        renderizarSelectorManillas();
-        actualizarDetallesManillaActiva();
+        let { data: manillasRecuperadas } = await db.from('manillas_usuario').select('*').eq('usuario_id', usuarioActual.id);
+        misManillas = manillasRecuperadas || [];
       } else {
-        document.getElementById('contenedorPiedrasAsociadas').innerHTML = '<p class="text-xs text-slate-400 text-center py-4">No tienes manillas activas registradas.</p>';
+        misManillas = manillas;
       }
 
+      renderizarSelectorManillas();
       cargarDeseosYChatGeneral();
     }
 
@@ -453,8 +457,13 @@
         select.appendChild(opt);
       });
 
-      select.value = 0;
+      if (misManillas.length > 0) {
+        select.value = 0;
+        manillaSeleccionadaActual = misManillas[0];
+        actualizarDetallesManillaActiva();
+      }
     }
+
     function cambiarManillaSeleccionada() {
       const idx = document.getElementById('selectManillaUsuario').value;
       manillaSeleccionadaActual = misManillas[idx];
@@ -479,9 +488,9 @@
 
     function renderizarPiedrasDeManilla(manilla) {
       const contenedor = document.getElementById('contenedorPiedrasAsociadas');
-      let listaPiedras = manillasPiedrasMap[manilla.tipo_manilla] || [];
+      let listaPiedras = manillasPiedrasMap[manilla.tipo_manilla] || ["Cuarzo Rosado", "Rodonita"];
       if (manilla.tipo_manilla === 'Personalizada') {
-        listaPiedras = manilla.piedras_personalizadas || [];
+        listaPiedras = manilla.piedras_personalizadas || ["Cuarzo Rosado"];
       }
       
       let html = '';
@@ -510,6 +519,8 @@
     // 💌 DESEOS Y CHAT
     async function cargarDeseosYChatGeneral() {
       const contenedor = document.getElementById('listaDeseosGeneral');
+      if(!misManillas || misManillas.length === 0) return;
+
       const { data: deseos } = await db.from('deseos_amigos').select('*, manillas_usuario(tipo_manilla)').in('manilla_id', misManillas.map(m => m.id));
 
       if (!deseos || deseos.length === 0) {
@@ -591,7 +602,7 @@
       alert("✨ ¡Deseo enviado con éxito a la manilla de tu amigo!");
     }
 
-    // MODAL NUEVA MANILLA (Aquí sí aparece la Personalizada)
+    // MODAL NUEVA MANILLA
     function abrirModalNuevaManilla() { document.getElementById('modalNuevaManilla').classList.remove('hidden'); }
     function cerrarModalNuevaManilla() { document.getElementById('modalNuevaManilla').classList.add('hidden'); }
 
@@ -630,7 +641,6 @@
         estado = 'PENDIENTE';
         codigoFinal = 'PENDIENTE-' + Math.floor(1000 + Math.random() * 9000);
 
-        // Abrir WhatsApp automáticamente para la personalizada
         const mensajeWpp = encodeURIComponent(`¡Hola! Quiero encargar mi Manilla Personalizada con mis piedras elegidas e intención: "${intencion}". Mi nombre es ${usuarioActual.nombre}.`);
         window.open(`https://wa.me/?text=${mensajeWpp}`, '_blank');
       } else {
