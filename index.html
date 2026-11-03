@@ -425,7 +425,7 @@
       cargarDeseosYChatGeneral();
     }
 
-    function renderizarSelectorManillas() {
+      function renderizarSelectorManillas() {
       const select = document.getElementById('selectManillaUsuario');
       select.innerHTML = '';
       
@@ -437,6 +437,7 @@
       });
 
       if (misManillas.length > 0) {
+        select.value = 0; // Selecciona la primera por defecto
         manillaSeleccionadaActual = misManillas[0];
         actualizarDetallesManillaActiva();
       }
