@@ -17,9 +17,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <script>
-
+    // ⚠️ TUS CREDENCIALES DE SUPABASE
     const SUPABASE_URL = "https://bwxgddifiqlgamkokaso.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_nB-TXpmj5VmsfXW2UKUbLQ_qiA-BhYz";
+    const SUPABASE_ANON_KEY = "TU_KEY_PUBLISHABLE_REAL";
     
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   </script>
@@ -149,4 +149,559 @@
         <p class="text-xs text-slate-400 mb-4">Si hoy estás pasando por un momento difícil, presiona este botón para enviar una señal de apoyo.</p>
         <button onclick="alert('❤️ Tus amigos conectados han recibido una señal para enviar luz a tu día.')" class="w-full py-3 bg-gradient-to-r from-purple-800 to-rose-800 text-white text-xs font-semibold rounded-xl shadow-md border border-rose-500/30 hover:brightness-110 transition">
           🌧️ Hoy me siento triste / Necesito luz
-        </
+        </button>
+      </section>
+    </div>
+
+    <!-- SECCIÓN DESEOS & CHAT -->
+    <div id="secDeseos" class="hidden space-y-4">
+      <section class="bg-mystic-card p-5 rounded-2xl shadow-xl space-y-4">
+        <div class="flex justify-between items-center border-b border-purple-900/40 pb-3">
+          <h3 class="text-sm font-cinzel text-amber-300">✨ Deseos & Mensajes de Amigos</h3>
+          <button onclick="vincularNuevoAmigo()" class="text-[10px] bg-amber-500 text-slate-950 font-bold px-2.5 py-1 rounded-lg">
+            + Agregar Amigo
+          </button>
+        </div>
+
+        <div id="listaDeseosGeneral" class="space-y-3"></div>
+      </section>
+    </div>
+
+    <!-- SECCIÓN GUÍA & SIGNOS -->
+    <div id="secPiedras" class="hidden space-y-4">
+      <section class="bg-mystic-card p-5 rounded-2xl shadow-xl space-y-4">
+        <div class="flex justify-between items-center border-b border-purple-900/40 pb-3">
+          <h3 class="text-sm font-cinzel text-amber-300">🔮 Guía & Filtro por Signo</h3>
+        </div>
+
+        <div>
+          <label class="text-[11px] text-purple-300 font-semibold mb-1 block">Filtrar piedras según tu signo zodiacal:</label>
+          <select id="selectSignoFiltro" onchange="filtrarPiedrasPorSigno()" class="w-full bg-slate-900 border border-purple-800 text-xs text-amber-300 p-2.5 rounded-xl">
+            <option value="TODOS">✨ Ver todas las piedras</option>
+            <option value="Aries">Aries</option>
+            <option value="Tauro">Tauro</option>
+            <option value="Géminis">Géminis</option>
+            <option value="Cáncer">Cáncer</option>
+            <option value="Leo">Leo</option>
+            <option value="Virgo">Virgo</option>
+            <option value="Libra">Libra</option>
+            <option value="Escorpio">Escorpio</option>
+            <option value="Sagitario">Sagitario</option>
+            <option value="Capricornio">Capricornio</option>
+            <option value="Acuario">Acuario</option>
+            <option value="Piscis">Piscis</option>
+          </select>
+        </div>
+
+        <div id="contenedorGuiaGeneral" class="space-y-4 pt-2"></div>
+      </section>
+    </div>
+
+    <!-- SECCIÓN PERFIL -->
+    <div id="secPerfil" class="hidden space-y-4">
+      <section class="bg-mystic-card p-5 rounded-2xl shadow-xl space-y-4">
+        <h3 class="text-sm font-cinzel text-amber-300">👤 Configuración de Perfil</h3>
+        <div>
+          <p class="text-[11px] text-slate-400">Nombre de usuario</p>
+          <p id="perfilNombre" class="text-base font-bold text-slate-100"></p>
+        </div>
+        <div class="bg-purple-950/50 p-3 rounded-xl border border-purple-700/40">
+          <p class="text-[11px] text-purple-300 font-semibold">Tu Código Único de Amigo</p>
+          <p id="perfilCodigoAmigo" class="text-sm font-mono font-bold text-amber-300 mt-0.5"></p>
+        </div>
+        <button onclick="cerrarSesion()" class="w-full py-2.5 bg-rose-950/60 hover:bg-rose-900/80 border border-rose-800/50 text-rose-200 text-xs font-semibold rounded-xl transition">
+          Cerrar Sesión
+        </button>
+      </section>
+    </div>
+
+  </div>
+
+  <!-- MODAL: REGISTRAR O ACTIVAR MANILLA (Incluye Personalizada aquí) -->
+  <div id="modalNuevaManilla" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-mystic-card p-5 rounded-3xl max-w-sm w-full space-y-4 border border-amber-500/30">
+      <h3 class="text-base font-cinzel text-amber-300 text-center">Registrar o Diseñar Manilla</h3>
+      
+      <div class="space-y-3 text-left">
+        <div>
+          <label class="text-[11px] text-purple-300 font-semibold">Código de la Manilla (O déjalo vacío si es Personalizada)</label>
+          <input type="text" id="modalInputCodigo" placeholder="Ej: HUNY-1002" class="w-full bg-slate-900 border border-purple-800 rounded-xl p-2.5 text-xs text-slate-100 uppercase">
+        </div>
+
+        <div>
+          <label class="text-[11px] text-purple-300 font-semibold mb-1 block">Tipo de Manilla</label>
+          <select id="modalSelectTipo" onchange="cambiarTipoModal()" class="w-full bg-slate-900 border border-purple-800 rounded-xl p-2.5 text-xs text-slate-100">
+            <option value="Amor">❤️ Amor</option>
+            <option value="Abundancia">✨ Abundancia</option>
+            <option value="Proteccion">🛡️ Protección</option>
+            <option value="Personalizada">🎨 Personalizada (Diseño libre)</option>
+          </select>
+        </div>
+
+        <div id="modalSeccionPiedras" class="hidden space-y-2 bg-slate-900/60 p-2.5 rounded-xl border border-purple-900/50 text-xs">
+          <label class="text-amber-300 font-semibold block">Elige hasta 3 piedras para tu diseño:</label>
+          <label class="flex items-center gap-2"><input type="checkbox" name="modalPiedra" value="Cuarzo Rosado" class="accent-amber-500"> Cuarzo Rosado</label>
+          <label class="flex items-center gap-2"><input type="checkbox" name="modalPiedra" value="Rodonita" class="accent-amber-500"> Rodonita</label>
+          <label class="flex items-center gap-2"><input type="checkbox" name="modalPiedra" value="Ojo de Tigre" class="accent-amber-500"> Ojo de Tigre</label>
+          <label class="flex items-center gap-2"><input type="checkbox" name="modalPiedra" value="Citrino" class="accent-amber-500"> Citrino</label>
+          <label class="flex items-center gap-2"><input type="checkbox" name="modalPiedra" value="Cuarzo Ahumado" class="accent-amber-500"> Cuarzo Ahumado</label>
+        </div>
+
+        <div>
+          <label class="text-[11px] text-purple-300 font-semibold">Intención personal</label>
+          <textarea id="modalInputIntencion" rows="3" placeholder="Sella el propósito..." class="w-full bg-slate-900 border border-purple-800 rounded-xl p-2.5 text-xs text-slate-100 resize-none"></textarea>
+        </div>
+      </div>
+
+      <div id="modalError" class="text-xs text-rose-400 text-center hidden"></div>
+
+      <div class="flex gap-2 pt-2">
+        <button onclick="cerrarModalNuevaManilla()" class="flex-1 py-2.5 bg-slate-800 text-xs text-slate-300 rounded-xl">Cancelar</button>
+        <button onclick="guardarNuevaManilla()" class="flex-1 py-2.5 bg-amber-500 text-xs font-bold text-slate-950 rounded-xl">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let usuarioActual = null;
+    let misManillas = [];
+    let manillaSeleccionadaActual = null;
+    let tipoManillaSeleccionada = 'Amor';
+    let esModoLoginExistente = false;
+
+    const diccionarioPiedras = {
+      "Cuarzo Rosado": {
+        nombre: "Cuarzo Rosado",
+        frase: "La piedra que recuerda que el amor siempre comienza por uno mismo.",
+        simboliza: "Relacionado con la ternura, la empatía y la capacidad de abrir el corazón al amor propio.",
+        historia: "En la mitología griega se cuenta que Afrodita derramó gotas de sangre sobre un cuarzo blanco.",
+        curioso: "Su color rosado proviene de diminutas inclusiones de minerales microscópicos.",
+        emoji: "🌸",
+        signos: ["Tauro", "Libra", "Cáncer"]
+      },
+      "Rodonita": {
+        nombre: "Rodonita",
+        frase: "Incluso las cicatrices pueden convertirse en parte de la belleza.",
+        simboliza: "Representa el equilibrio emocional y la capacidad de transformar experiencias difíciles en aprendizaje.",
+        historia: "En Rusia, durante el siglo XIX, se utilizó para decorar palacios imperiales.",
+        curioso: "Su nombre proviene del griego 'rhodon', que significa rosa.",
+        emoji: "💖",
+        signos: ["Tauro", "Escorpio", "Aries"]
+      },
+      "Ojo de Tigre": {
+        nombre: "Ojo de Tigre",
+        frase: "La confianza abre caminos donde antes solo había dudas.",
+        simboliza: "Asociado con la claridad mental, la determinación y la confianza para tomar decisiones.",
+        historia: "Los soldados romanos la llevaban en campañas para transmitir valor y firmeza.",
+        curioso: "El brillo que se desplaza sobre la piedra se llama chatoyancia.",
+        emoji: "🐅",
+        signos: ["Leo", "Capricornio", "Géminis"]
+      },
+      "Citrino": {
+        nombre: "Citrino",
+        frase: "La abundancia también nace de una actitud abierta hacia las oportunidades.",
+        simboliza: "Se asocia con el optimismo, la creatividad y la energía para emprender nuevos proyectos.",
+        historia: "Conocida como la 'piedra del comerciante' para atraer buenos negocios.",
+        curioso: "Gran parte del citrino comercial proviene de amatistas calentadas artificialmente.",
+        emoji: "✨",
+        signos: ["Aries", "Leo", "Sagitario"]
+      },
+      "Cuarzo Ahumado": {
+        nombre: "Cuarzo Ahumado",
+        frase: "Permanecer firme también es una forma de avanzar.",
+        simboliza: "Asociado con la estabilidad, la serenidad y la fortaleza para afrontar la incertidumbre.",
+        historia: "En Escocia, fue muy apreciada por los antiguos clanes celtas en joyería ceremonial.",
+        curioso: "Su color oscuro se debe a cambios producidos por radiación natural bajo la superficie.",
+        emoji: "🛡️",
+        signos: ["Capricornio", "Escorpio", "Virgo"]
+      }
+    };
+
+    const manillasPiedrasMap = {
+      "Amor": ["Cuarzo Rosado", "Rodonita"],
+      "Abundancia": ["Ojo de Tigre", "Citrino"],
+      "Proteccion": ["Ojo de Tigre", "Cuarzo Ahumado"]
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const sesionGuardada = localStorage.getItem('hunyverso_user');
+      if (sesionGuardada) {
+        usuarioActual = JSON.parse(sesionGuardada);
+        cargarDatosUsuario();
+      }
+      renderizarGuiaGeneral();
+    });
+
+    function alternarModoLogin() {
+      esModoLoginExistente = !esModoLoginExistente;
+      document.getElementById('seccionElegirManilla').classList.toggle('hidden', esModoLoginExistente);
+      document.getElementById('seccionIntencion').classList.toggle('hidden', esModoLoginExistente);
+      document.getElementById('campoCodigoRegistro').classList.toggle('hidden', esModoLoginExistente);
+      document.getElementById('tituloModoRegistro').innerText = esModoLoginExistente ? "Ingresar a tu Cuenta" : "Activa tu Manilla";
+      document.getElementById('botonAccionRegistro').innerText = esModoLoginExistente ? "Entrar al Hunyverso" : "Vincular & Entrar al Hunyverso";
+      document.getElementById('linkModoLogin').innerText = esModoLoginExistente ? "¿Tienes una manilla nueva? Regístrate aquí" : "¿Ya registraste tu código antes? Entra aquí";
+    }
+
+    function seleccionarTipoManilla(tipo) {
+      tipoManillaSeleccionada = tipo;
+      document.getElementById('btnAmor').classList.remove('selected');
+      document.getElementById('btnAbundancia').classList.remove('selected');
+      document.getElementById('btnProteccion').classList.remove('selected');
+      
+      if (tipo === 'Amor') document.getElementById('btnAmor').classList.add('selected');
+      if (tipo === 'Abundancia') document.getElementById('btnAbundancia').classList.add('selected');
+      if (tipo === 'Proteccion') document.getElementById('btnProteccion').classList.add('selected');
+    }
+
+    async function procesarRegistro() {
+      const nombre = document.getElementById('inputNombre').value.trim();
+      const errorDiv = document.getElementById('errorRegistro');
+      errorDiv.classList.add('hidden');
+
+      if (!nombre) {
+        errorDiv.innerText = 'Por favor ingresa tu nombre.';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      if (esModoLoginExistente) {
+        const { data: user, error } = await db.from('usuarios').select('*').eq('nombre', nombre).single();
+        if (error || !user) {
+          errorDiv.innerText = 'No encontramos una cuenta con ese nombre.';
+          errorDiv.classList.remove('hidden');
+          return;
+        }
+        usuarioActual = user;
+        localStorage.setItem('hunyverso_user', JSON.stringify(usuarioActual));
+        cargarDatosUsuario();
+      } else {
+        const codigoInput = document.getElementById('inputCodigoManilla').value.trim().toUpperCase();
+        const intencion = document.getElementById('inputIntencion').value.trim();
+
+        if (!codigoInput || !intencion) {
+          errorDiv.innerText = 'Por favor ingresa el código físico y tu intención.';
+          errorDiv.classList.remove('hidden');
+          return;
+        }
+
+        const { data: codValido } = await db.from('codigos_manillas').select('*').eq('codigo', codigoInput).eq('usado', false).single();
+        if (!codValido) {
+          errorDiv.innerText = 'Código inválido o ya usado.';
+          errorDiv.classList.remove('hidden');
+          return;
+        }
+
+        await db.from('codigos_manillas').update({ usado: true }).eq('codigo', codigoInput);
+
+        const codigoAmigo = 'AMIGO-' + Math.floor(1000 + Math.random() * 9000);
+        const { data: nuevoUser } = await db.from('usuarios').insert([{ nombre, codigo_manilla_usado: codigoInput, codigo_amigo: codigoAmigo }]).select().single();
+
+        await db.from('manillas_usuario').insert([{
+          usuario_id: nuevoUser.id,
+          codigo_manilla: codigoInput,
+          tipo_manilla: tipoManillaSeleccionada,
+          intencion: intencion,
+          estado: 'ACTIVA'
+        }]);
+
+        usuarioActual = nuevoUser;
+        localStorage.setItem('hunyverso_user', JSON.stringify(usuarioActual));
+        cargarDatosUsuario();
+      }
+    }
+
+    async function cargarDatosUsuario() {
+      document.getElementById('screenRegistro').classList.add('hidden');
+      document.getElementById('screenApp').classList.remove('hidden');
+      document.getElementById('usuarioHeader').innerText = '✨ ' + usuarioActual.nombre;
+      document.getElementById('usuarioHeader').classList.remove('hidden');
+      document.getElementById('perfilNombre').innerText = usuarioActual.nombre;
+      document.getElementById('perfilCodigoAmigo').innerText = usuarioActual.codigo_amigo;
+
+      const { data: manillas } = await db.from('manillas_usuario').select('*').eq('usuario_id', usuarioActual.id);
+      misManillas = manillas || [];
+
+      renderizarSelectorManillas();
+      cargarDeseosYChatGeneral();
+    }
+
+    function renderizarSelectorManillas() {
+      const select = document.getElementById('selectManillaUsuario');
+      select.innerHTML = '';
+      
+      misManillas.forEach((m, idx) => {
+        const opt = document.createElement('option');
+        opt.value = idx;
+        opt.innerText = `📿 Manilla ${m.tipo_manilla} ${m.estado === 'PENDIENTE' ? '(⏳ Pendiente)' : ''}`;
+        select.appendChild(opt);
+      });
+
+      if (misManillas.length > 0) {
+        manillaSeleccionadaActual = misManillas[0];
+        actualizarDetallesManillaActiva();
+      }
+    }
+
+    function cambiarManillaSeleccionada() {
+      const idx = document.getElementById('selectManillaUsuario').value;
+      manillaSeleccionadaActual = misManillas[idx];
+      actualizarDetallesManillaActiva();
+    }
+
+    function actualizarDetallesManillaActiva() {
+      if (!manillaSeleccionadaActual) return;
+      document.getElementById('infoIntencionUsuario').innerText = manillaSeleccionadaActual.intencion;
+      
+      const bannerWpp = document.getElementById('estadoPendienteBanner');
+      if (manillaSeleccionadaActual.estado === 'PENDIENTE') {
+        bannerWpp.classList.remove('hidden');
+        const mensajeWpp = encodeURIComponent(`¡Hola! Vengo a continuar mi proceso de compra para mi manilla ${manillaSeleccionadaActual.tipo_manilla} con intención: "${manillaSeleccionadaActual.intencion}".`);
+        document.getElementById('btnWhatsappPendiente').href = `https://wa.me/?text=${mensajeWpp}`;
+      } else {
+        bannerWpp.classList.add('hidden');
+      }
+
+      renderizarPiedrasDeManilla(manillaSeleccionadaActual);
+    }
+
+    function renderizarPiedrasDeManilla(manilla) {
+      const contenedor = document.getElementById('contenedorPiedrasAsociadas');
+      let listaPiedras = manillasPiedrasMap[manilla.tipo_manilla] || [];
+      if (manilla.tipo_manilla === 'Personalizada') {
+        listaPiedras = manilla.piedras_personalizadas || [];
+      }
+      
+      let html = '';
+      listaPiedras.forEach(nombrePiedra => {
+        const p = diccionarioPiedras[nombrePiedra];
+        if (p) {
+          html += `
+            <div class="bg-mystic-card p-4 rounded-2xl shadow-xl space-y-2 border border-purple-900/40">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-purple-950/80 rounded-xl border border-amber-500/30 flex items-center justify-center text-xl flex-shrink-0">
+                  ${p.emoji}
+                </div>
+                <div>
+                  <h4 class="text-sm font-cinzel text-amber-200 font-bold">${p.nombre}</h4>
+                  <p class="text-[11px] text-amber-300/90 italic">"${p.frase}"</p>
+                </div>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed pt-1">${p.simboliza}</p>
+            </div>
+          `;
+        }
+      });
+      contenedor.innerHTML = html;
+    }
+
+    // 💌 DESEOS Y CHAT
+    async function cargarDeseosYChatGeneral() {
+      const contenedor = document.getElementById('listaDeseosGeneral');
+      const { data: deseos } = await db.from('deseos_amigos').select('*, manillas_usuario(tipo_manilla)').in('manilla_id', misManillas.map(m => m.id));
+
+      if (!deseos || deseos.length === 0) {
+        contenedor.innerHTML = '<p class="text-xs text-slate-500 italic text-center py-4">Aún no hay deseos en tus manillas. ¡Agrega amigos para recibir luz!</p>';
+        return;
+      }
+
+      let html = '';
+      deseos.forEach(d => {
+        const tipoManillaRef = d.manillas_usuario ? d.manillas_usuario.tipo_manilla : 'General';
+        html += `
+          <div class="bg-purple-950/50 p-3.5 rounded-xl border border-purple-800/40 text-xs space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-amber-300">De: ${d.remitente_nombre}</span>
+              <span class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full">📿 Manilla: ${tipoManillaRef}</span>
+            </div>
+            <p class="text-slate-200 italic">"${d.mensaje_deseo}"</p>
+            <div class="flex justify-end gap-2 pt-1">
+              <button onclick="responderDeseo('${d.remitente_nombre}')" class="text-[10px] text-emerald-400 hover:underline">💬 Responder</button>
+              <button onclick="eliminarDeseo(${d.id})" class="text-[10px] text-rose-400 hover:underline">🗑️ Eliminar</button>
+            </div>
+          </div>
+        `;
+      });
+      contenedor.innerHTML = html;
+    }
+
+    async function eliminarDeseo(idDeseo) {
+      if(confirm("¿Eliminar este deseo?")) {
+        await db.from('deseos_amigos').delete().eq('id', idDeseo);
+        cargarDeseosYChatGeneral();
+      }
+    }
+
+    function responderDeseo(nombreRemitente) {
+      const respuesta = prompt(`Enviar respuesta a ${nombreRemitente}:`);
+      if(respuesta) {
+        alert(`✨ Tu respuesta fue enviada con éxito a ${nombreRemitente}.`);
+      }
+    }
+
+    async function vincularNuevoAmigo() {
+      const codigoAmigo = prompt("Ingresa el Código de Amigo (Ej: AMIGO-4920):");
+      if(!codigoAmigo) return;
+
+      const { data: amigo } = await db.from('usuarios').select('*').eq('codigo_amigo', codigoAmigo.trim().toUpperCase()).single();
+      if(!amigo) {
+        alert("No se encontró ningún usuario con ese código.");
+        return;
+      }
+
+      const { data: manillasAmigo } = await db.from('manillas_usuario').select('*').eq('usuario_id', amigo.id);
+      if(!manillasAmigo || manillasAmigo.length === 0) {
+        alert("Tu amigo aún no tiene manillas activas.");
+        return;
+      }
+
+      let opcionesTexto = manillasAmigo.map((m, i) => `${i + 1}: Manilla de ${m.tipo_manilla} (Intención: "${m.intencion}")`).join('\n');
+      const seleccion = prompt(`Elige la manilla de ${amigo.nombre} a la que le enviarás un deseo:\n\n${opcionesTexto}`);
+      const index = parseInt(seleccion) - 1;
+
+      if(isNaN(index) || !manillasAmigo[index]) {
+        alert("Selección inválida.");
+        return;
+      }
+
+      const manillaElegida = manillasAmigo[index];
+      let sugerencia = manillaElegida.tipo_manilla === 'Amor' ? 'Que el amor propio y la paz guíen tus pasos.' : 'Que la abundancia y la luz abran todos tus caminos.';
+      
+      const mensajeDeseo = prompt(`Escribe tu mensaje de deseo para ${amigo.nombre}:\n(Sugerencia: "${sugerencia}")`, sugerencia);
+      if(!mensajeDeseo) return;
+
+      await db.from('deseos_amigos').insert([{
+        manilla_id: manillaElegida.id,
+        remitente_nombre: usuarioActual.nombre,
+        mensaje_deseo: mensajeDeseo
+      }]);
+
+      alert("✨ ¡Deseo enviado con éxito a la manilla de tu amigo!");
+    }
+
+    // MODAL NUEVA MANILLA (Aquí sí aparece la Personalizada)
+    function abrirModalNuevaManilla() { document.getElementById('modalNuevaManilla').classList.remove('hidden'); }
+    function cerrarModalNuevaManilla() { document.getElementById('modalNuevaManilla').classList.add('hidden'); }
+
+    function cambiarTipoModal() {
+      const tipo = document.getElementById('modalSelectTipo').value;
+      document.getElementById('modalSeccionPiedras').classList.toggle('hidden', tipo !== 'Personalizada');
+      document.getElementById('modalInputCodigo').disabled = (tipo === 'Personalizada');
+      if(tipo === 'Personalizada') document.getElementById('modalInputCodigo').value = '';
+    }
+
+    async function guardarNuevaManilla() {
+      const codInput = document.getElementById('modalInputCodigo').value.trim().toUpperCase();
+      const tipo = document.getElementById('modalSelectTipo').value;
+      const intencion = document.getElementById('modalInputIntencion').value.trim();
+      const err = document.getElementById('modalError');
+      err.classList.add('hidden');
+
+      if (!intencion) {
+        err.innerText = 'Escribe la intención de la manilla.';
+        err.classList.remove('hidden');
+        return;
+      }
+
+      let estado = 'ACTIVA';
+      let codigoFinal = codInput;
+      let piedrasCustom = [];
+
+      if (tipo === 'Personalizada') {
+        const checks = document.querySelectorAll('input[name="modalPiedra"]:checked');
+        if(checks.length === 0) {
+          err.innerText = 'Elige al menos 1 piedra.';
+          err.classList.remove('hidden');
+          return;
+        }
+        checks.forEach(c => piedrasCustom.push(c.value));
+        estado = 'PENDIENTE';
+        codigoFinal = 'PENDIENTE-' + Math.floor(1000 + Math.random() * 9000);
+
+        // Abrir WhatsApp automáticamente para la personalizada
+        const mensajeWpp = encodeURIComponent(`¡Hola! Quiero encargar mi Manilla Personalizada con mis piedras elegidas e intención: "${intencion}". Mi nombre es ${usuarioActual.nombre}.`);
+        window.open(`https://wa.me/?text=${mensajeWpp}`, '_blank');
+      } else {
+        if (!codInput) {
+          err.innerText = 'Ingresa el código físico.';
+          err.classList.remove('hidden');
+          return;
+        }
+        const { data: codVal } = await db.from('codigos_manillas').select('*').eq('codigo', codInput).eq('usado', false).single();
+        if(!codVal) {
+          err.innerText = 'Código inválido o ya usado.';
+          err.classList.remove('hidden');
+          return;
+        }
+        await db.from('codigos_manillas').update({ usado: true }).eq('codigo', codInput);
+      }
+
+      await db.from('manillas_usuario').insert([{
+        usuario_id: usuarioActual.id,
+        codigo_manilla: codigoFinal,
+        tipo_manilla: tipo,
+        intencion: intencion,
+        estado: estado,
+        piedras_personalizadas: piedrasCustom
+      }]);
+
+      cerrarModalNuevaManilla();
+      cargarDatosUsuario();
+    }
+
+    // GUÍA GENERAL Y SIGNOS
+    function renderizarGuiaGeneral(filtroSigno = "TODOS") {
+      const contenedor = document.getElementById('contenedorGuiaGeneral');
+      let html = '';
+
+      Object.values(diccionarioPiedras).forEach(p => {
+        if (filtroSigno === "TODOS" || p.signos.includes(filtroSigno)) {
+          html += `
+            <div class="bg-slate-900/60 p-4 rounded-xl border border-purple-900/40 space-y-2">
+              <div class="flex items-center gap-3">
+                <span class="text-2xl">${p.emoji}</span>
+                <div>
+                  <h4 class="text-sm font-cinzel text-amber-200 font-bold">${p.nombre}</h4>
+                  <p class="text-[11px] text-amber-300/90 italic">"${p.frase}"</p>
+                </div>
+              </div>
+              <p class="text-xs text-slate-300">${p.simboliza}</p>
+              <p class="text-[10px] text-purple-300">✨ Signos afines: ${p.signos.join(', ')}</p>
+            </div>
+          `;
+        }
+      });
+      contenedor.innerHTML = html || '<p class="text-xs text-slate-500 text-center">No hay piedras para este signo.</p>';
+    }
+
+    function filtrarPiedrasPorSigno() {
+      const signo = document.getElementById('selectSignoFiltro').value;
+      renderizarGuiaGeneral(signo);
+    }
+
+    function cambiarTab(tab) {
+      ['secInicio', 'secDeseos', 'secPiedras', 'secPerfil'].forEach(s => document.getElementById(s).classList.add('hidden'));
+      ['tabInicio', 'tabDeseos', 'tabPiedras', 'tabPerfil'].forEach(t => document.getElementById(t).className = 'py-2 px-3 rounded-xl font-bold text-slate-400');
+
+      if (tab === 'inicio') {
+        document.getElementById('secInicio').classList.remove('hidden');
+        document.getElementById('tabInicio').className = 'py-2 px-3 rounded-xl font-bold bg-amber-500 text-slate-950';
+      } else if (tab === 'deseos') {
+        document.getElementById('secDeseos').classList.remove('hidden');
+        document.getElementById('tabDeseos').className = 'py-2 px-3 rounded-xl font-bold bg-amber-500 text-slate-950';
+        cargarDeseosYChatGeneral();
+      } else if (tab === 'piedras') {
+        document.getElementById('secPiedras').classList.remove('hidden');
+        document.getElementById('tabPiedras').className = 'py-2 px-3 rounded-xl font-bold bg-amber-500 text-slate-950';
+      } else if (tab === 'perfil') {
+        document.getElementById('secPerfil').classList.remove('hidden');
+        document.getElementById('tabPerfil').className = 'py-2 px-3 rounded-xl font-bold bg-amber-500 text-slate-950';
+      }
+    }
+
+    function cerrarSesion() {
+      localStorage.removeItem('hunyverso_user');
+      window.location.reload();
+    }
+  </script>
+</body>
+</html>
