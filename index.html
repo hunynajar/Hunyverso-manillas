@@ -418,14 +418,31 @@
       document.getElementById('perfilNombre').innerText = usuarioActual.nombre;
       document.getElementById('perfilCodigoAmigo').innerText = usuarioActual.codigo_amigo;
 
-      const { data: manillas } = await db.from('manillas_usuario').select('*').eq('usuario_id', usuarioActual.id);
+      // Traer las manillas de Supabase de este usuario
+      const { data: manillas, error } = await db
+        .from('manillas_usuario')
+        .select('*')
+        .eq('usuario_id', usuarioActual.id);
+
+      if (error) {
+        console.error("Error al cargar manillas:", error);
+        return;
+      }
+
       misManillas = manillas || [];
 
-      renderizarSelectorManillas();
+      if (misManillas.length > 0) {
+        manillaSeleccionadaActual = misManillas[0];
+        renderizarSelectorManillas();
+        actualizarDetallesManillaActiva();
+      } else {
+        document.getElementById('contenedorPiedrasAsociadas').innerHTML = '<p class="text-xs text-slate-400 text-center py-4">No tienes manillas activas registradas.</p>';
+      }
+
       cargarDeseosYChatGeneral();
     }
 
-      function renderizarSelectorManillas() {
+    function renderizarSelectorManillas() {
       const select = document.getElementById('selectManillaUsuario');
       select.innerHTML = '';
       
@@ -436,13 +453,8 @@
         select.appendChild(opt);
       });
 
-      if (misManillas.length > 0) {
-        select.value = 0; // Selecciona la primera por defecto
-        manillaSeleccionadaActual = misManillas[0];
-        actualizarDetallesManillaActiva();
-      }
+      select.value = 0;
     }
-
     function cambiarManillaSeleccionada() {
       const idx = document.getElementById('selectManillaUsuario').value;
       manillaSeleccionadaActual = misManillas[idx];
