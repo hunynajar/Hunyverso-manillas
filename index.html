@@ -361,7 +361,7 @@
       if(btn) btn.classList.add('selected');
     }
 
-    async function procesarRegistro() {
+async function procesarRegistro() {
       const nombre = document.getElementById('inputNombre').value.trim();
       const errorDiv = document.getElementById('errorRegistro');
       errorDiv.classList.add('hidden');
@@ -392,39 +392,47 @@
           return;
         }
 
-        const { data: codValido } = await db.from('codigos_manillas').select('*').eq('codigo', codigoInput).eq('usado', false).single();
-        if (!codValido) {
-          errorDiv.innerText = 'Código inválido o ya usado.';
+        // 1. Validar código en Supabase
+        const { data: codValido, error: errCod } = await db.from('codigos_manillas').select('*').eq('codigo', codigoInput).eq('usado', false).single();
+        if (errCod || !codValido) {
+          errorDiv.innerText = 'Código inválido o ya fue usado.';
           errorDiv.classList.remove('hidden');
           return;
         }
 
+        // 2. Marcar código como usado
         await db.from('codigos_manillas').update({ usado: true }).eq('codigo', codigoInput);
 
+        // 3. Crear el usuario
         const codigoAmigo = 'AMIGO-' + Math.floor(1000 + Math.random() * 9000);
-        const { data: nuevoUser, error: errUser } = await db.from('usuarios').insert([{ nombre, codigo_manilla_usado: codigoInput, codigo_amigo: codigoAmigo }]).select().single();
+        const { data: nuevoUser, error: errUser } = await db.from('usuarios').insert([{ 
+          nombre: nombre, 
+          codigo_manilla_usado: codigoInput, 
+          codigo_amigo: codigoAmigo 
+        }]).select().single();
 
-        if (errUser) {
-          errorDiv.innerText = 'Error al crear el usuario en la base de datos.';
+        if (errUser || !nuevoUser) {
+          errorDiv.innerText = 'Error al crear el usuario: ' + (errUser?.message || 'Desconocido');
           errorDiv.classList.remove('hidden');
           return;
         }
 
-        // AQUÍ ESTABA EL ERROR: Aseguramos que se guarde el tipo de manilla seleccionado
+        // 4. CREAR LA MANILLA ASOCIADA (Forzando los datos limpios)
         const { error: errManilla } = await db.from('manillas_usuario').insert([{
           usuario_id: nuevoUser.id,
           codigo_manilla: codigoInput,
-          tipo_manilla: tipoManillaSeleccionada, 
+          tipo_manilla: tipoManillaSeleccionada || 'Amor',
           intencion: intencion,
           estado: 'ACTIVA'
         }]);
 
         if (errManilla) {
-          errorDiv.innerText = 'Error al registrar la manilla en Supabase.';
+          errorDiv.innerText = 'Error al guardar la manilla: ' + errManilla.message;
           errorDiv.classList.remove('hidden');
           return;
         }
 
+        // Todo salió bien
         usuarioActual = nuevoUser;
         localStorage.setItem('hunyverso_user', JSON.stringify(usuarioActual));
         cargarDatosUsuario();
