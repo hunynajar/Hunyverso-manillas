@@ -1,0 +1,21 @@
+{
+  "short_name": "AuraSync",
+  "name": "AuraSync - Manillas Esotéricas & Conexión",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#0f0c1b",
+  "theme_color": "#0f0c1b",
+  "display": "standalone",
+  "orientation": "portrait"
+}
