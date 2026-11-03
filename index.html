@@ -17,8 +17,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <script>
+    // ⚠️ TUS CREDENCIALES DE SUPABASE
     const SUPABASE_URL = "https://bwxgddifiqlgamkokaso.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_nB-TXpmj5VmsfXW2UKUbLQ_qiA-BhYz";
+    const SUPABASE_ANON_KEY = "TU_KEY_PUBLISHABLE_REAL";
     
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   </script>
@@ -119,13 +120,13 @@
           </button>
         </div>
         
-        <!-- SELECTOR (Solo se muestra si hay 2 o más manillas) -->
+        <!-- SELECTOR (Solo si hay más de 1) -->
         <select id="selectManillaUsuario" onchange="cambiarManillaSeleccionada()" class="hidden w-full bg-slate-900 border border-amber-500/40 text-amber-300 font-semibold text-xs p-2.5 rounded-xl focus:outline-none">
         </select>
 
-        <!-- TÍTULO FIJO (Se muestra cuando solo hay 1 manilla) -->
+        <!-- TÍTULO FIJO (Si hay 1 sola) -->
         <div id="tituloManillaUnica" class="bg-slate-900/80 p-3 rounded-xl border border-amber-500/30 text-amber-300 text-xs font-bold flex items-center justify-between">
-          <span id="textoManillaUnica">📿 Manilla</span>
+          <span id="textoManillaUnica">📿 Cargando...</span>
         </div>
 
         <div id="estadoPendienteBanner" class="hidden bg-amber-500/10 border border-amber-500/30 p-3 rounded-xl text-center space-y-2">
@@ -138,7 +139,7 @@
 
         <div class="bg-slate-900/70 p-3.5 rounded-xl border border-amber-500/20 mt-2">
           <p class="text-[10px] text-amber-400/80 font-semibold mb-1">INTENCIÓN DE ESTA MANILLA:</p>
-          <p id="infoIntencionUsuario" class="text-xs text-slate-200 italic"></p>
+          <p id="infoIntencionUsuario" class="text-xs text-slate-200 italic">Cargando intención...</p>
         </div>
       </section>
 
@@ -271,7 +272,7 @@
     let usuarioActual = null;
     let misManillas = [];
     let manillaSeleccionadaActual = null;
-    let tipoManillaSeleccionada = 'Amor';
+    let tipoManillaSeleccionada = 'Amor'; // Aseguramos un valor por defecto
     let esModoLoginExistente = false;
 
     const diccionarioPiedras = {
@@ -331,8 +332,12 @@
     window.addEventListener('DOMContentLoaded', () => {
       const sesionGuardada = localStorage.getItem('hunyverso_user');
       if (sesionGuardada) {
-        usuarioActual = JSON.parse(sesionGuardada);
-        cargarDatosUsuario();
+        try {
+          usuarioActual = JSON.parse(sesionGuardada);
+          cargarDatosUsuario();
+        } catch(e) {
+          localStorage.removeItem('hunyverso_user');
+        }
       }
       renderizarGuiaGeneral();
     });
@@ -344,7 +349,7 @@
       document.getElementById('campoCodigoRegistro').classList.toggle('hidden', esModoLoginExistente);
       document.getElementById('tituloModoRegistro').innerText = esModoLoginExistente ? "Ingresar a tu Cuenta" : "Activa tu Manilla";
       document.getElementById('botonAccionRegistro').innerText = esModoLoginExistente ? "Entrar al Hunyverso" : "Vincular & Entrar al Hunyverso";
-      document.getElementById('linkModoLogin').innerText = esModoLoginExistente ? "¿Tienes una manilla nueva? Regístrate hier" : "¿Ya registraste tu código antes? Entra aquí";
+      document.getElementById('linkModoLogin').innerText = esModoLoginExistente ? "¿Tienes una manilla nueva? Regístrate aquí" : "¿Ya registraste tu código antes? Entra aquí";
     }
 
     function seleccionarTipoManilla(tipo) {
@@ -353,9 +358,8 @@
       document.getElementById('btnAbundancia').classList.remove('selected');
       document.getElementById('btnProteccion').classList.remove('selected');
       
-      if (tipo === 'Amor') document.getElementById('btnAmor').classList.add('selected');
-      if (tipo === 'Abundancia') document.getElementById('btnAbundancia').classList.add('selected');
-      if (tipo === 'Proteccion') document.getElementById('btnProteccion').classList.add('selected');
+      const btn = document.getElementById('btn' + tipo);
+      if(btn) btn.classList.add('selected');
     }
 
     async function procesarRegistro() {
@@ -407,13 +411,20 @@
           return;
         }
 
-        await db.from('manillas_usuario').insert([{
+        // AQUÍ ESTABA EL ERROR: Aseguramos que se guarde el tipo de manilla seleccionado
+        const { error: errManilla } = await db.from('manillas_usuario').insert([{
           usuario_id: nuevoUser.id,
           codigo_manilla: codigoInput,
-          tipo_manilla: tipoManillaSeleccionada,
+          tipo_manilla: tipoManillaSeleccionada, 
           intencion: intencion,
           estado: 'ACTIVA'
         }]);
+
+        if (errManilla) {
+          errorDiv.innerText = 'Error al registrar la manilla en Supabase.';
+          errorDiv.classList.remove('hidden');
+          return;
+        }
 
         usuarioActual = nuevoUser;
         localStorage.setItem('hunyverso_user', JSON.stringify(usuarioActual));
@@ -429,9 +440,9 @@
       document.getElementById('perfilNombre').innerText = usuarioActual.nombre;
       document.getElementById('perfilCodigoAmigo').innerText = usuarioActual.codigo_amigo;
 
-      let { data: manillas } = await db.from('manillas_usuario').select('*').eq('usuario_id', usuarioActual.id);
+      let { data: manillas, error } = await db.from('manillas_usuario').select('*').eq('usuario_id', usuarioActual.id);
 
-      if (!manillas || manillas.length === 0) {
+      if (error || !manillas || manillas.length === 0) {
         await db.from('manillas_usuario').insert([{
           usuario_id: usuarioActual.id,
           codigo_manilla: usuarioActual.codigo_manilla_usado || 'HUNY-DEFAULT',
@@ -457,19 +468,15 @@
       const labelTitulo = document.getElementById('labelManillasTitulo');
 
       if (misManillas.length <= 1) {
-        // SI SOLO HAY 1 MANILLA: Ocultamos el select y mostramos un título fijo limpio
         select.classList.add('hidden');
         tituloUnica.classList.remove('hidden');
         labelTitulo.innerText = "Tu Manilla:";
         
-        if (misManillas.length === 1) {
-          const m = misManillas[0];
-          textoUnica.innerText = `📿 Manilla de ${m.tipo_manilla} ${m.estado === 'PENDIENTE' ? '(⏳ Pendiente)' : ''}`;
-          manillaSeleccionadaActual = m;
-          actualizarDetallesManillaActiva();
-        }
+        const m = misManillas[0] || { tipo_manilla: 'Amor', intencion: 'Sin intención', estado: 'ACTIVA' };
+        textoUnica.innerText = `📿 Manilla de ${m.tipo_manilla} ${m.estado === 'PENDIENTE' ? '(⏳ Pendiente)' : ''}`;
+        manillaSeleccionadaActual = m;
+        actualizarDetallesManillaActiva();
       } else {
-        // SI HAY MÁS DE 1 MANILLA: Mostramos el selector desplegable
         select.classList.remove('hidden');
         tituloUnica.classList.add('hidden');
         labelTitulo.innerText = "Tus Manillas:";
@@ -496,7 +503,7 @@
 
     function actualizarDetallesManillaActiva() {
       if (!manillaSeleccionadaActual) return;
-      document.getElementById('infoIntencionUsuario').innerText = manillaSeleccionadaActual.intencion;
+      document.getElementById('infoIntencionUsuario').innerText = manillaSeleccionadaActual.intencion || 'Sin intención registrada.';
       
       const bannerWpp = document.getElementById('estadoPendienteBanner');
       if (manillaSeleccionadaActual.estado === 'PENDIENTE') {
@@ -512,8 +519,10 @@
 
     function renderizarPiedrasDeManilla(manilla) {
       const contenedor = document.getElementById('contenedorPiedrasAsociadas');
-      let listaPiedras = manillasPiedrasMap[manilla.tipo_manilla] || ["Cuarzo Rosado", "Rodonita"];
-      if (manilla.tipo_manilla === 'Personalizada') {
+      let tipo = manilla.tipo_manilla ? manilla.tipo_manilla.trim() : 'Amor';
+      let listaPiedras = manillasPiedrasMap[tipo] || ["Cuarzo Rosado", "Rodonita"];
+      
+      if (tipo === 'Personalizada') {
         listaPiedras = manilla.piedras_personalizadas || ["Cuarzo Rosado"];
       }
       
@@ -537,7 +546,7 @@
           `;
         }
       });
-      contenedor.innerHTML = html;
+      contenedor.innerHTML = html || '<p class="text-xs text-slate-400 text-center">No hay piedras asociadas.</p>';
     }
 
     // 💌 DESEOS Y CHAT
