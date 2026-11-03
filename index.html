@@ -415,7 +415,7 @@
       }
     }
 
-    async function cargarDatosUsuario() {
+async function cargarDatosUsuario() {
       document.getElementById('screenRegistro').classList.add('hidden');
       document.getElementById('screenApp').classList.remove('hidden');
       document.getElementById('usuarioHeader').innerText = '✨ ' + usuarioActual.nombre;
@@ -423,21 +423,21 @@
       document.getElementById('perfilNombre').innerText = usuarioActual.nombre;
       document.getElementById('perfilCodigoAmigo').innerText = usuarioActual.codigo_amigo;
 
-      // Buscar manillas asociadas
-      let { data: manillas } = await db.from('manillas_usuario').select('*').eq('usuario_id', usuarioActual.id);
+      // Consultar manillas en Supabase
+      let { data: manillas, error } = await db.from('manillas_usuario').select('*').eq('usuario_id', usuarioActual.id);
 
-      // Si por alguna razón no encuentra por ID pero tiene el código guardado, creamos el vínculo automáticamente
+      // Si no tiene manillas registradas, le creamos una por defecto para que no falle
       if (!manillas || manillas.length === 0) {
         await db.from('manillas_usuario').insert([{
           usuario_id: usuarioActual.id,
           codigo_manilla: usuarioActual.codigo_manilla_usado || 'HUNY-DEFAULT',
           tipo_manilla: 'Amor',
-          intencion: 'Conectar con la energía de mi manilla.',
+          intencion: 'Conectar con la energía y la paz interior.',
           estado: 'ACTIVA'
-        }]).select();
+        }]);
 
-        let { data: manillasRecuperadas } = await db.from('manillas_usuario').select('*').eq('usuario_id', usuarioActual.id);
-        misManillas = manillasRecuperadas || [];
+        let { data: manillasNuevas } = await db.from('manillas_usuario').select('*').eq('usuario_id', usuarioActual.id);
+        misManillas = manillasNuevas || [];
       } else {
         misManillas = manillas;
       }
@@ -458,7 +458,7 @@
       });
 
       if (misManillas.length > 0) {
-        select.value = 0;
+        select.value = "0";
         manillaSeleccionadaActual = misManillas[0];
         actualizarDetallesManillaActiva();
       }
