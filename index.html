@@ -918,53 +918,43 @@ async function convertirManillaPendienteEnActiva() {
       }
     }
 
-    async function vincularNuevoAmigo() {
+     async function vincularNuevoAmigo() {
       const codigoAmigo = prompt("Ingresa el Código de Amigo (Ej: AMIGO-4920):");
       if(!codigoAmigo) return;
 
-      const { data: amigo } = await db.from('usuarios').select('*').eq('codigo_amigo', codigoAmigo.trim().toUpperCase()).single();
-      if(!amigo) {
-        alert("No se encontró ningún usuario con ese código.");
-        return;
-      }
+      const { data: amigo, error: errAmigo } = await db.from('usuarios').select('*').eq('codigo_amigo', codigoAmigo.trim().toUpperCase()).maybeSingle();
+      if(errAmigo) { alert("Error al buscar el código: " + errAmigo.message); return; }
+      if(!amigo) { alert("No se encontró ningún usuario con ese código."); return; }
+      if(amigo.id === usuarioActual.id) { alert("Ese es tu propio código de amigo."); return; }
 
-      const { data: manillasAmigo } = await db.from('manillas_usuario').select('*').eq('usuario_id', amigo.id);
-      if(!manillasAmigo || manillasAmigo.length === 0) {
-        alert("Tu amigo aún no tiene manillas activas.");
-        return;
-      }
+      const { data: manillasAmigo, error: errMan } = await db.from('manillas_usuario').select('*').eq('usuario_id', amigo.id);
+      if(errMan) { alert("Error al leer las manillas: " + errMan.message); return; }
+      if(!manillasAmigo || manillasAmigo.length === 0) { alert("Tu amigo aún no tiene manillas activas."); return; }
 
-      let opcionesTexto = manillasAmigo.map((m, i) => `${i + 1}: Manilla de ${m.tipo_manilla} (Intención: "${m.intencion}")`).join('\n');
-            let manillaElegida;
-
+      let manillaElegida;
       if (manillasAmigo.length === 1) {
-        // Solo tiene una manilla: se usa directamente, sin preguntar
         manillaElegida = manillasAmigo[0];
       } else {
-        // Tiene dos o más: se pide elegir
-        let opcionesTexto = manillasAmigo.map((m, i) => `${i + 1}: Manilla de ${m.tipo_manilla} (Intención: "${m.intencion}")`).join('\n');
+        const opcionesTexto = manillasAmigo.map((m, i) => `${i + 1}: Manilla de ${m.tipo_manilla} (Intención: "${m.intencion}")`).join('\n');
         const seleccion = prompt(`Elige la manilla de ${amigo.nombre} para que puedas enviarle un deseo inspirado en sus intenciones:\n\n${opcionesTexto}`);
         const index = parseInt(seleccion) - 1;
-
-        if(isNaN(index) || !manillasAmigo[index]) {
-          alert("Selección inválida.");
-          return;
-        }
-
+        if(isNaN(index) || !manillasAmigo[index]) { alert("Selección inválida."); return; }
         manillaElegida = manillasAmigo[index];
       }
-      const mensajeDeseo = prompt(`Escribe tu mensaje de deseo para ${amigo.nombre}:\n(Sugerencia: "${sugerencia}")`, sugerencia);
+
+      const sugerencia = manillaElegida.tipo_manilla === 'Amor' ? 'Que el amor propio y la paz guíen tus pasos.' : 'Que la abundancia y la luz abran todos tus caminos.';
+      const mensajeDeseo = prompt(`Escribe tu mensaje de deseo para ${amigo.nombre}:\n(Intención de su manilla: "${manillaElegida.intencion}")\n(Sugerencia: "${sugerencia}")`, sugerencia);
       if(!mensajeDeseo) return;
 
-      await db.from('deseos_amigos').insert([{
+      const { error: errIns } = await db.from('deseos_amigos').insert([{
         manilla_id: manillaElegida.id,
         remitente_nombre: usuarioActual.nombre,
         mensaje_deseo: mensajeDeseo
       }]);
+      if(errIns) { alert("No se pudo enviar el deseo: " + errIns.message); return; }
 
       alert("¡Deseo enviado con éxito a la manilla de tu amigo!");
     }
-
     // GUÍA GENERAL Y SIGNOS
     function renderizarGuiaGeneral(filtroSigno = "TODOS") {
       const contenedor = document.getElementById('contenedorGuiaGeneral');
