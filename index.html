@@ -935,17 +935,24 @@ async function convertirManillaPendienteEnActiva() {
       }
 
       let opcionesTexto = manillasAmigo.map((m, i) => `${i + 1}: Manilla de ${m.tipo_manilla} (Intención: "${m.intencion}")`).join('\n');
-      const seleccion = prompt(`Elige la manilla de ${amigo.nombre} a la que le enviarás un deseo:\n\n${opcionesTexto}`);
-      const index = parseInt(seleccion) - 1;
+            let manillaElegida;
 
-      if(isNaN(index) || !manillasAmigo[index]) {
-        alert("Selección inválida.");
-        return;
+      if (manillasAmigo.length === 1) {
+        // Solo tiene una manilla: se usa directamente, sin preguntar
+        manillaElegida = manillasAmigo[0];
+      } else {
+        // Tiene dos o más: se pide elegir
+        let opcionesTexto = manillasAmigo.map((m, i) => `${i + 1}: Manilla de ${m.tipo_manilla} (Intención: "${m.intencion}")`).join('\n');
+        const seleccion = prompt(`Elige la manilla de ${amigo.nombre} para que puedas enviarle un deseo inspirado en sus intenciones:\n\n${opcionesTexto}`);
+        const index = parseInt(seleccion) - 1;
+
+        if(isNaN(index) || !manillasAmigo[index]) {
+          alert("Selección inválida.");
+          return;
+        }
+
+        manillaElegida = manillasAmigo[index];
       }
-
-      const manillaElegida = manillasAmigo[index];
-      let sugerencia = manillaElegida.tipo_manilla === 'Amor' ? 'Que el amor propio y la paz guíen tus pasos.' : 'Que la abundancia y la luz abran todos tus caminos.';
-      
       const mensajeDeseo = prompt(`Escribe tu mensaje de deseo para ${amigo.nombre}:\n(Sugerencia: "${sugerencia}")`, sugerencia);
       if(!mensajeDeseo) return;
 
