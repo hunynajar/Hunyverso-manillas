@@ -17,8 +17,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <script>
+    // ⚠️ TUS CREDENCIALES DE SUPABASE
     const SUPABASE_URL = "https://bwxgddifiqlgamkokaso.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_nB-TXpmj5VmsfXW2UKUbLQ_qiA-BhYz";
+    const SUPABASE_ANON_KEY = "TU_KEY_PUBLISHABLE_REAL";
     
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   </script>
@@ -504,22 +505,77 @@
       actualizarDetallesManillaActiva();
     }
 
-    function actualizarDetallesManillaActiva() {
+function actualizarDetallesManillaActiva() {
       if (!manillaSeleccionadaActual) return;
       document.getElementById('infoIntencionUsuario').innerText = manillaSeleccionadaActual.intencion || 'Sin intención registrada.';
       
       const bannerWpp = document.getElementById('estadoPendienteBanner');
       if (manillaSeleccionadaActual.estado === 'PENDIENTE') {
         bannerWpp.classList.remove('hidden');
-        const mensajeWpp = encodeURIComponent(`¡Hola! Vengo a continuar mi proceso de compra para mi Manilla Personalizada. Mi usuario es ${usuarioActual.username} y las piedras elegidas son: ${(manillaSeleccionadaActual.piedras_personalizadas || []).join(', ')}.`);
+        const mensajeWpp = encodeURIComponent(`¡Hola! Vengo a continuar mi proceso de compra para mi Manilla Personalizada. Mi usuario es @${usuarioActual.username} y las piedras elegidas son: ${(manillaSeleccionadaActual.piedras_personalizadas || []).join(', ')}.`);
         document.getElementById('btnWhatsappPendiente').href = `https://wa.me/573202360380?text=${mensajeWpp}`;
+        
+        // Agregamos el formulario para activar con código físico debajo del banner si no existe
+        if (!document.getElementById('formActivarPendiente')) {
+          const divActivacion = document.createElement('div');
+          divActivacion.id = 'formActivarPendiente';
+          divActivacion.className = 'mt-3 pt-3 border-t border-amber-500/20 space-y-2 text-left';
+          divActivacion.innerHTML = `
+            <p class="text-[11px] text-amber-300 font-semibold">¿Ya tienes tu código físico de esta manilla?</p>
+            <input type="text" id="inputActivarCodigo" placeholder="Ingresa tu código (Ej: HUNY-1050)" class="w-full bg-slate-900 border border-purple-800 rounded-xl p-2 text-xs text-slate-100 uppercase">
+            <textarea id="inputActivarIntencion" rows="2" placeholder="Escribe la intención definitiva para tu manilla..." class="w-full bg-slate-900 border border-purple-800 rounded-xl p-2 text-xs text-slate-100 resize-none"></textarea>
+            <button onclick="convertirManillaPendienteEnActiva()" class="w-full py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-xl transition">
+              ✨ Registrar Código & Activar Manilla
+            </button>
+            <div id="errorActivarPendiente" class="text-[10px] text-rose-400 hidden text-center"></div>
+          `;
+          bannerWpp.appendChild(divActivacion);
+        }
       } else {
         bannerWpp.classList.add('hidden');
       }
 
       renderizarPiedrasDeManilla(manillaSeleccionadaActual);
     }
+async function convertirManillaPendienteEnActiva() {
+      const codigoInput = document.getElementById('inputActivarCodigo').value.trim().toUpperCase();
+      const intencionInput = document.getElementById('inputActivarIntencion').value.trim();
+      const errorDiv = document.getElementById('errorActivarPendiente');
+      errorDiv.classList.add('hidden');
 
+      if (!codigoInput || !intencionInput) {
+        errorDiv.innerText = 'Por favor ingresa el código físico y tu intención.';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      // Validar código en Supabase
+      const { data: codValido, error: errCod } = await db.from('codigos_manillas').select('*').eq('codigo', codigoInput).eq('usado', false).single();
+      if (errCod || !codValido) {
+        errorDiv.innerText = 'Código físico inválido o ya fue usado.';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      // Marcar código como usado
+      await db.from('codigos_manillas').update({ usado: true }).eq('codigo', codigoInput);
+
+      // Actualizar la manilla en Supabase a ACTIVA
+      const { error: errUpdate } = await db.from('manillas_usuario').update({
+        codigo_manilla: codigoInput,
+        intencion: intencionInput,
+        estado: 'ACTIVA'
+      }).eq('id', manillaSeleccionadaActual.id);
+
+      if (errUpdate) {
+        errorDiv.innerText = 'Error al actualizar la manilla: ' + errUpdate.message;
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      alert('✨ ¡Manilla activada con éxito!');
+      cargarDatosUsuario();
+    }
     function renderizarPiedrasDeManilla(manilla) {
       const contenedor = document.getElementById('contenedorPiedrasAsociadas');
       let tipo = manilla.tipo_manilla ? manilla.tipo_manilla.trim() : 'Amor';
