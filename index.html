@@ -42,7 +42,7 @@
     <div id="usuarioHeader" class="hidden text-xs text-amber-300 bg-purple-950/60 px-3 py-1.5 rounded-full border border-amber-500/30"></div>
   </header>
 
-  <!-- PANTALLA 1: REGISTRO / ACTIVACIÓN INICIAL -->
+  <!-- PANTALLA 1: REGISTRO / ACTIVACIÓN INICIAL (Con Usuario Único) -->
   <div id="screenRegistro" class="max-w-md mx-auto p-6 space-y-6">
     <div class="bg-mystic-card p-6 rounded-3xl space-y-5">
       <div class="text-center space-y-1">
@@ -53,8 +53,13 @@
       
       <div class="space-y-4 text-left">
         <div>
-          <label class="text-[11px] text-purple-300 font-semibold">Tu Nombre o Apodo</label>
+          <label class="text-[11px] text-purple-300 font-semibold">Tu Nombre</label>
           <input type="text" id="inputNombre" placeholder="Ej: Sofía Ruiz" class="w-full bg-slate-900/90 border border-purple-800/50 rounded-xl p-3 text-sm text-slate-100 focus:outline-none focus:border-amber-400 mt-1">
+        </div>
+
+        <div>
+          <label class="text-[11px] text-purple-300 font-semibold">Usuario Único / Correo (Para evitar duplicados)</label>
+          <input type="text" id="inputUsername" placeholder="Ej: sofia_ruiz o sofia@mail.com" class="w-full bg-slate-900/90 border border-purple-800/50 rounded-xl p-3 text-sm text-slate-100 focus:outline-none focus:border-amber-400 mt-1">
         </div>
 
         <div id="campoCodigoRegistro">
@@ -91,7 +96,7 @@
 
       <div class="text-center pt-2">
         <button onclick="alternarModoLogin()" id="linkModoLogin" class="text-[11px] text-amber-400 hover:underline">
-          ¿Ya registraste tu código antes? Entra aquí
+          ¿Ya tienes cuenta? Entra con tu usuario único
         </button>
       </div>
     </div>
@@ -119,11 +124,9 @@
           </button>
         </div>
         
-        <!-- SELECTOR (Solo si hay más de 1) -->
         <select id="selectManillaUsuario" onchange="cambiarManillaSeleccionada()" class="hidden w-full bg-slate-900 border border-amber-500/40 text-amber-300 font-semibold text-xs p-2.5 rounded-xl focus:outline-none">
         </select>
 
-        <!-- TÍTULO FIJO (Si hay 1 sola) -->
         <div id="tituloManillaUnica" class="bg-slate-900/80 p-3 rounded-xl border border-amber-500/30 text-amber-300 text-xs font-bold flex items-center justify-between">
           <span id="textoManillaUnica">📿 Cargando...</span>
         </div>
@@ -210,6 +213,10 @@
           <p class="text-[11px] text-slate-400">Nombre de usuario</p>
           <p id="perfilNombre" class="text-base font-bold text-slate-100"></p>
         </div>
+        <div>
+          <p class="text-[11px] text-slate-400">Usuario Único</p>
+          <p id="perfilUsername" class="text-xs font-bold text-amber-400"></p>
+        </div>
         <div class="bg-purple-950/50 p-3 rounded-xl border border-purple-700/40">
           <p class="text-[11px] text-purple-300 font-semibold">Tu Código Único de Amigo</p>
           <p id="perfilCodigoAmigo" class="text-sm font-mono font-bold text-amber-300 mt-0.5"></p>
@@ -222,17 +229,12 @@
 
   </div>
 
-  <!-- MODAL: REGISTRAR O ACTIVAR MANILLA -->
+  <!-- MODAL: REGISTRAR O DISEÑAR MANILLA -->
   <div id="modalNuevaManilla" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
     <div class="bg-mystic-card p-5 rounded-3xl max-w-sm w-full space-y-4 border border-amber-500/30">
       <h3 class="text-base font-cinzel text-amber-300 text-center">Registrar o Diseñar Manilla</h3>
       
       <div class="space-y-3 text-left">
-        <div>
-          <label class="text-[11px] text-purple-300 font-semibold">Código de la Manilla (O déjalo vacío si es Personalizada)</label>
-          <input type="text" id="modalInputCodigo" placeholder="Ej: HUNY-1002" class="w-full bg-slate-900 border border-purple-800 rounded-xl p-2.5 text-xs text-slate-100 uppercase">
-        </div>
-
         <div>
           <label class="text-[11px] text-purple-300 font-semibold mb-1 block">Tipo de Manilla</label>
           <select id="modalSelectTipo" onchange="cambiarTipoModal()" class="w-full bg-slate-900 border border-purple-800 rounded-xl p-2.5 text-xs text-slate-100">
@@ -243,6 +245,13 @@
           </select>
         </div>
 
+        <!-- CAMPO CÓDIGO (Se oculta si es Personalizada) -->
+        <div id="modalCampoCodigo">
+          <label class="text-[11px] text-purple-300 font-semibold">Código de la Manilla Física</label>
+          <input type="text" id="modalInputCodigo" placeholder="Ej: HUNY-1002" class="w-full bg-slate-900 border border-purple-800 rounded-xl p-2.5 text-xs text-slate-100 uppercase">
+        </div>
+
+        <!-- SECCIÓN PIEDRAS (Solo para Personalizada) -->
         <div id="modalSeccionPiedras" class="hidden space-y-2 bg-slate-900/60 p-2.5 rounded-xl border border-purple-900/50 text-xs">
           <label class="text-amber-300 font-semibold block">Elige hasta 3 piedras para tu diseño:</label>
           <label class="flex items-center gap-2"><input type="checkbox" name="modalPiedra" value="Cuarzo Rosado" class="accent-amber-500"> Cuarzo Rosado</label>
@@ -252,7 +261,8 @@
           <label class="flex items-center gap-2"><input type="checkbox" name="modalPiedra" value="Cuarzo Ahumado" class="accent-amber-500"> Cuarzo Ahumado</label>
         </div>
 
-        <div>
+        <!-- CAMPO INTENCIÓN (Se oculta si es Personalizada) -->
+        <div id="modalCampoIntencion">
           <label class="text-[11px] text-purple-300 font-semibold">Intención personal</label>
           <textarea id="modalInputIntencion" rows="3" placeholder="Sella el propósito..." class="w-full bg-slate-900 border border-purple-800 rounded-xl p-2.5 text-xs text-slate-100 resize-none"></textarea>
         </div>
@@ -271,7 +281,7 @@
     let usuarioActual = null;
     let misManillas = [];
     let manillaSeleccionadaActual = null;
-    let tipoManillaSeleccionada = 'Amor'; // Aseguramos un valor por defecto
+    let tipoManillaSeleccionada = 'Amor';
     let esModoLoginExistente = false;
 
     const diccionarioPiedras = {
@@ -348,7 +358,7 @@
       document.getElementById('campoCodigoRegistro').classList.toggle('hidden', esModoLoginExistente);
       document.getElementById('tituloModoRegistro').innerText = esModoLoginExistente ? "Ingresar a tu Cuenta" : "Activa tu Manilla";
       document.getElementById('botonAccionRegistro').innerText = esModoLoginExistente ? "Entrar al Hunyverso" : "Vincular & Entrar al Hunyverso";
-      document.getElementById('linkModoLogin').innerText = esModoLoginExistente ? "¿Tienes una manilla nueva? Regístrate aquí" : "¿Ya registraste tu código antes? Entra aquí";
+      document.getElementById('linkModoLogin').innerText = esModoLoginExistente ? "¿No tienes cuenta? Regístrate aquí" : "¿Ya tienes cuenta? Entra con tu usuario único";
     }
 
     function seleccionarTipoManilla(tipo) {
@@ -361,21 +371,22 @@
       if(btn) btn.classList.add('selected');
     }
 
-async function procesarRegistro() {
+    async function procesarRegistro() {
       const nombre = document.getElementById('inputNombre').value.trim();
+      const username = document.getElementById('inputUsername').value.trim().toLowerCase();
       const errorDiv = document.getElementById('errorRegistro');
       errorDiv.classList.add('hidden');
 
-      if (!nombre) {
-        errorDiv.innerText = 'Por favor ingresa tu nombre.';
+      if (!nombre || !username) {
+        errorDiv.innerText = 'Por favor ingresa tu nombre y un usuario único.';
         errorDiv.classList.remove('hidden');
         return;
       }
 
       if (esModoLoginExistente) {
-        const { data: user, error } = await db.from('usuarios').select('*').eq('nombre', nombre).single();
+        const { data: user, error } = await db.from('usuarios').select('*').eq('username', username).single();
         if (error || !user) {
-          errorDiv.innerText = 'No encontramos una cuenta con ese nombre.';
+          errorDiv.innerText = 'No encontramos una cuenta con ese usuario único.';
           errorDiv.classList.remove('hidden');
           return;
         }
@@ -392,21 +403,27 @@ async function procesarRegistro() {
           return;
         }
 
-        // 1. Validar código en Supabase
-        const { data: codValido, error: errCod } = await db.from('codigos_manillas').select('*').eq('codigo', codigoInput).eq('usado', false).single();
-        if (errCod || !codValido) {
-          errorDiv.innerText = 'Código inválido o ya fue usado.';
+        // Verificar si el username ya existe
+        const { data: usuarioExistente } = await db.from('usuarios').select('*').eq('username', username).single();
+        if (usuarioExistente) {
+          errorDiv.innerText = 'Ese usuario único ya está en uso. Elige otro.';
           errorDiv.classList.remove('hidden');
           return;
         }
 
-        // 2. Marcar código como usado
+        const { data: codValido, error: errCod } = await db.from('codigos_manillas').select('*').eq('codigo', codigoInput).eq('usado', false).single();
+        if (errCod || !codValido) {
+          errorDiv.innerText = 'Código físico inválido o ya fue usado.';
+          errorDiv.classList.remove('hidden');
+          return;
+        }
+
         await db.from('codigos_manillas').update({ usado: true }).eq('codigo', codigoInput);
 
-        // 3. Crear el usuario
         const codigoAmigo = 'AMIGO-' + Math.floor(1000 + Math.random() * 9000);
         const { data: nuevoUser, error: errUser } = await db.from('usuarios').insert([{ 
           nombre: nombre, 
+          username: username,
           codigo_manilla_usado: codigoInput, 
           codigo_amigo: codigoAmigo 
         }]).select().single();
@@ -417,8 +434,7 @@ async function procesarRegistro() {
           return;
         }
 
-        // 4. CREAR LA MANILLA ASOCIADA (Forzando los datos limpios)
-        const { error: errManilla } = await db.from('manillas_usuario').insert([{
+        await db.from('manillas_usuario').insert([{
           usuario_id: nuevoUser.id,
           codigo_manilla: codigoInput,
           tipo_manilla: tipoManillaSeleccionada || 'Amor',
@@ -426,13 +442,6 @@ async function procesarRegistro() {
           estado: 'ACTIVA'
         }]);
 
-        if (errManilla) {
-          errorDiv.innerText = 'Error al guardar la manilla: ' + errManilla.message;
-          errorDiv.classList.remove('hidden');
-          return;
-        }
-
-        // Todo salió bien
         usuarioActual = nuevoUser;
         localStorage.setItem('hunyverso_user', JSON.stringify(usuarioActual));
         cargarDatosUsuario();
@@ -445,24 +454,11 @@ async function procesarRegistro() {
       document.getElementById('usuarioHeader').innerText = '✨ ' + usuarioActual.nombre;
       document.getElementById('usuarioHeader').classList.remove('hidden');
       document.getElementById('perfilNombre').innerText = usuarioActual.nombre;
+      document.getElementById('perfilUsername').innerText = '@' + (usuarioActual.username || 'usuario');
       document.getElementById('perfilCodigoAmigo').innerText = usuarioActual.codigo_amigo;
 
       let { data: manillas, error } = await db.from('manillas_usuario').select('*').eq('usuario_id', usuarioActual.id);
-
-      if (error || !manillas || manillas.length === 0) {
-        await db.from('manillas_usuario').insert([{
-          usuario_id: usuarioActual.id,
-          codigo_manilla: usuarioActual.codigo_manilla_usado || 'HUNY-DEFAULT',
-          tipo_manilla: 'Amor',
-          intencion: 'Conectar con la energía y la paz interior.',
-          estado: 'ACTIVA'
-        }]);
-
-        let { data: manillasNuevas } = await db.from('manillas_usuario').select('*').eq('usuario_id', usuarioActual.id);
-        misManillas = manillasNuevas || [];
-      } else {
-        misManillas = manillas;
-      }
+      misManillas = manillas || [];
 
       renderizarSelectorManillas();
       cargarDeseosYChatGeneral();
@@ -515,8 +511,8 @@ async function procesarRegistro() {
       const bannerWpp = document.getElementById('estadoPendienteBanner');
       if (manillaSeleccionadaActual.estado === 'PENDIENTE') {
         bannerWpp.classList.remove('hidden');
-        const mensajeWpp = encodeURIComponent(`¡Hola! Vengo a continuar mi proceso de compra para mi manilla ${manillaSeleccionadaActual.tipo_manilla} con intención: "${manillaSeleccionadaActual.intencion}".`);
-        document.getElementById('btnWhatsappPendiente').href = `https://wa.me/?text=${mensajeWpp}`;
+        const mensajeWpp = encodeURIComponent(`¡Hola! Vengo a continuar mi proceso de compra para mi Manilla Personalizada. Mi usuario es ${usuarioActual.username} y las piedras elegidas son: ${(manillaSeleccionadaActual.piedras_personalizadas || []).join(', ')}.`);
+        document.getElementById('btnWhatsappPendiente').href = `https://wa.me/573202360380?text=${mensajeWpp}`;
       } else {
         bannerWpp.classList.add('hidden');
       }
@@ -554,6 +550,90 @@ async function procesarRegistro() {
         }
       });
       contenedor.innerHTML = html || '<p class="text-xs text-slate-400 text-center">No hay piedras asociadas.</p>';
+    }
+
+    // MODAL NUEVA MANILLA (Sin código ni intención si es Personalizada, con redirección a WhatsApp +57 3202360380)
+    function abrirModalNuevaManilla() { 
+      document.getElementById('modalNuevaManilla').classList.remove('hidden'); 
+      cambiarTipoModal();
+    }
+    function cerrarModalNuevaManilla() { document.getElementById('modalNuevaManilla').classList.add('hidden'); }
+
+    function cambiarTipoModal() {
+      const tipo = document.getElementById('modalSelectTipo').value;
+      const esPersonalizada = (tipo === 'Personalizada');
+      
+      // Si es personalizada, ocultamos código e intención del modal porque se gestionan por WhatsApp
+      document.getElementById('modalSeccionPiedras').classList.toggle('hidden', !esPersonalizada);
+      document.getElementById('modalCampoCodigo').classList.toggle('hidden', esPersonalizada);
+      document.getElementById('modalCampoIntencion').classList.toggle('hidden', esPersonalizada);
+    }
+
+    async function guardarNuevaManilla() {
+      const tipo = document.getElementById('modalSelectTipo').value;
+      const err = document.getElementById('modalError');
+      err.classList.add('hidden');
+
+      let estado = 'ACTIVA';
+      let codigoFinal = '';
+      let intencionFinal = '';
+      let piedrasCustom = [];
+
+      if (tipo === 'Personalizada') {
+        const checks = document.querySelectorAll('input[name="modalPiedra"]:checked');
+        if(checks.length === 0) {
+          err.innerText = 'Elige al menos 1 piedra para tu diseño.';
+          err.classList.remove('hidden');
+          return;
+        }
+        checks.forEach(c => piedrasCustom.push(c.value));
+        estado = 'PENDIENTE';
+        codigoFinal = 'PENDIENTE-' + Math.floor(1000 + Math.random() * 9000);
+        intencionFinal = 'Diseño Personalizado (' + piedrasCustom.join(', ') + ')';
+
+        // Guardar en Supabase como Pendiente antes de abrir WhatsApp
+        await db.from('manillas_usuario').insert([{
+          usuario_id: usuarioActual.id,
+          codigo_manilla: codigoFinal,
+          tipo_manilla: tipo,
+          intencion: intencionFinal,
+          estado: estado,
+          piedras_personalizadas: piedrasCustom
+        }]);
+
+        // Redirigir a WhatsApp con el número indicado
+        const mensajeWpp = encodeURIComponent(`¡Hola! Vengo a encargar mi Manilla Personalizada. Mi usuario es @${usuarioActual.username} y elegí las piedras: ${piedrasCustom.join(', ')}.`);
+        window.open(`https://wa.me/573202360380?text=${mensajeWpp}`, '_blank');
+
+      } else {
+        const codInput = document.getElementById('modalInputCodigo').value.trim().toUpperCase();
+        const intencion = document.getElementById('modalInputIntencion').value.trim();
+
+        if (!codInput || !intencion) {
+          err.innerText = 'Ingresa el código físico y tu intención.';
+          err.classList.remove('hidden');
+          return;
+        }
+
+        const { data: codVal } = await db.from('codigos_manillas').select('*').eq('codigo', codInput).eq('usado', false).single();
+        if(!codVal) {
+          err.innerText = 'Código físico inválido o ya usado.';
+          err.classList.remove('hidden');
+          return;
+        }
+        await db.from('codigos_manillas').update({ usado: true }).eq('codigo', codInput);
+
+        await db.from('manillas_usuario').insert([{
+          usuario_id: usuarioActual.id,
+          codigo_manilla: codInput,
+          tipo_manilla: tipo,
+          intencion: intencion,
+          estado: 'ACTIVA'
+        }]);
+      }
+
+      cerrarModalNuevaManilla();
+      cargarDatosUsuario();
     }
 
     // 💌 DESEOS Y CHAT
@@ -640,75 +720,6 @@ async function procesarRegistro() {
       }]);
 
       alert("✨ ¡Deseo enviado con éxito a la manilla de tu amigo!");
-    }
-
-    // MODAL NUEVA MANILLA
-    function abrirModalNuevaManilla() { document.getElementById('modalNuevaManilla').classList.remove('hidden'); }
-    function cerrarModalNuevaManilla() { document.getElementById('modalNuevaManilla').classList.add('hidden'); }
-
-    function cambiarTipoModal() {
-      const tipo = document.getElementById('modalSelectTipo').value;
-      document.getElementById('modalSeccionPiedras').classList.toggle('hidden', tipo !== 'Personalizada');
-      document.getElementById('modalInputCodigo').disabled = (tipo === 'Personalizada');
-      if(tipo === 'Personalizada') document.getElementById('modalInputCodigo').value = '';
-    }
-
-    async function guardarNuevaManilla() {
-      const codInput = document.getElementById('modalInputCodigo').value.trim().toUpperCase();
-      const tipo = document.getElementById('modalSelectTipo').value;
-      const intencion = document.getElementById('modalInputIntencion').value.trim();
-      const err = document.getElementById('modalError');
-      err.classList.add('hidden');
-
-      if (!intencion) {
-        err.innerText = 'Escribe la intención de la manilla.';
-        err.classList.remove('hidden');
-        return;
-      }
-
-      let estado = 'ACTIVA';
-      let codigoFinal = codInput;
-      let piedrasCustom = [];
-
-      if (tipo === 'Personalizada') {
-        const checks = document.querySelectorAll('input[name="modalPiedra"]:checked');
-        if(checks.length === 0) {
-          err.innerText = 'Elige al menos 1 piedra.';
-          err.classList.remove('hidden');
-          return;
-        }
-        checks.forEach(c => piedrasCustom.push(c.value));
-        estado = 'PENDIENTE';
-        codigoFinal = 'PENDIENTE-' + Math.floor(1000 + Math.random() * 9000);
-
-        const mensajeWpp = encodeURIComponent(`¡Hola! Quiero encargar mi Manilla Personalizada con mis piedras elegidas e intención: "${intencion}". Mi nombre es ${usuarioActual.nombre}.`);
-        window.open(`https://wa.me/?text=${mensajeWpp}`, '_blank');
-      } else {
-        if (!codInput) {
-          err.innerText = 'Ingresa el código físico.';
-          err.classList.remove('hidden');
-          return;
-        }
-        const { data: codVal } = await db.from('codigos_manillas').select('*').eq('codigo', codInput).eq('usado', false).single();
-        if(!codVal) {
-          err.innerText = 'Código inválido o ya usado.';
-          err.classList.remove('hidden');
-          return;
-        }
-        await db.from('codigos_manillas').update({ usado: true }).eq('codigo', codInput);
-      }
-
-      await db.from('manillas_usuario').insert([{
-        usuario_id: usuarioActual.id,
-        codigo_manilla: codigoFinal,
-        tipo_manilla: tipo,
-        intencion: intencion,
-        estado: estado,
-        piedras_personalizadas: piedrasCustom
-      }]);
-
-      cerrarModalNuevaManilla();
-      cargarDatosUsuario();
     }
 
     // GUÍA GENERAL Y SIGNOS
