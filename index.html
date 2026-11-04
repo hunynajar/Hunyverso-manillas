@@ -151,6 +151,16 @@
     .wq{font-family:var(--ital);font-style:italic;font-size:1.15rem;line-height:1.3;color:#f1e8ff}
     .wa,.wd{font-size:.72rem;font-weight:600}.wa{color:#7ee0b0}.wd{color:#f9a0b8}
 
+        /* Ventana propia */
+    .hv-dlg{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:1rem;background:rgba(6,2,14,.78);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+    .hv-dlg-box{width:100%;max-width:24rem;padding:1.4rem;display:grid;gap:.8rem;animation:rise .35s backwards}
+    .hv-dlg-t{font-family:var(--serif);font-size:1.15rem;color:var(--gold);text-align:center}
+    .hv-dlg-m{font-size:.85rem;line-height:1.5;color:var(--mut);text-align:center;white-space:pre-line}
+    .hv-dlg-o{display:grid;gap:.5rem}
+    .hv-dlg-o button{text-align:left;padding:.8rem .9rem;border-radius:1rem;font-size:.8rem;color:#f3ecff;background:rgba(124,58,237,.12);box-shadow:inset 0 0 0 1px rgba(168,85,247,.35)}
+    .hv-dlg-o button b{display:block;font-family:var(--serif);font-weight:600;font-size:.9rem;color:var(--gold)}
+    .hv-dlg-b{display:flex;gap:.6rem}.hv-dlg-b button{flex:1;padding:.8rem;font-size:.85rem}
+    
     /* Entrada suave */
     #secInicio>*,#secDeseos>*,#secPiedras>*,#secPerfil>*,.stone,.wish,#screenRegistro>div{animation:rise .7s cubic-bezier(.2,.7,.2,1) backwards}
     #secInicio>*:nth-child(2){animation-delay:.1s}#secInicio>*:nth-child(3){animation-delay:.2s}
@@ -372,6 +382,20 @@
 
   </div>
 
+    <!-- VENTANA PROPIA HUNYVERSO -->
+  <div id="hvDialog" class="hidden hv-dlg" role="dialog" aria-modal="true">
+    <div class="hv-card hv-dlg-box">
+      <h3 id="hvDlgTitle" class="hv-dlg-t"></h3>
+      <p id="hvDlgMsg" class="hv-dlg-m"></p>
+      <div id="hvDlgOpts" class="hv-dlg-o hidden"></div>
+      <textarea id="hvDlgInput" rows="3" class="hv-f hidden"></textarea>
+      <div class="hv-dlg-b">
+        <button id="hvDlgCancel" class="hv-ghost">Cancelar</button>
+        <button id="hvDlgOk" class="hv-gold">Aceptar</button>
+      </div>
+    </div>
+  </div>
+  
   <!-- MODAL: REGISTRAR O DISEÑAR MANILLA -->
   <div id="modalNuevaManilla" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
     <div class="bg-mystic-card p-5 rounded-3xl max-w-sm w-full space-y-4">
@@ -531,6 +555,29 @@
     }
     function hvToggle(el) { el.setAttribute('aria-expanded', el.classList.toggle('open')); }
 
+        // ===== VENTANAS PROPIAS (reemplazan prompt / confirm / alert del navegador) =====
+    function hvDialog({ titulo = 'Hunyverso', mensaje = '', tipo = 'alert', valor = '', placeholder = '', opciones = [] }) {
+      return new Promise(resolve => {
+        const $ = id => document.getElementById(id);
+        const box = $('hvDialog'), inp = $('hvDlgInput'), ok = $('hvDlgOk'), cancel = $('hvDlgCancel'), opts = $('hvDlgOpts');
+        $('hvDlgTitle').innerText = titulo; $('hvDlgMsg').innerText = mensaje;
+        inp.classList.toggle('hidden', tipo !== 'prompt'); inp.value = valor; inp.placeholder = placeholder;
+        opts.innerHTML = ''; opts.classList.toggle('hidden', tipo !== 'choose');
+        cancel.classList.toggle('hidden', tipo === 'alert');
+        ok.classList.toggle('hidden', tipo === 'choose');
+        const cerrar = v => { box.classList.add('hidden'); ok.onclick = cancel.onclick = null; resolve(v); };
+        if (tipo === 'choose') opciones.forEach((o, i) => {
+          const b = document.createElement('button');
+          b.innerHTML = `<b>${esc(o.titulo)}</b>${esc(o.detalle || '')}`;
+          b.onclick = () => cerrar(i); opts.appendChild(b);
+        });
+        ok.onclick = () => cerrar(tipo === 'prompt' ? inp.value.trim() : true);
+        cancel.onclick = () => cerrar(tipo === 'confirm' ? false : null);
+        box.classList.remove('hidden');
+        if (tipo === 'prompt') setTimeout(() => inp.focus(), 60);
+      });
+    }
+    window.alert = m => { hvDialog({ mensaje: String(m) }); };
     window.addEventListener('DOMContentLoaded', () => {
       const sesionGuardada = localStorage.getItem('hunyverso_user');
       if (sesionGuardada) {
@@ -895,7 +942,7 @@ async function convertirManillaPendienteEnActiva() {
             </div>
             <p class="wq">“${esc(d.mensaje_deseo)}”</p>
             <div class="flex justify-end gap-4 pt-1">
-              <button onclick="responderDeseo(${esc(JSON.stringify(d.remitente_nombre))})" class="wa">Responder</button>
+              <button onclick="responderDeseo(${esc(JSON.stringify(d.remitente_nombre))}, ${esc(JSON.stringify(d.remitente_id ?? null))})" class="wa">Responder</button>
               <button onclick="eliminarDeseo(${d.id})" class="wd">Eliminar</button>
             </div>
           </div>
@@ -904,56 +951,75 @@ async function convertirManillaPendienteEnActiva() {
       contenedor.innerHTML = html;
     }
 
-    async function eliminarDeseo(idDeseo) {
-      if(confirm("¿Eliminar este deseo?")) {
+       async function eliminarDeseo(idDeseo) {
+      const ok = await hvDialog({ titulo: 'Eliminar deseo', mensaje: '¿Seguro que quieres eliminar este deseo?', tipo: 'confirm' });
+      if (ok) {
         await db.from('deseos_amigos').delete().eq('id', idDeseo);
         cargarDeseosYChatGeneral();
       }
     }
 
-    function responderDeseo(nombreRemitente) {
-      const respuesta = prompt(`Enviar respuesta a ${nombreRemitente}:`);
-      if(respuesta) {
-        alert(`Tu respuesta fue enviada con éxito a ${nombreRemitente}.`);
-      }
+    async function responderDeseo(nombreRemitente, remitenteId) {
+      if (!remitenteId) { alert('Este deseo es anterior a la función de respuestas y no se puede responder.'); return; }
+      const respuesta = await hvDialog({ titulo: 'Responder deseo', mensaje: `Escribe tu respuesta para ${nombreRemitente}`, tipo: 'prompt', placeholder: 'Tu respuesta...' });
+      if (!respuesta) return;
+
+      const { data: manillasDestino, error: errMan } = await db.from('manillas_usuario').select('id').eq('usuario_id', remitenteId);
+      if (errMan || !manillasDestino || manillasDestino.length === 0) { alert('No se encontró la manilla de ' + nombreRemitente + '.'); return; }
+
+      const { error: errIns } = await db.from('deseos_amigos').insert([{
+        manilla_id: manillasDestino[0].id,
+        remitente_id: usuarioActual.id,
+        remitente_nombre: usuarioActual.nombre,
+        mensaje_deseo: respuesta
+      }]);
+      if (errIns) { alert('No se pudo enviar la respuesta: ' + errIns.message); return; }
+      alert('Tu respuesta fue enviada a ' + nombreRemitente + '.');
     }
 
-     async function vincularNuevoAmigo() {
-      const codigoAmigo = prompt("Ingresa el Código de Amigo (Ej: AMIGO-4920):");
-      if(!codigoAmigo) return;
+    async function vincularNuevoAmigo() {
+      const codigoAmigo = await hvDialog({ titulo: 'Agregar amigo', mensaje: 'Ingresa su código de amigo (Ej: AMIGO-4920)', tipo: 'prompt', placeholder: 'AMIGO-0000' });
+      if (!codigoAmigo) return;
 
       const { data: amigo, error: errAmigo } = await db.from('usuarios').select('*').eq('codigo_amigo', codigoAmigo.trim().toUpperCase()).maybeSingle();
-      if(errAmigo) { alert("Error al buscar el código: " + errAmigo.message); return; }
-      if(!amigo) { alert("No se encontró ningún usuario con ese código."); return; }
-      if(amigo.id === usuarioActual.id) { alert("Ese es tu propio código de amigo."); return; }
+      if (errAmigo) { alert('Error al buscar el código: ' + errAmigo.message); return; }
+      if (!amigo) { alert('No se encontró ningún usuario con ese código.'); return; }
+      if (amigo.id === usuarioActual.id) { alert('Ese es tu propio código de amigo.'); return; }
 
       const { data: manillasAmigo, error: errMan } = await db.from('manillas_usuario').select('*').eq('usuario_id', amigo.id);
-      if(errMan) { alert("Error al leer las manillas: " + errMan.message); return; }
-      if(!manillasAmigo || manillasAmigo.length === 0) { alert("Tu amigo aún no tiene manillas activas."); return; }
+      if (errMan) { alert('Error al leer las manillas: ' + errMan.message); return; }
+      if (!manillasAmigo || manillasAmigo.length === 0) { alert('Tu amigo aún no tiene manillas activas.'); return; }
 
       let manillaElegida;
       if (manillasAmigo.length === 1) {
         manillaElegida = manillasAmigo[0];
       } else {
-        const opcionesTexto = manillasAmigo.map((m, i) => `${i + 1}: Manilla de ${m.tipo_manilla} (Intención: "${m.intencion}")`).join('\n');
-        const seleccion = prompt(`Elige la manilla de ${amigo.nombre} para que puedas enviarle un deseo inspirado en sus intenciones:\n\n${opcionesTexto}`);
-        const index = parseInt(seleccion) - 1;
-        if(isNaN(index) || !manillasAmigo[index]) { alert("Selección inválida."); return; }
-        manillaElegida = manillasAmigo[index];
+        const idx = await hvDialog({
+          titulo: `Manillas de ${amigo.nombre}`,
+          mensaje: `Elige la manilla de ${amigo.nombre} para que puedas enviarle un deseo inspirado en sus intenciones`,
+          tipo: 'choose',
+          opciones: manillasAmigo.map(m => ({ titulo: `Manilla de ${m.tipo_manilla}`, detalle: m.intencion || '' }))
+        });
+        if (idx === null) return;
+        manillaElegida = manillasAmigo[idx];
       }
 
       const sugerencia = manillaElegida.tipo_manilla === 'Amor' ? 'Que el amor propio y la paz guíen tus pasos.' : 'Que la abundancia y la luz abran todos tus caminos.';
-      const mensajeDeseo = prompt(`Escribe tu mensaje de deseo para ${amigo.nombre}:\n(Intención de su manilla: "${manillaElegida.intencion}")\n(Sugerencia: "${sugerencia}")`, sugerencia);
-      if(!mensajeDeseo) return;
+      const mensajeDeseo = await hvDialog({
+        titulo: `Deseo para ${amigo.nombre}`,
+        mensaje: `Intención de su manilla: “${manillaElegida.intencion || 'sin intención'}”`,
+        tipo: 'prompt', valor: sugerencia
+      });
+      if (!mensajeDeseo) return;
 
       const { error: errIns } = await db.from('deseos_amigos').insert([{
         manilla_id: manillaElegida.id,
+        remitente_id: usuarioActual.id,
         remitente_nombre: usuarioActual.nombre,
         mensaje_deseo: mensajeDeseo
       }]);
-      if(errIns) { alert("No se pudo enviar el deseo: " + errIns.message); return; }
-
-      alert("¡Deseo enviado con éxito a la manilla de tu amigo!");
+      if (errIns) { alert('No se pudo enviar el deseo: ' + errIns.message); return; }
+      alert('¡Deseo enviado con éxito a la manilla de tu amigo!');
     }
     // GUÍA GENERAL Y SIGNOS
     function renderizarGuiaGeneral(filtroSigno = "TODOS") {
