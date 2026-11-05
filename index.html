@@ -10,10 +10,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Hunyverso">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 
   <!-- Tailwind CSS & Supabase CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <script>
@@ -532,7 +534,9 @@
       const tipo = (m.tipo_manilla || 'Amor').trim();
       const piedras = tipo === 'Personalizada' ? (m.piedras_personalizadas || []) : (manillasPiedrasMap[tipo] || []);
       const foto = HV_FOTOS['manilla_' + tipo];
-      el.innerHTML = foto ? `<img src="${foto}" alt="Manilla de ${esc(tipo)}">` : hvBracelet(piedras);
+      if (!foto) { el.innerHTML = hvBracelet(piedras); return; }
+      el.innerHTML = `<img src="${foto}" alt="Manilla de ${esc(tipo)}">`;
+      el.querySelector('img').onerror = () => { el.innerHTML = hvBracelet(piedras); };
     }
     function hvGem(n) {
       const p = HV_PAL[n] || HV_PAL['Cuarzo Rosado'], id = 'hg' + (++hvUid);
@@ -554,12 +558,6 @@
         beads += `<circle cx="${(50 + 33 * Math.cos(a)).toFixed(1)}" cy="${(46 + 27 * Math.sin(a)).toFixed(1)}" r="6.4" fill="url(#${u}${i % cols.length})"/>`;
       }
       return `<svg viewBox="0 0 100 100" aria-hidden="true"><defs>${defs}<linearGradient id="${u}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f8e7bc"/><stop offset="1" stop-color="#c8923f"/></linearGradient></defs>${beads}<path d="M50 77v5" stroke="#e3b36b" stroke-width="1"/><path d="M50 93c-6-4-8-7-6-10 2-2.5 5-1.500 6 .8 1-2.300 4-3.300 6-.8 2 3 0 6-6 10z" fill="url(#${u}g)"/></svg>`;
-    }
-    function hvPintarManilla(m) {
-      const el = document.getElementById('manillaVisual'); if (!el || !m) return;
-      const tipo = (m.tipo_manilla || 'Amor').trim();
-      const piedras = tipo === 'Personalizada' ? (m.piedras_personalizadas || []) : (manillasPiedrasMap[tipo] || []);
-      el.innerHTML = (tipo === 'Amor' && HV_FOTOS.manilla_Amor) ? `<img src="${HV_FOTOS.manilla_Amor}" alt="Manilla de Amor">` : hvBracelet(piedras);
     }
     function hvStoneCard(p, conSignos) {
       return `<article class="hv-card stone" onclick="hvToggle(this)" aria-expanded="false">${hvOrb(p.nombre)}
@@ -598,13 +596,43 @@
       if (sesionGuardada) {
         try {
           usuarioActual = JSON.parse(sesionGuardada);
-          cargarDatosUsuario();
+          refrescarSesionGuardada();
         } catch(e) {
           localStorage.removeItem('hunyverso_user');
         }
       }
       renderizarGuiaGeneral();
     });
+
+    // Verifica que el usuario guardado en el navegador siga existiendo en la base de datos
+    async function refrescarSesionGuardada() {
+      const { data: user, error } = await db.from('usuarios').select('*').eq('id', usuarioActual.id).maybeSingle();
+      if (!error && !user) { cerrarSesion(); return; }
+      if (user) { usuarioActual = user; localStorage.setItem('hunyverso_user', JSON.stringify(user)); }
+      cargarDatosUsuario();
+    }
+
+    // Marca un código físico como usado solo si sigue libre (evita que dos personas usen el mismo código)
+    async function reclamarCodigo(codigo) {
+      const { data, error } = await db.from('codigos_manillas').update({ usado: true }).eq('codigo', codigo).eq('usado', false).select();
+      return !error && data && data.length > 0;
+    }
+    async function liberarCodigo(codigo) {
+      await db.from('codigos_manillas').update({ usado: false }).eq('codigo', codigo);
+    }
+
+    // Código de amigo más largo y verificado como único
+    async function generarCodigoAmigo() {
+      const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      for (let intento = 0; intento < 5; intento++) {
+        let c = 'AMIGO-';
+        const r = crypto.getRandomValues(new Uint32Array(6));
+        for (const n of r) c += abc[n % abc.length];
+        const { data } = await db.from('usuarios').select('id').eq('codigo_amigo', c).maybeSingle();
+        if (!data) return c;
+      }
+      throw new Error('No se pudo generar un código de amigo único.');
+    }
 
     function alternarModoLogin() {
       esModoLoginExistente = !esModoLoginExistente;
@@ -673,9 +701,20 @@
           return;
         }
 
-        await db.from('codigos_manillas').update({ usado: true }).eq('codigo', codigoInput);
+        if (!(await reclamarCodigo(codigoInput))) {
+          errorDiv.innerText = 'Código físico inválido o ya fue usado.';
+          errorDiv.classList.remove('hidden');
+          return;
+        }
 
-        const codigoAmigo = 'AMIGO-' + Math.floor(1000 + Math.random() * 9000);
+        let codigoAmigo;
+        try { codigoAmigo = await generarCodigoAmigo(); }
+        catch (e) {
+          await liberarCodigo(codigoInput);
+          errorDiv.innerText = e.message;
+          errorDiv.classList.remove('hidden');
+          return;
+        }
         const { data: nuevoUser, error: errUser } = await db.from('usuarios').insert([{ 
           nombre: nombre, 
           username: username,
@@ -684,18 +723,23 @@
         }]).select().single();
 
         if (errUser || !nuevoUser) {
+          await liberarCodigo(codigoInput);
           errorDiv.innerText = 'Error al crear el usuario: ' + (errUser?.message || 'Desconocido');
           errorDiv.classList.remove('hidden');
           return;
         }
 
-        await db.from('manillas_usuario').insert([{
+        const { error: errManilla } = await db.from('manillas_usuario').insert([{
           usuario_id: nuevoUser.id,
           codigo_manilla: codigoInput,
           tipo_manilla: tipoManillaSeleccionada || 'Amor',
           intencion: intencion,
           estado: 'ACTIVA'
         }]);
+        if (errManilla) {
+          errorDiv.innerText = 'Tu cuenta se creó, pero no se pudo registrar la manilla: ' + errManilla.message + '. Escríbenos por WhatsApp.';
+          errorDiv.classList.remove('hidden');
+        }
 
         usuarioActual = nuevoUser;
         localStorage.setItem('hunyverso_user', JSON.stringify(usuarioActual));
@@ -786,6 +830,9 @@ function actualizarDetallesManillaActiva() {
           `;
           bannerWpp.appendChild(divActivacion);
         }
+        document.getElementById('inputActivarCodigo').value = '';
+        document.getElementById('inputActivarIntencion').value = '';
+        document.getElementById('errorActivarPendiente').classList.add('hidden');
       } else {
         bannerWpp.classList.add('hidden');
       }
@@ -812,8 +859,12 @@ async function convertirManillaPendienteEnActiva() {
         return;
       }
 
-      // Marcar código como usado
-      await db.from('codigos_manillas').update({ usado: true }).eq('codigo', codigoInput);
+      // Marcar código como usado (solo si sigue libre)
+      if (!(await reclamarCodigo(codigoInput))) {
+        errorDiv.innerText = 'Código físico inválido o ya fue usado.';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
 
       // Actualizar la manilla en Supabase a ACTIVA
       const { error: errUpdate } = await db.from('manillas_usuario').update({
@@ -823,6 +874,7 @@ async function convertirManillaPendienteEnActiva() {
       }).eq('id', manillaSeleccionadaActual.id);
 
       if (errUpdate) {
+        await liberarCodigo(codigoInput);
         errorDiv.innerText = 'Error al actualizar la manilla: ' + errUpdate.message;
         errorDiv.classList.remove('hidden');
         return;
@@ -889,8 +941,11 @@ async function convertirManillaPendienteEnActiva() {
         codigoFinal = 'PENDIENTE-' + Math.floor(1000 + Math.random() * 9000);
         intencionFinal = 'Diseño Personalizado (' + piedrasCustom.join(', ') + ')';
 
+        // Abrimos la ventana de inmediato (durante el clic) para que el navegador no la bloquee
+        const ventanaWpp = window.open('', '_blank');
+
         // Guardar en Supabase como Pendiente antes de abrir WhatsApp
-        await db.from('manillas_usuario').insert([{
+        const { error: errPend } = await db.from('manillas_usuario').insert([{
           usuario_id: usuarioActual.id,
           codigo_manilla: codigoFinal,
           tipo_manilla: tipo,
@@ -901,7 +956,14 @@ async function convertirManillaPendienteEnActiva() {
 
         // Redirigir a WhatsApp con el número indicado
         const mensajeWpp = encodeURIComponent(`¡Hola! Vengo a encargar mi Manilla Personalizada. Mi usuario es @${usuarioActual.username} y elegí las piedras: ${piedrasCustom.join(', ')}.`);
-        window.open(`https://wa.me/573202360380?text=${mensajeWpp}`, '_blank');
+        if (errPend) {
+          if (ventanaWpp) ventanaWpp.close();
+          err.innerText = 'No se pudo guardar tu diseño: ' + errPend.message;
+          err.classList.remove('hidden');
+          return;
+        }
+        const urlWpp = `https://wa.me/573202360380?text=${mensajeWpp}`;
+        if (ventanaWpp) ventanaWpp.location.href = urlWpp; else window.location.href = urlWpp;
 
       } else {
         const codInput = document.getElementById('modalInputCodigo').value.trim().toUpperCase();
@@ -919,15 +981,25 @@ async function convertirManillaPendienteEnActiva() {
           err.classList.remove('hidden');
           return;
         }
-        await db.from('codigos_manillas').update({ usado: true }).eq('codigo', codInput);
+        if (!(await reclamarCodigo(codInput))) {
+          err.innerText = 'Código físico inválido o ya usado.';
+          err.classList.remove('hidden');
+          return;
+        }
 
-        await db.from('manillas_usuario').insert([{
+        const { error: errNueva } = await db.from('manillas_usuario').insert([{
           usuario_id: usuarioActual.id,
           codigo_manilla: codInput,
           tipo_manilla: tipo,
           intencion: intencion,
           estado: 'ACTIVA'
         }]);
+        if (errNueva) {
+          await liberarCodigo(codInput);
+          err.innerText = 'No se pudo registrar la manilla: ' + errNueva.message;
+          err.classList.remove('hidden');
+          return;
+        }
       }
 
       cerrarModalNuevaManilla();
@@ -937,7 +1009,10 @@ async function convertirManillaPendienteEnActiva() {
     // DESEOS Y CHAT
     async function cargarDeseosYChatGeneral() {
       const contenedor = document.getElementById('listaDeseosGeneral');
-      if(!misManillas || misManillas.length === 0) return;
+      if(!misManillas || misManillas.length === 0) {
+        contenedor.innerHTML = '<p class="text-xs text-slate-500 italic text-center py-4">Aún no tienes manillas registradas.</p>';
+        return;
+      }
 
       const { data: deseos } = await db.from('deseos_amigos').select('*, manillas_usuario(tipo_manilla)').in('manilla_id', misManillas.map(m => m.id));
 
@@ -1019,7 +1094,12 @@ async function convertirManillaPendienteEnActiva() {
         manillaElegida = manillasAmigo[idx];
       }
 
-      const sugerencia = manillaElegida.tipo_manilla === 'Amor' ? 'Que el amor propio y la paz guíen tus pasos.' : 'Que la abundancia y la luz abran todos tus caminos.';
+      const sugerencias = {
+        Amor: 'Que el amor propio y la paz guíen tus pasos.',
+        Abundancia: 'Que la abundancia y la luz abran todos tus caminos.',
+        Proteccion: 'Que la luz te proteja y la calma te acompañe en cada paso.'
+      };
+      const sugerencia = sugerencias[(manillaElegida.tipo_manilla || '').trim()] || 'Que la luz y la buena energía te acompañen siempre.';
       const mensajeDeseo = await hvDialog({
         titulo: `Deseo para ${amigo.nombre}`,
         mensaje: `Intención de su manilla: “${manillaElegida.intencion || 'sin intención'}”`,
@@ -1065,6 +1145,10 @@ async function convertirManillaPendienteEnActiva() {
       });
       if (tab === 'deseos') cargarDeseosYChatGeneral();
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
     }
 
     function cerrarSesion() {
