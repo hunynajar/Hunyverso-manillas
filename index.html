@@ -1125,7 +1125,7 @@ async function convertirManillaPendienteEnActiva() {
         .eq('remitente_id', usuarioActual.id).eq('tipo', 'ayuda').gte('created_at', hace10min).limit(1);
       if (recientes && recientes.length) { alert('Ya enviaste una señal hace poco. Tus amigos ya fueron avisados 💜'); return; }
 
-      const { data: amistades, error: errAm } = await db.from('amistades').select('amigo_id').eq('usuario_id', usuarioActual.id);
+      const { data: amistades, error: errAm } = await db.from('contactos_usuarios').select('amigo_id').eq('usuario_id', usuarioActual.id);
       if (errAm) { alert('No se pudo enviar la señal: ' + errAm.message); return; }
       const ids = [...new Set((amistades || []).map(a => a.amigo_id))];
       if (!ids.length) { alert('Aún no tienes amigos conectados. Agrégalos en Chat con su código de amigo.'); return; }
@@ -1188,7 +1188,7 @@ async function convertirManillaPendienteEnActiva() {
       if (amigo.id === usuarioActual.id) { alert('Ese es tu propio código de amigo.'); return; }
 
       // Quedan conectados como amigos (en ambos sentidos), aunque no envíen el deseo
-      await db.from('amistades').upsert([
+      await db.from('contactos_usuarios').upsert([
         { usuario_id: usuarioActual.id, amigo_id: amigo.id },
         { usuario_id: amigo.id, amigo_id: usuarioActual.id }
       ], { onConflict: 'usuario_id,amigo_id', ignoreDuplicates: true });
