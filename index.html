@@ -1694,7 +1694,7 @@ Escríbele un deseo que apoye este propósito.`,
         const ej = r.ejercicio ? `<b>Ejercicio</b>${esc((r.ejercicioTipos || []).join(', ') || 'Sí')}` : '';
         return `<div class="dv-past" onclick="hvToggle(this)" role="button" aria-expanded="false">
           <div class="dv-past-t"><span>${esc(fecha)}</span><span class="dv-past-e">${emojis}</span>${r.animo ? `<span>☀️ ${r.animo}/5</span>` : ''}</div>
-          <div class="dv-det">${r.sentir ? `<b>Cómo me sentí</b>${esc(r.sentir)}` : ''}${(r.emociones || []).length ? `<b>Emociones</b>${esc(r.emociones.join(', '))}` : ''}${ej}${r.sola ? '<b>Soledad</b>Me sentí sola/o' : ''}${r.reflexion ? `<b>Agradecimiento</b>${esc(r.reflexion)}` : ''}${r.gratitud ? `<b>Agradecí</b>${esc(r.gratitud)}` : ''}</div>
+          <div class="dv-det">${r.sentir ? `<b>Cómo me sentí</b>${esc(r.sentir)}` : ''}${(r.emociones || []).length ? `<b>Emociones</b>${esc(r.emociones.join(', '))}` : ''}${ej}${r.sola ? '<b>Soledad</b>Me sentí sola/o' : ''}${r.reflexion ? `<b>Reflexión</b>${esc(r.reflexion)}` : ''}${r.gratitud ? `<b>Agradecí</b>${esc(r.gratitud)}` : ''}</div>
         </div>`;
       }).join('');
     }
@@ -1764,7 +1764,7 @@ Escríbele un deseo que apoye este propósito.`,
       if (!dvEditandoCiclo) html += dvTarjetaCiclo(ciclo);
 
       html += `<section class="dv-card">
-          <h4 class="dv-h">Agradecimiento</h4>
+          <h4 class="dv-h">Reflexión</h4>
           <p class="dv-sub">Un espacio solo para ti</p>
           <textarea id="dvReflexion" class="dv-in dv-ta mt-3" placeholder="¿Qué quieres recordar de hoy?" oninput="dvHoy.reflexion=this.value;${dvAutoAlto}">${esc(dvHoy.reflexion || '')}</textarea>
         </section>
