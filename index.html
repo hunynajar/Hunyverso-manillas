@@ -22,6 +22,8 @@
     const SUPABASE_URL = "https://bwxgddifiqlgamkokaso.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_nB-TXpmj5VmsfXW2UKUbLQ_qiA-BhYz";
     
+    // ¿Llegó desde el enlace de "recuperar contraseña"? (se lee antes de que Supabase limpie la URL)
+    const HV_RECUPERANDO = /type=recovery/.test(location.hash);
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   </script>
 
@@ -322,19 +324,37 @@
       </div>
       
       <div class="space-y-4 text-left">
-        <div>
-          <label class="text-[11px] text-purple-300 font-semibold">Tu Nombre</label>
-          <input type="text" id="inputNombre" placeholder="Ej: Sofía Ruiz" class="w-full text-sm mt-1 hv-f">
+        <div id="campoNombre">
+          <label for="inputNombre" class="text-[11px] text-purple-300 font-semibold">Tu Nombre</label>
+          <input type="text" id="inputNombre" autocomplete="name" placeholder="Ej: Sofía Ruiz" class="w-full text-sm mt-1 hv-f">
         </div>
 
-        <div>
-          <label class="text-[11px] text-purple-300 font-semibold">Usuario Único / Correo </label>
-          <input type="text" id="inputUsername" placeholder="Ej: sofia_ruiz o sofia@mail.com" class="w-full text-sm mt-1 hv-f">
+        <div id="campoUsuario">
+          <label for="inputUsername" class="text-[11px] text-purple-300 font-semibold">Usuario Único</label>
+          <input type="text" id="inputUsername" autocomplete="username" autocapitalize="none" placeholder="Ej: sofia_ruiz" class="w-full text-sm mt-1 hv-f">
+        </div>
+
+        <div id="campoCorreo">
+          <label for="inputCorreo" class="text-[11px] text-purple-300 font-semibold">Correo <span class="font-normal text-slate-400">(solo para recuperar tu contraseña)</span></label>
+          <input type="email" id="inputCorreo" autocomplete="email" autocapitalize="none" placeholder="Ej: sofia@mail.com" class="w-full text-sm mt-1 hv-f">
         </div>
 
         <div id="campoCodigoRegistro">
-          <label class="text-[11px] text-purple-300 font-semibold">Código de la Manilla Física</label>
-          <input type="text" id="inputCodigoManilla" placeholder="Ej: 7KQ2XM" class="w-full text-sm uppercase mt-1 hv-f">
+          <label for="inputCodigoManilla" id="labelCodigo" class="text-[11px] text-purple-300 font-semibold">Código de la Manilla Física</label>
+          <input type="text" id="inputCodigoManilla" autocomplete="off" autocapitalize="characters" placeholder="Ej: 7KQ2XM" class="w-full text-sm uppercase mt-1 hv-f">
+        </div>
+
+        <div id="campoPassword">
+          <label for="inputPassword" id="labelPassword" class="text-[11px] text-purple-300 font-semibold">Contraseña</label>
+          <div class="relative mt-1">
+            <input type="password" id="inputPassword" autocomplete="new-password" placeholder="Mínimo 8 caracteres" class="w-full text-sm hv-f" style="padding-right:3rem">
+            <button type="button" onclick="verPassword()" id="btnVerPassword" aria-label="Mostrar contraseña" class="absolute right-3 top-1/2 -translate-y-1/2 text-base" style="position:absolute;right:.8rem;top:50%;transform:translateY(-50%)">👁</button>
+          </div>
+        </div>
+
+        <div id="campoPassword2">
+          <label for="inputPassword2" class="text-[11px] text-purple-300 font-semibold">Repite tu contraseña</label>
+          <input type="password" id="inputPassword2" autocomplete="new-password" class="w-full text-sm mt-1 hv-f">
         </div>
 
         <div id="seccionElegirManilla">
@@ -353,20 +373,21 @@
         </div>
 
         <div id="seccionIntencion">
-          <label class="text-[11px] text-purple-300 font-semibold">¿Cuál es la intención que le das a tu manilla?</label>
+          <label for="inputIntencion" class="text-[11px] text-purple-300 font-semibold">¿Cuál es la intención que le das a tu manilla?</label>
           <textarea id="inputIntencion" maxlength="500" rows="3" placeholder="Ej: Conectar con la paz interior..." class="w-full text-xs mt-1 resize-none hv-f"></textarea>
         </div>
       </div>
 
-      <div id="errorRegistro" class="text-xs text-rose-400 text-center hidden"></div>
+      <div id="errorRegistro" class="text-xs text-rose-400 text-center hidden" role="alert"></div>
 
       <button id="botonAccionRegistro" onclick="procesarRegistro()" class="w-full py-3.5 text-xs transition hv-gold">
         Vincular & Entrar al Hunyverso
       </button>
 
-      <div class="text-center pt-2">
+      <div class="text-center pt-2 space-y-2">
+        <button onclick="olvideContrasena()" id="linkOlvide" class="hidden text-[11px] text-purple-300 hover:underline block mx-auto">¿Olvidaste tu contraseña?</button>
         <button onclick="alternarModoLogin()" id="linkModoLogin" class="text-[11px] text-amber-400 hover:underline">
-          ¿Ya tienes cuenta? Entra con tu usuario único
+          ¿Ya tienes cuenta? Entra con tu usuario y contraseña
         </button>
       </div>
     </div>
@@ -504,6 +525,9 @@
           </div>
           <button onclick="editarCicloDesdePerfil()" class="text-[11px] px-3 py-1.5 hv-ghost flex-none">Editar</button>
         </div>
+        <button onclick="cambiarContrasena()" class="w-full py-2.5 text-xs font-semibold transition hv-ghost">
+          Cambiar contraseña
+        </button>
         <button onclick="cerrarSesion()" class="w-full py-2.5 text-xs font-semibold transition hv-ghost hv-danger">
           Cerrar Sesión
         </button>
@@ -746,45 +770,114 @@
       });
     }
     window.alert = m => { hvDialog({ mensaje: String(m) }); };
-    window.addEventListener('DOMContentLoaded', () => {
-      const sesionGuardada = localStorage.getItem('hunyverso_user');
-      if (sesionGuardada) {
-        try {
-          usuarioActual = JSON.parse(sesionGuardada);
-          refrescarSesionGuardada();
-        } catch(e) {
-          localStorage.removeItem('hunyverso_user');
-        }
-      }
+    window.addEventListener('DOMContentLoaded', async () => {
+      try { localStorage.removeItem('hunyverso_user'); } catch (e) {}
       renderizarGuiaGeneral();
+      setModo('registro');
+      db.auth.onAuthStateChange((evento) => {
+        if (evento === 'PASSWORD_RECOVERY') setTimeout(() => setModo('nueva'), 0);
+      });
+      const { data } = await db.auth.getSession();
+      if (data && data.session && (HV_RECUPERANDO || modoAuth === 'nueva')) { setModo('nueva'); return; }
+      if (data && data.session) entrarConSesion();
     });
 
-    // Verifica que el usuario guardado en el navegador siga existiendo en la base de datos
-    async function refrescarSesionGuardada() {
-      const { data: user, error } = await db.from('usuarios').select('*').eq('id', usuarioActual.id).maybeSingle();
-      if (!error && !user) { cerrarSesion(); return; }
-      if (user) { usuarioActual = user; localStorage.setItem('hunyverso_user', JSON.stringify(user)); }
+    // ===== CUENTAS (contraseñas con Supabase Auth) =====
+    let modoAuth = 'registro';
+    const AUTH_MODOS = {
+      registro:    { campos: ['campoNombre','campoUsuario','campoCorreo','campoCodigoRegistro','campoPassword','campoPassword2','seccionElegirManilla','seccionIntencion'],
+                     titulo: 'Activa tu Manilla', sub: 'Elige la esencia de tu joya y sella tu propósito.', boton: 'Vincular & Entrar al Hunyverso' },
+      login:       { campos: ['campoUsuario','campoPassword'],
+                     titulo: 'Ingresar a tu Cuenta', sub: 'Entra con tu usuario único y tu contraseña.', boton: 'Entrar al Hunyverso' },
+      activar:     { campos: ['campoUsuario','campoCodigoRegistro','campoCorreo','campoPassword','campoPassword2'],
+                     titulo: 'Crea tu contraseña', sub: 'Tu cuenta es de antes de las contraseñas. Confirma que eres tú con el código de tu manilla y crea tu contraseña.', boton: 'Crear contraseña y entrar' },
+      restablecer: { campos: ['campoUsuario','campoCodigoRegistro','campoPassword','campoPassword2'],
+                     titulo: 'Nueva contraseña', sub: 'Confirma que eres tú con el código de cualquiera de tus manillas.', boton: 'Cambiar contraseña y entrar' },
+      nueva:       { campos: ['campoPassword','campoPassword2'],
+                     titulo: 'Crea tu nueva contraseña', sub: 'Escribe tu nueva contraseña.', boton: 'Guardar contraseña' }
+    };
+    const TODOS_CAMPOS = ['campoNombre','campoUsuario','campoCorreo','campoCodigoRegistro','campoPassword','campoPassword2','seccionElegirManilla','seccionIntencion'];
+
+    function setModo(m) {
+      modoAuth = m;
+      const cfg = AUTH_MODOS[m], $ = id => document.getElementById(id);
+      TODOS_CAMPOS.forEach(id => $(id).classList.toggle('hidden', !cfg.campos.includes(id)));
+      $('tituloModoRegistro').innerText = cfg.titulo;
+      $('subtituloModoRegistro').innerText = cfg.sub;
+      $('botonAccionRegistro').innerText = cfg.boton;
+      $('labelCodigo').innerText = m === 'registro' ? 'Código de la Manilla Física' : 'Código de tu manilla';
+      $('labelPassword').innerText = (m === 'login') ? 'Contraseña' : 'Contraseña (mínimo 8 caracteres)';
+      $('inputPassword').setAttribute('autocomplete', m === 'login' ? 'current-password' : 'new-password');
+      $('linkOlvide').classList.toggle('hidden', m !== 'login');
+      $('linkModoLogin').classList.toggle('hidden', m === 'nueva');
+      $('linkModoLogin').innerText = m === 'registro' ? '¿Ya tienes cuenta? Entra con tu usuario y contraseña'
+        : m === 'login' ? '¿No tienes cuenta? Regístrate aquí' : '← Volver a entrar';
+      $('errorRegistro').classList.add('hidden');
+      $('inputPassword').value = ''; $('inputPassword2').value = '';
+      esModoLoginExistente = (m === 'login');
+      if (m === 'nueva') { $('screenApp').classList.add('hidden'); $('screenRegistro').classList.remove('hidden'); }
+    }
+
+    function alternarModoLogin() { setModo(modoAuth === 'registro' ? 'login' : modoAuth === 'login' ? 'registro' : 'login'); }
+
+    function verPassword() {
+      const a = document.getElementById('inputPassword'), b2 = document.getElementById('inputPassword2');
+      const ver = a.type === 'password';
+      a.type = b2.type = ver ? 'text' : 'password';
+      document.getElementById('btnVerPassword').setAttribute('aria-label', ver ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    }
+
+    // Llama a la Edge Function "cuentas" y devuelve { error } o los datos
+    async function llamarCuentas(cuerpo) {
+      try {
+        const { data, error } = await db.functions.invoke('cuentas', { body: cuerpo });
+        if (error) {
+          let msg = 'Ocurrió un error. Intenta de nuevo.';
+          try { const j = await error.context.json(); if (j && j.error) msg = j.error; } catch (e) {}
+          return { error: msg };
+        }
+        return data || {};
+      } catch (e) { return { error: 'No hay conexión. Revisa tu internet e intenta de nuevo.' }; }
+    }
+
+    // Carga el perfil del usuario con sesión iniciada
+    async function entrarConSesion() {
+      const { data: uid, error } = await db.rpc('mi_usuario_id');
+      if (error || !uid) { await db.auth.signOut(); setModo('login'); return false; }
+      const { data: u } = await db.from('usuarios').select('id, nombre, username').eq('id', uid).maybeSingle();
+      if (!u) { await db.auth.signOut(); setModo('login'); return false; }
+      usuarioActual = u;
       cargarDatosUsuario();
+      return true;
     }
 
-    // Marca un código físico como usado solo si sigue libre (evita que dos personas usen el mismo código)
-    async function reclamarCodigo(codigo) {
-      const { data, error } = await db.from('codigos_manillas').update({ usado: true }).eq('codigo', codigo).eq('usado', false).select();
-      return !error && data && data.length > 0;
-    }
-    async function liberarCodigo(codigo) {
-      await db.from('codigos_manillas').update({ usado: false }).eq('codigo', codigo);
+    async function usarSesion(r, errorDiv) {
+      if (r.error) { errorDiv.innerText = r.error; errorDiv.classList.remove('hidden'); return; }
+      if (r.activar) { setModo('activar'); return; }
+      if (!r.session) { errorDiv.innerText = 'Ocurrió un error. Intenta de nuevo.'; errorDiv.classList.remove('hidden'); return; }
+      const { error } = await db.auth.setSession(r.session);
+      if (error) { errorDiv.innerText = 'No se pudo iniciar sesión. Intenta de nuevo.'; errorDiv.classList.remove('hidden'); return; }
+      await entrarConSesion();
     }
 
-    function alternarModoLogin() {
-      esModoLoginExistente = !esModoLoginExistente;
-      document.getElementById('seccionElegirManilla').classList.toggle('hidden', esModoLoginExistente);
-      document.getElementById('seccionIntencion').classList.toggle('hidden', esModoLoginExistente);
-      document.getElementById('campoCodigoRegistro').classList.toggle('hidden', esModoLoginExistente);
-      document.getElementById('tituloModoRegistro').innerText = esModoLoginExistente ? "Ingresar a tu Cuenta" : "Activa tu Manilla";
-      document.getElementById('botonAccionRegistro').innerText = esModoLoginExistente ? "Entrar al Hunyverso" : "Vincular & Entrar al Hunyverso";
-      document.getElementById('linkModoLogin').innerText = esModoLoginExistente ? "¿No tienes cuenta? Regístrate aquí" : "¿Ya tienes cuenta? Entra con tu usuario único";
+    async function olvideContrasena() {
+      const idx = await hvDialog({
+        titulo: '¿Olvidaste tu contraseña?', mensaje: 'Elige cómo quieres recuperarla', tipo: 'choose',
+        opciones: [
+          { titulo: '🔑 Con el código de mi manilla', detalle: 'Escribes el código y una contraseña nueva, y entras de una vez.' },
+          { titulo: '✉️ Enviarme un enlace al correo', detalle: 'Te llega un enlace para crear una contraseña nueva.' }
+        ]
+      });
+      if (idx === 0) { setModo('restablecer'); return; }
+      if (idx !== 1) return;
+      const usuario = await hvDialog({ titulo: 'Recuperar por correo', mensaje: 'Escribe tu usuario único', tipo: 'prompt',
+        valor: document.getElementById('inputUsername').value.trim(), placeholder: '@usuario' });
+      if (!usuario) return;
+      await llamarCuentas({ accion: 'recuperar', usuario, redirectTo: location.origin + location.pathname });
+      alert('Si tu cuenta tiene un correo registrado, te llegará un enlace para crear una contraseña nueva. Revisa también la carpeta de spam ✉️');
     }
+
+    function cambiarContrasena() { setModo('nueva'); }
 
     function seleccionarTipoManilla(tipo) {
       tipoManillaSeleccionada = tipo;
@@ -797,86 +890,49 @@
     }
 
     async function procesarRegistro() {
-      const nombre = document.getElementById('inputNombre').value.trim();
-      const username = document.getElementById('inputUsername').value.trim().toLowerCase();
-      const errorDiv = document.getElementById('errorRegistro');
+      const $ = id => document.getElementById(id);
+      const errorDiv = $('errorRegistro'), boton = $('botonAccionRegistro');
+      const mostrar = m => { errorDiv.innerText = m; errorDiv.classList.remove('hidden'); };
       errorDiv.classList.add('hidden');
 
-      if (!nombre || !username) {
-        errorDiv.innerText = 'Por favor ingresa tu nombre y un usuario único.';
-        errorDiv.classList.remove('hidden');
-        return;
+      const nombre = $('inputNombre').value.trim();
+      const usuario = $('inputUsername').value.trim().replace(/^@+/, '').toLowerCase();
+      const email = $('inputCorreo').value.trim().toLowerCase();
+      const codigo = $('inputCodigoManilla').value.trim().toUpperCase();
+      const intencion = $('inputIntencion').value.trim();
+      const pass = $('inputPassword').value, pass2 = $('inputPassword2').value;
+      const pide = AUTH_MODOS[modoAuth].campos;
+
+      if (pide.includes('campoNombre') && !nombre) return mostrar('Escribe tu nombre.');
+      if (pide.includes('campoUsuario') && !usuario) return mostrar('Escribe tu usuario único.');
+      if (pide.includes('campoCorreo') && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return mostrar('Escribe un correo válido.');
+      if (pide.includes('campoCodigoRegistro') && !codigo) return mostrar('Escribe el código de tu manilla.');
+      if (pide.includes('seccionIntencion') && !intencion) return mostrar('Escribe la intención de tu manilla.');
+      if (!pass) return mostrar('Escribe tu contraseña.');
+      if (pide.includes('campoPassword2')) {
+        if (pass.length < 8) return mostrar('La contraseña debe tener al menos 8 caracteres.');
+        if (pass !== pass2) return mostrar('Las contraseñas no coinciden.');
       }
 
-      if (esModoLoginExistente) {
-        const { data: user, error } = await db.from('usuarios').select('*').eq('username', username).single();
-        if (error || !user) {
-          errorDiv.innerText = 'No encontramos una cuenta con ese usuario único.';
-          errorDiv.classList.remove('hidden');
+      boton.disabled = true; const textoBoton = boton.innerText; boton.innerText = 'Un momento…';
+      try {
+        if (modoAuth === 'nueva') {
+          const { error } = await db.auth.updateUser({ password: pass });
+          if (error) return mostrar('No se pudo guardar la contraseña. Intenta de nuevo.');
+          history.replaceState(null, '', location.pathname);
+          alert('Tu contraseña quedó guardada 🔒');
+          await entrarConSesion();
           return;
         }
-        usuarioActual = user;
-        localStorage.setItem('hunyverso_user', JSON.stringify(usuarioActual));
-        cargarDatosUsuario();
-      } else {
-        const codigoInput = document.getElementById('inputCodigoManilla').value.trim().toUpperCase();
-        const intencion = document.getElementById('inputIntencion').value.trim();
-
-        if (!codigoInput || !intencion) {
-          errorDiv.innerText = 'Por favor ingresa el código físico y tu intención.';
-          errorDiv.classList.remove('hidden');
-          return;
-        }
-
-        // Verificar si el username ya existe
-        const { data: usuarioExistente } = await db.from('usuarios').select('*').eq('username', username).single();
-        if (usuarioExistente) {
-          errorDiv.innerText = 'Ese usuario único ya está en uso. Elige otro.';
-          errorDiv.classList.remove('hidden');
-          return;
-        }
-
-        const { data: codValido, error: errCod } = await db.from('codigos_manillas').select('*').eq('codigo', codigoInput).eq('usado', false).single();
-        if (errCod || !codValido) {
-          errorDiv.innerText = 'Código físico inválido o ya fue usado.';
-          errorDiv.classList.remove('hidden');
-          return;
-        }
-
-        if (!(await reclamarCodigo(codigoInput))) {
-          errorDiv.innerText = 'Código físico inválido o ya fue usado.';
-          errorDiv.classList.remove('hidden');
-          return;
-        }
-
-        const { data: nuevoUser, error: errUser } = await db.from('usuarios').insert([{ 
-          nombre: nombre, 
-          username: username,
-          codigo_manilla_usado: codigoInput
-        }]).select().single();
-
-        if (errUser || !nuevoUser) {
-          await liberarCodigo(codigoInput);
-          errorDiv.innerText = 'Error al crear el usuario: ' + (errUser?.message || 'Desconocido');
-          errorDiv.classList.remove('hidden');
-          return;
-        }
-
-        const { error: errManilla } = await db.from('manillas_usuario').insert([{
-          usuario_id: nuevoUser.id,
-          codigo_manilla: codigoInput,
-          tipo_manilla: tipoManillaSeleccionada || 'Amor',
-          intencion: intencion,
-          estado: 'ACTIVA'
-        }]);
-        if (errManilla) {
-          errorDiv.innerText = 'Tu cuenta se creó, pero no se pudo registrar la manilla: ' + errManilla.message + '. Escríbenos por WhatsApp.';
-          errorDiv.classList.remove('hidden');
-        }
-
-        usuarioActual = nuevoUser;
-        localStorage.setItem('hunyverso_user', JSON.stringify(usuarioActual));
-        cargarDatosUsuario();
+        let r;
+        if (modoAuth === 'login') r = await llamarCuentas({ accion: 'login', usuario, password: pass });
+        else if (modoAuth === 'activar') r = await llamarCuentas({ accion: 'activar', usuario, codigo, email, password: pass });
+        else if (modoAuth === 'restablecer') r = await llamarCuentas({ accion: 'restablecer', usuario, codigo, password: pass });
+        else r = await llamarCuentas({ accion: 'registro', nombre, username: usuario, email, password: pass, codigo,
+                                       tipo: tipoManillaSeleccionada || 'Amor', intencion });
+        await usarSesion(r, errorDiv);
+      } finally {
+        boton.disabled = false; if (boton.innerText === 'Un momento…') boton.innerText = textoBoton;
       }
     }
 
@@ -987,31 +1043,11 @@ async function convertirManillaPendienteEnActiva() {
         return;
       }
 
-      // Validar código en Supabase
-      const { data: codValido, error: errCod } = await db.from('codigos_manillas').select('*').eq('codigo', codigoInput).eq('usado', false).single();
-      if (errCod || !codValido) {
-        errorDiv.innerText = 'Código físico inválido o ya fue usado.';
-        errorDiv.classList.remove('hidden');
-        return;
-      }
-
-      // Marcar código como usado (solo si sigue libre)
-      if (!(await reclamarCodigo(codigoInput))) {
-        errorDiv.innerText = 'Código físico inválido o ya fue usado.';
-        errorDiv.classList.remove('hidden');
-        return;
-      }
-
-      // Actualizar la manilla en Supabase a ACTIVA
-      const { error: errUpdate } = await db.from('manillas_usuario').update({
-        codigo_manilla: codigoInput,
-        intencion: intencionInput,
-        estado: 'ACTIVA'
-      }).eq('id', manillaSeleccionadaActual.id);
-
-      if (errUpdate) {
-        await liberarCodigo(codigoInput);
-        errorDiv.innerText = 'Error al actualizar la manilla: ' + errUpdate.message;
+      const { error: errAct } = await db.rpc('activar_manilla_pendiente', {
+        p_manilla_id: manillaSeleccionadaActual.id, p_codigo: codigoInput, p_intencion: intencionInput
+      });
+      if (errAct) {
+        errorDiv.innerText = /CODIGO_INVALIDO/.test(errAct.message) ? 'Código físico inválido o ya fue usado.' : 'No se pudo activar la manilla. Intenta de nuevo.';
         errorDiv.classList.remove('hidden');
         return;
       }
@@ -1111,28 +1147,9 @@ async function convertirManillaPendienteEnActiva() {
           return;
         }
 
-        const { data: codVal } = await db.from('codigos_manillas').select('*').eq('codigo', codInput).eq('usado', false).single();
-        if(!codVal) {
-          err.innerText = 'Código físico inválido o ya usado.';
-          err.classList.remove('hidden');
-          return;
-        }
-        if (!(await reclamarCodigo(codInput))) {
-          err.innerText = 'Código físico inválido o ya usado.';
-          err.classList.remove('hidden');
-          return;
-        }
-
-        const { error: errNueva } = await db.from('manillas_usuario').insert([{
-          usuario_id: usuarioActual.id,
-          codigo_manilla: codInput,
-          tipo_manilla: tipo,
-          intencion: intencion,
-          estado: 'ACTIVA'
-        }]);
+        const { error: errNueva } = await db.rpc('registrar_manilla', { p_codigo: codInput, p_tipo: tipo, p_intencion: intencion });
         if (errNueva) {
-          await liberarCodigo(codInput);
-          err.innerText = 'No se pudo registrar la manilla: ' + errNueva.message;
+          err.innerText = /CODIGO_INVALIDO/.test(errNueva.message) ? 'Código físico inválido o ya usado.' : 'No se pudo registrar la manilla. Intenta de nuevo.';
           err.classList.remove('hidden');
           return;
         }
@@ -1466,7 +1483,7 @@ Escríbele un deseo que apoye este propósito.`,
       const u = escrito.trim().replace(/^@+/, '').replace(/\s+/g, '').toLowerCase();
       if (!u) return;
 
-      const { data: amigo, error: errAmigo } = await db.from('usuarios').select('*').eq('username', u).maybeSingle();
+      const { data: amigo, error: errAmigo } = await db.from('usuarios').select('id, nombre, username').eq('username', u).maybeSingle();
       if (errAmigo) { alert('Error al buscar el usuario: ' + errAmigo.message); return; }
       if (!amigo) { alert(`No encontramos a @${u}. Revisa que esté bien escrito.`); return; }
       if (amigo.id === usuarioActual.id) { alert('Ese es tu propio usuario 😊'); return; }
@@ -1908,8 +1925,8 @@ Escríbele un deseo que apoye este propósito.`,
       window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
     }
 
-    function cerrarSesion() {
-      localStorage.removeItem('hunyverso_user');
+    async function cerrarSesion() {
+      try { await db.auth.signOut(); } catch (e) {}
       window.location.reload();
     }
   </script>
