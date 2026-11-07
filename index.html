@@ -96,7 +96,10 @@
     @media(max-width:440px){.hv-tabs button:not(.on) .ic{display:none}.hv-tabs button{font-size:.68rem;padding:.6rem .45rem}}
     @media(max-width:360px){.hv-tabs .ic{display:none}}
     .hv-tabs button:not(.on) .ic{display:none}
-    .hv-bottom{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:center;pointer-events:none}
+    .hv-bottom{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:center;pointer-events:none;
+      transform:translateY(110%);opacity:0;visibility:hidden;transition:transform .35s cubic-bezier(.2,.7,.2,1),opacity .35s,visibility 0s linear .35s}
+    .hv-bottom.ver{transform:none;opacity:1;visibility:visible;transition:transform .35s cubic-bezier(.2,.7,.2,1),opacity .35s,visibility 0s}
+    @media (prefers-reduced-motion: reduce){.hv-bottom,.hv-bottom.ver{transition:none}}
     .hv-badge{position:absolute;top:-.25rem;right:.4rem;min-width:1.15rem;height:1.15rem;padding:0 .3rem;border-radius:999px;background:#f43f5e;color:#fff;font-size:.62rem;font-weight:700;line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #1a0d30}
     #tabDeseos{position:relative}
     .hv-bottom .in{pointer-events:auto;width:100%;max-width:28rem;display:flex;padding:.6rem .5rem calc(.6rem + env(safe-area-inset-bottom,0px));border-radius:1.8rem 1.8rem 0 0;
@@ -1924,6 +1927,16 @@ Escríbele un deseo que apoye este propósito.`,
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
     }
+
+    // La barra de abajo aparece solo cuando el menú de arriba deja de verse
+    (function () {
+      const arriba = document.querySelector('.hv-tabs'), abajo = document.querySelector('.hv-bottom');
+      if (!arriba || !abajo) return;
+      const mostrar = v => { abajo.classList.toggle('ver', v); abajo.inert = !v; };
+      if (!('IntersectionObserver' in window)) { mostrar(true); return; }
+      mostrar(false);
+      new IntersectionObserver(([e]) => mostrar(!e.isIntersecting && e.boundingClientRect.bottom < 0)).observe(arriba);
+    })();
 
     async function cerrarSesion() {
       try { await db.auth.signOut(); } catch (e) {}
