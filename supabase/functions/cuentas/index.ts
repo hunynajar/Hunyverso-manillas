@@ -62,6 +62,20 @@ async function codigoDeUsuario(u: { id: string; codigo_manilla_usado: string | n
   return !!(data && data.length);
 }
 
+// Crea el usuario de Auth; si el correo pertenece a una cuenta sin perfil (huérfana), la reutiliza
+async function crearAuth(email: string, password: string): Promise<{ id?: string; error?: string }> {
+  const { data, error } = await admin.auth.admin.createUser({ email, password, email_confirm: true });
+  if (!error && data?.user) return { id: data.user.id };
+  if (error && /already|registered|exists/i.test(error.message)) {
+    const { data: huerfano } = await admin.rpc("auth_huerfano_por_correo", { p_email: email });
+    if (huerfano) {
+      const { error: errUpd } = await admin.auth.admin.updateUserById(huerfano as string, { password, email_confirm: true });
+      if (!errUpd) return { id: huerfano as string };
+    }
+  }
+  return { error: errorCreacion(error?.message ?? "") };
+}
+
 function errorCreacion(msg: string) {
   return /already|registered|exists/i.test(msg) ? "Ese correo ya está en uso en otra cuenta." : "No se pudo crear la cuenta. Intenta de nuevo.";
 }
@@ -85,7 +99,7 @@ Deno.serve(async (req) => {
       const tipo = String(b.tipo ?? "");
       const intencion = String(b.intencion ?? "").trim().slice(0, 500);
 
-      if (!nombre || !username || !email || !password || !codigo || !intencion) return fallo("Completa todos los campos.");
+      if (!nombre || !username || !email || !password || !codigo) return fallo("Completa todos los campos.");
       if (!USUARIO_OK.test(username)) return fallo("El usuario solo puede tener letras, números y . _ - (mínimo 3).");
       if (!esCorreo(email)) return fallo("Escribe un correo válido.");
       if (password.length < 8) return fallo("La contraseña debe tener al menos 8 caracteres.");
@@ -95,14 +109,14 @@ Deno.serve(async (req) => {
       const { data: cod } = await admin.from("codigos_manillas").select("codigo").eq("codigo", codigo).eq("usado", false).maybeSingle();
       if (!cod) return fallo("Código físico inválido o ya fue usado.");
 
-      const { data: creado, error: errCrear } = await admin.auth.admin.createUser({ email, password, email_confirm: true });
-      if (errCrear || !creado?.user) return fallo(errorCreacion(errCrear?.message ?? ""));
+      const creado = await crearAuth(email, password);
+      if (!creado.id) return fallo(creado.error!);
 
       const { error: errReg } = await admin.rpc("registrar_cuenta", {
-        p_auth_id: creado.user.id, p_nombre: nombre, p_username: username, p_codigo: codigo, p_tipo: tipo, p_intencion: intencion,
+        p_auth_id: creado.id, p_nombre: nombre, p_username: username, p_codigo: codigo, p_tipo: tipo, p_intencion: intencion,
       });
       if (errReg) {
-        await admin.auth.admin.deleteUser(creado.user.id);
+        await admin.auth.admin.deleteUser(creado.id);
         const m = errReg.message || "";
         if (m.includes("USUARIO_EXISTE")) return fallo("Ese usuario único ya está en uso. Elige otro.");
         if (m.includes("CODIGO_INVALIDO")) return fallo("Código físico inválido o ya fue usado.");
@@ -151,12 +165,12 @@ Deno.serve(async (req) => {
       const u = await buscarUsuario(usuario);
       if (!u || u.auth_id || !(await codigoDeUsuario(u, codigo))) { await registrarFallo(usuario); return fallo(MSG_CODIGO); }
 
-      const { data: creado, error: errCrear } = await admin.auth.admin.createUser({ email, password, email_confirm: true });
-      if (errCrear || !creado?.user) return fallo(errorCreacion(errCrear?.message ?? ""));
-      const { data: enlazado, error: errUpd } = await admin.from("usuarios").update({ auth_id: creado.user.id })
+      const creado = await crearAuth(email, password);
+      if (!creado.id) return fallo(creado.error!);
+      const { data: enlazado, error: errUpd } = await admin.from("usuarios").update({ auth_id: creado.id })
         .eq("id", u.id).is("auth_id", null).select("id");
       if (errUpd || !enlazado?.length) {
-        await admin.auth.admin.deleteUser(creado.user.id);
+        await admin.auth.admin.deleteUser(creado.id);
         return fallo("No pudimos activar tu cuenta. Intenta de nuevo.");
       }
       const session = await iniciarSesion(email, password);

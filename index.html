@@ -109,6 +109,40 @@
     .hv-bottom button.on{color:var(--gold-hi)}.hv-bottom button.on .ic{filter:drop-shadow(0 0 6px rgba(232,201,138,.7))}
     .hv-bottom button.on::after{content:"";position:absolute;bottom:-.2rem;width:1.8rem;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
 
+    /* ===== RITUAL ===== */
+    .rt-btn{grid-column:1/-1;width:100%;margin-top:.2rem;padding:.85rem 1rem;border-radius:999px;font-size:.85rem;font-weight:600;color:#2a1608;
+      background:linear-gradient(135deg,#f9e2a8,#e3b36b);box-shadow:0 8px 22px -10px rgba(232,170,80,.8)}
+    .rt-volver{font-size:.8rem;color:var(--lav);padding:.3rem 0}
+    .rt-head{padding:1.3rem 1.2rem;text-align:center}
+    .rt-kicker{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+    .rt-titulo{font-family:var(--serif);font-size:1.3rem;color:var(--gold-hi);margin-top:.3rem}
+    .rt-barra{height:.4rem;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin:.9rem 0 .5rem}
+    .rt-barra i{display:block;height:100%;background:linear-gradient(90deg,#c9b6f2,#e8c98a);border-radius:999px;transition:width .4s}
+    .rt-fase{padding:1.15rem;display:grid;gap:.55rem}
+    .rt-fase.bloq{opacity:.55}
+    .rt-fase.hecha .rt-num{color:#9fe0b8}
+    .rt-num{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--lav)}
+    .rt-h{font-family:var(--serif);font-size:1.05rem;color:var(--gold)}
+    .rt-p{font-size:.86rem;line-height:1.6;color:#e6dcf7}
+    .rt-dest{font-family:var(--ital);font-style:italic;font-size:1.08rem;color:var(--gold-hi)}
+    .rt-mut{font-size:.74rem;color:#a99bc6}
+    .rt-lema{font-family:var(--ital);font-style:italic;font-size:1.1rem;color:var(--gold-hi)}
+    .rt-q{font-size:.84rem;font-weight:600;color:#f3ecff;margin-top:.35rem}
+    .rt-ta{min-height:3.2rem;resize:none;font-size:.9rem;line-height:1.5}
+    .rt-resp{font-family:var(--ital);font-size:1.02rem;line-height:1.5;color:#f3ecff;padding:.55rem .8rem;border-left:2px solid rgba(232,201,138,.6);background:rgba(255,255,255,.03);border-radius:0 .7rem .7rem 0;white-space:pre-line}
+    .rt-frase{font-size:1.15rem;color:var(--gold-hi)}
+    .rt-meta{display:grid;grid-template-columns:auto 1fr;gap:.5rem;align-items:start}
+    .rt-meta b{font-family:var(--serif);color:var(--gold);padding-top:.7rem}
+    .rt-palabras{margin:.2rem 0;padding:1rem 1.1rem;border-radius:1rem;font-family:var(--ital);font-size:1.12rem;line-height:1.65;color:#fbf3ff;
+      background:radial-gradient(120% 100% at 0 0,rgba(232,201,138,.14),transparent 60%),rgba(124,58,237,.12);box-shadow:inset 0 0 0 1px rgba(232,201,138,.35)}
+    .rt-check{display:flex;align-items:center;gap:.6rem;margin-top:.4rem;padding:.75rem .9rem;border-radius:1rem;font-size:.86rem;font-weight:600;color:var(--gold-hi);
+      background:rgba(232,201,138,.08);box-shadow:inset 0 0 0 1px rgba(232,201,138,.35);cursor:pointer}
+    .rt-check input{width:1.25rem;height:1.25rem;accent-color:#e3b36b;flex:none}
+    .rt-tipos{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem}
+    .rt-tipo{padding:.7rem .3rem;border-radius:1rem;font-size:.78rem;color:var(--lav);background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(168,85,247,.3)}
+    .rt-tipo.on{color:var(--gold-hi);background:rgba(232,201,138,.14);box-shadow:inset 0 0 0 1px var(--gold)}
+    .rt-sellar{width:100%;padding:.95rem;font-size:.9rem;margin-top:.3rem}
+
     /* ===== DIARIO: azul noche y luna ===== */
     :root{--dv-acc:#A8C8EC;--dv-plata:#DDE4F0;--dv-oro:#E8C98A;--dv-txt:#E6EDF8;--dv-mut:#93A4BF;--dv-borde:rgba(168,200,236,.2)}
     .dv-card{position:relative;padding:1.15rem 1.15rem 1.2rem;border-radius:1.4rem;color:var(--dv-txt);
@@ -375,10 +409,6 @@
           </div>
         </div>
 
-        <div id="seccionIntencion">
-          <label for="inputIntencion" class="text-[11px] text-purple-300 font-semibold">¿Cuál es la intención que le das a tu manilla?</label>
-          <textarea id="inputIntencion" maxlength="500" rows="3" placeholder="Ej: Conectar con la paz interior..." class="w-full text-xs mt-1 resize-none hv-f"></textarea>
-        </div>
       </div>
 
       <div id="errorRegistro" class="text-xs text-rose-400 text-center hidden" role="alert"></div>
@@ -425,6 +455,7 @@
             <p id="infoIntencionUsuario" class="m-intt">Cargando intención...</p>
           </div>
         </div>
+        <button type="button" id="btnRitual" class="rt-btn hidden" onclick="abrirRitual()">✨ Empezar ritual</button>
         <div id="estadoPendienteBanner" class="hidden pend space-y-2">
           <p class="pt1">Manilla en proceso pendiente</p>
           <p class="pt2">Continúa tu compra en WhatsApp para recibir el código físico.</p>
@@ -498,6 +529,9 @@
         <div id="contenedorGuiaGeneral" class="space-y-4 pt-2"></div>
       </section>
     </div>
+
+    <!-- RITUAL DE INTENCIONAMIENTO -->
+    <div id="secRitual" class="hidden space-y-4"></div>
 
     <!-- SECCIÓN DIARIO -->
     <div id="secDiario" class="hidden space-y-4"></div>
@@ -607,11 +641,6 @@
           <label class="flex items-center gap-2"><input type="checkbox" name="modalPiedra" value="Cuarzo Ahumado" class="accent-amber-500"> Cuarzo Ahumado</label>
         </div>
 
-        <!-- CAMPO INTENCIÓN (Se oculta si es Personalizada) -->
-        <div id="modalCampoIntencion">
-          <label class="text-[11px] text-purple-300 font-semibold">Intención personal</label>
-          <textarea id="modalInputIntencion" rows="3" placeholder="Sella el propósito..." class="w-full text-xs resize-none hv-f"></textarea>
-        </div>
       </div>
 
       <div id="modalError" class="text-xs text-rose-400 text-center hidden"></div>
@@ -788,7 +817,7 @@
     // ===== CUENTAS (contraseñas con Supabase Auth) =====
     let modoAuth = 'registro';
     const AUTH_MODOS = {
-      registro:    { campos: ['campoNombre','campoUsuario','campoCorreo','campoCodigoRegistro','campoPassword','campoPassword2','seccionElegirManilla','seccionIntencion'],
+      registro:    { campos: ['campoNombre','campoUsuario','campoCorreo','campoCodigoRegistro','campoPassword','campoPassword2','seccionElegirManilla'],
                      titulo: 'Activa tu Manilla', sub: 'Elige la esencia de tu joya y sella tu propósito.', boton: 'Vincular & Entrar al Hunyverso' },
       login:       { campos: ['campoUsuario','campoPassword'],
                      titulo: 'Ingresar a tu Cuenta', sub: 'Entra con tu usuario único y tu contraseña.', boton: 'Entrar al Hunyverso' },
@@ -799,7 +828,7 @@
       nueva:       { campos: ['campoPassword','campoPassword2'],
                      titulo: 'Crea tu nueva contraseña', sub: 'Escribe tu nueva contraseña.', boton: 'Guardar contraseña' }
     };
-    const TODOS_CAMPOS = ['campoNombre','campoUsuario','campoCorreo','campoCodigoRegistro','campoPassword','campoPassword2','seccionElegirManilla','seccionIntencion'];
+    const TODOS_CAMPOS = ['campoNombre','campoUsuario','campoCorreo','campoCodigoRegistro','campoPassword','campoPassword2','seccionElegirManilla'];
 
     function setModo(m) {
       modoAuth = m;
@@ -902,7 +931,6 @@
       const usuario = $('inputUsername').value.trim().replace(/^@+/, '').toLowerCase();
       const email = $('inputCorreo').value.trim().toLowerCase();
       const codigo = $('inputCodigoManilla').value.trim().toUpperCase();
-      const intencion = $('inputIntencion').value.trim();
       const pass = $('inputPassword').value, pass2 = $('inputPassword2').value;
       const pide = AUTH_MODOS[modoAuth].campos;
 
@@ -910,7 +938,6 @@
       if (pide.includes('campoUsuario') && !usuario) return mostrar('Escribe tu usuario único.');
       if (pide.includes('campoCorreo') && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return mostrar('Escribe un correo válido.');
       if (pide.includes('campoCodigoRegistro') && !codigo) return mostrar('Escribe el código de tu manilla.');
-      if (pide.includes('seccionIntencion') && !intencion) return mostrar('Escribe la intención de tu manilla.');
       if (!pass) return mostrar('Escribe tu contraseña.');
       if (pide.includes('campoPassword2')) {
         if (pass.length < 8) return mostrar('La contraseña debe tener al menos 8 caracteres.');
@@ -932,7 +959,7 @@
         else if (modoAuth === 'activar') r = await llamarCuentas({ accion: 'activar', usuario, codigo, email, password: pass });
         else if (modoAuth === 'restablecer') r = await llamarCuentas({ accion: 'restablecer', usuario, codigo, password: pass });
         else r = await llamarCuentas({ accion: 'registro', nombre, username: usuario, email, password: pass, codigo,
-                                       tipo: tipoManillaSeleccionada || 'Amor', intencion });
+                                       tipo: tipoManillaSeleccionada || 'Amor', intencion: '' });
         await usarSesion(r, errorDiv);
       } finally {
         boton.disabled = false; if (boton.innerText === 'Un momento…') boton.innerText = textoBoton;
@@ -947,10 +974,11 @@
       document.getElementById('perfilNombre').innerText = usuarioActual.nombre;
       document.getElementById('perfilUsername').innerText = '@' + (usuarioActual.username || 'usuario');
       document.getElementById('perfilCompartir').innerText = '@' + (usuarioActual.username || '');
-      renderizarPerfilCiclo();
+      dvCargar().then(renderizarPerfilCiclo);
 
       let { data: manillas, error } = await db.from('manillas_usuario').select('*').eq('usuario_id', usuarioActual.id);
       misManillas = manillas || [];
+      await cargarRituales();
 
       renderizarSelectorManillas();
       await cargarDeseosYChatGeneral();
@@ -1000,7 +1028,8 @@
 
 function actualizarDetallesManillaActiva() {
       if (!manillaSeleccionadaActual) return;
-      document.getElementById('infoIntencionUsuario').innerText = manillaSeleccionadaActual.intencion || 'Sin intención registrada.';
+      document.getElementById('infoIntencionUsuario').innerText = manillaSeleccionadaActual.intencion || 'Intención en proceso ✨';
+      actualizarBotonRitual();
       hvPintarManilla(manillaSeleccionadaActual);
       
       const bannerWpp = document.getElementById('estadoPendienteBanner');
@@ -1017,7 +1046,6 @@ function actualizarDetallesManillaActiva() {
           divActivacion.innerHTML = `
             <p class="text-[11px] text-amber-300 font-semibold">¿Ya tienes tu código físico de esta manilla?</p>
             <input type="text" id="inputActivarCodigo" placeholder="Ingresa tu código (Ej: 7KQ2XM)" class="w-full text-xs uppercase hv-f">
-            <textarea id="inputActivarIntencion" rows="2" placeholder="Escribe la intención definitiva para tu manilla..." class="w-full text-xs resize-none hv-f"></textarea>
             <button onclick="convertirManillaPendienteEnActiva()" class="w-full py-2 text-xs transition hv-gold">
               Registrar Código & Activar Manilla
             </button>
@@ -1026,7 +1054,6 @@ function actualizarDetallesManillaActiva() {
           bannerWpp.appendChild(divActivacion);
         }
         document.getElementById('inputActivarCodigo').value = '';
-        document.getElementById('inputActivarIntencion').value = '';
         document.getElementById('errorActivarPendiente').classList.add('hidden');
       } else {
         bannerWpp.classList.add('hidden');
@@ -1036,18 +1063,17 @@ function actualizarDetallesManillaActiva() {
     }
 async function convertirManillaPendienteEnActiva() {
       const codigoInput = document.getElementById('inputActivarCodigo').value.trim().toUpperCase();
-      const intencionInput = document.getElementById('inputActivarIntencion').value.trim();
       const errorDiv = document.getElementById('errorActivarPendiente');
       errorDiv.classList.add('hidden');
 
-      if (!codigoInput || !intencionInput) {
-        errorDiv.innerText = 'Por favor ingresa el código físico y tu intención.';
+      if (!codigoInput) {
+        errorDiv.innerText = 'Por favor ingresa el código físico de tu manilla.';
         errorDiv.classList.remove('hidden');
         return;
       }
 
       const { error: errAct } = await db.rpc('activar_manilla_pendiente', {
-        p_manilla_id: manillaSeleccionadaActual.id, p_codigo: codigoInput, p_intencion: intencionInput
+        p_manilla_id: manillaSeleccionadaActual.id, p_codigo: codigoInput, p_intencion: ''
       });
       if (errAct) {
         errorDiv.innerText = /CODIGO_INVALIDO/.test(errAct.message) ? 'Código físico inválido o ya fue usado.' : 'No se pudo activar la manilla. Intenta de nuevo.';
@@ -1091,7 +1117,6 @@ async function convertirManillaPendienteEnActiva() {
       // Si es personalizada, ocultamos código e intención del modal porque se gestionan por WhatsApp
       document.getElementById('modalSeccionPiedras').classList.toggle('hidden', !esPersonalizada);
       document.getElementById('modalCampoCodigo').classList.toggle('hidden', esPersonalizada);
-      document.getElementById('modalCampoIntencion').classList.toggle('hidden', esPersonalizada);
     }
 
     async function guardarNuevaManilla() {
@@ -1142,15 +1167,13 @@ async function convertirManillaPendienteEnActiva() {
 
       } else {
         const codInput = document.getElementById('modalInputCodigo').value.trim().toUpperCase();
-        const intencion = document.getElementById('modalInputIntencion').value.trim();
-
-        if (!codInput || !intencion) {
-          err.innerText = 'Ingresa el código físico y tu intención.';
+        if (!codInput) {
+          err.innerText = 'Ingresa el código físico de tu manilla.';
           err.classList.remove('hidden');
           return;
         }
 
-        const { error: errNueva } = await db.rpc('registrar_manilla', { p_codigo: codInput, p_tipo: tipo, p_intencion: intencion });
+        const { error: errNueva } = await db.rpc('registrar_manilla', { p_codigo: codInput, p_tipo: tipo, p_intencion: '' });
         if (errNueva) {
           err.innerText = /CODIGO_INVALIDO/.test(errNueva.message) ? 'Código físico inválido o ya usado.' : 'No se pudo registrar la manilla. Intenta de nuevo.';
           err.classList.remove('hidden');
@@ -1347,7 +1370,7 @@ async function convertirManillaPendienteEnActiva() {
         tipo: 'choose',
         opciones: manillasAmigo.map(m => ({
           titulo: `Manilla de ${m.tipo_manilla}${m.estado === 'PENDIENTE' ? ' · Pendiente' : ''}`,
-          detalle: m.intencion ? `“${m.intencion}”` : 'Sin intención registrada',
+          detalle: m.intencion ? `“${m.intencion}”` : 'Intención en proceso ✨',
           img: miniaturaManilla(m)
         }))
       });
@@ -1358,7 +1381,7 @@ async function convertirManillaPendienteEnActiva() {
       const sugerencia = SUGERENCIAS_DESEO[(manillaElegida.tipo_manilla || '').trim()] || 'Que la luz y la buena energía te acompañen siempre.';
       const mensajeDeseo = await hvDialog({
         titulo: `Deseo para ${nombre}`,
-        mensaje: `Su propósito: “${manillaElegida.intencion || 'sin intención'}”
+        mensaje: `Su propósito: “${manillaElegida.intencion || 'Intención en proceso ✨'}”
 Escríbele un deseo que apoye este propósito.`,
         tipo: 'prompt', valor: sugerencia
       });
@@ -1413,7 +1436,7 @@ Escríbele un deseo que apoye este propósito.`,
           tipo: 'choose',
           opciones: [{ titulo: '💬 Responder en el chat', detalle: 'Un mensaje directo' }].concat(nuevas.map(m => ({
             titulo: `✨ Deseo para su Manilla de ${m.tipo_manilla}`,
-            detalle: m.intencion ? `“${m.intencion}”` : 'Sin intención registrada',
+            detalle: m.intencion ? `“${m.intencion}”` : 'Intención en proceso ✨',
             img: miniaturaManilla(m)
           })))
         });
@@ -1530,13 +1553,236 @@ Escríbele un deseo que apoye este propósito.`,
         document.getElementById(t).classList.toggle('on', on);
         document.getElementById(b).classList.toggle('on', on);
       });
+      document.getElementById('secRitual').classList.add('hidden');
       if (tab === 'deseos') cargarDeseosYChatGeneral();
       if (tab === 'diario') renderizarDiario();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    // ===================== RITUAL DE INTENCIONAMIENTO =====================
+    const RT_ANTES_TEXTO = [
+      'Un momento para conectar con tu intención.',
+      'Una intención es mucho más que un deseo: es una decisión consciente sobre aquello que quieres atraer, fortalecer o transformar en tu vida.',
+      'Esta experiencia es una invitación a hacer una pausa, mirar hacia tu interior y reconocer qué necesitas en este momento de tu vida. La manilla que recibiste representa una intención particular: abundancia, protección o amor. A través de este ritual, tendrás la oportunidad de darle un significado personal y convertirla en un recordatorio de aquello que quieres cultivar.',
+      'No se trata solamente de pedir o esperar que algo suceda, sino de reconocer qué deseas, qué necesitas soltar y qué acciones puedes comenzar a tomar para acercarte a ello.',
+      'Busca un espacio tranquilo, deja a un lado las distracciones y permítete vivir cada momento con calma. No hay respuestas correctas o incorrectas; lo importante es que cada palabra y cada intención tengan un significado verdadero para ti.',
+      'Antes de comenzar, tómate unos minutos para responder:'
+    ];
+    const RT_ANTES_PREGUNTAS = [
+      '¿Cómo me siento en este momento de mi vida?',
+      '¿Qué aspecto de mi vida necesita más atención?',
+      '¿Qué deseo atraer, transformar o fortalecer?',
+      '¿Qué estoy listo/a para soltar?',
+      '¿Qué quiero comprometerme a hacer por mí a partir de hoy?'
+    ];
+    const RT_ANTES_CIERRE = 'Escribe tus respuestas con honestidad. Este será el punto de partida para intencionar tu manilla.';
+    const RT_TIPOS = {
+      Abundancia: {
+        titulo: 'Abundancia', emoji: '✨', lema: 'Abrirme a recibir, crecer y construir prosperidad.',
+        reflexTitulo: 'Reflexiona sobre tu abundancia:',
+        preguntas: [
+          '¿Qué significa para mí vivir en abundancia?',
+          '¿Qué quiero atraer a mi vida en este momento?',
+          '¿Qué creencias o miedos necesito soltar para permitirme recibir?',
+          '¿Qué oportunidades quiero aprender a reconocer?',
+          '¿Qué puedo hacer para construir una vida con mayor bienestar y prosperidad?'
+        ],
+        metasTitulo: 'Escribe tres metas que quieras alcanzar:', metasNombre: 'metas',
+        palabras: '«Me abro a recibir la abundancia en todas sus formas. Reconozco mi valor, confío en mis capacidades y me permito crecer. Estoy dispuesto/a a recibir nuevas oportunidades, construir mi prosperidad y trabajar por la vida que deseo. Agradezco lo que tengo y recibo con confianza lo que está por llegar. Merezco vivir en bienestar, plenitud y abundancia».',
+        compromiso: 'Cada vez que mire esta manilla, recordaré las metas que escribí y las acciones que puedo realizar para acercarme a ellas.'
+      },
+      Proteccion: {
+        titulo: 'Protección', emoji: '🛡️', lema: 'Cuidar mi energía, mi paz y mis límites.',
+        reflexTitulo: 'Reflexiona sobre tu protección:',
+        preguntas: [
+          '¿Qué necesito proteger y cuidar en mi vida?',
+          '¿Qué situaciones o relaciones están afectando mi tranquilidad?',
+          '¿En qué aspectos necesito aprender a poner límites?',
+          '¿Qué necesito dejar de permitir?',
+          '¿Qué puedo hacer para sentirme más seguro/a y en paz conmigo mismo/a?'
+        ],
+        metasTitulo: 'Escribe tres compromisos personales:', metasNombre: 'compromisos',
+        palabras: '«Mi paz es importante y mi energía merece ser cuidada. Me permito establecer límites, alejarme de aquello que no me hace bien y elegir los espacios y las personas que aportan tranquilidad a mi vida. Confío en mi capacidad para protegerme, escucharme y tomar decisiones que respeten mi bienestar. Estoy a salvo en mis decisiones y merezco vivir en armonía».',
+        compromiso: 'Cada vez que mire esta manilla, recordaré que tengo derecho a cuidar mi tranquilidad, establecer límites y elegirme.'
+      },
+      Amor: {
+        titulo: 'Amor', emoji: '💗', lema: 'Elegirme, reconocer mi valor y construir seguridad emocional.',
+        reflexTitulo: 'Reflexiona sobre tu relación contigo mismo/a:',
+        preguntas: [
+          '¿Qué aspectos de mí necesito aprender a valorar más?',
+          '¿En qué momentos he dejado de elegirme por complacer a otras personas?',
+          '¿Qué necesito sanar o trabajar para sentirme emocionalmente seguro/a?',
+          '¿Qué significa para mí sentirme amado/a y respetado/a?',
+          '¿Cómo puedo demostrarme amor propio en mis acciones cotidianas?',
+          '¿Qué cosas ya no estoy dispuesto/a a aceptar en nombre del amor?'
+        ],
+        metasTitulo: 'Escribe tres compromisos contigo mismo/a:', metasNombre: 'compromisos',
+        palabras: '«Me elijo, me respeto y reconozco mi valor. Soy suficiente y merezco un amor sano, tranquilo y recíproco, empezando por el amor que me doy a mí mismo/a. Confío en mi voz, en mis decisiones y en mi capacidad de construir relaciones desde el respeto y la seguridad emocional. No necesito dejar de ser quien soy para merecer amor. Me comprometo a cuidarme, escucharme y no abandonarme».',
+        compromiso: 'Cada vez que mire esta manilla, recordaré que el amor que merezco también comienza en la forma en que me trato.'
+      }
+    };
+    const RT_PASOS = ['espacio', 'antes', 'reflexion', 'metas', 'palabras'];
+    let rtCache = {}, rtActual = null, rtTimer = null, rtGuardando = null;
+
+    const rtLleno = (arr, n) => Array.isArray(arr) && arr.length >= n && arr.slice(0, n).every(x => String(x || '').trim());
+    const rtHechos = r => !r ? 0 : (r.cerrado_en ? 6 : RT_PASOS.filter(p => r.pasos && r.pasos[p]).length);
+
+    async function cargarRituales() {
+      rtCache = {};
+      if (!usuarioActual) return;
+      const { data } = await db.from('rituales').select('*').eq('usuario_id', usuarioActual.id);
+      (data || []).forEach(r => rtCache[r.manilla_id] = r);
+    }
+
+    function actualizarBotonRitual() {
+      const btn = document.getElementById('btnRitual'); if (!btn) return;
+      const m = manillaSeleccionadaActual;
+      if (!m || m.estado === 'PENDIENTE') { btn.classList.add('hidden'); return; }
+      btn.classList.remove('hidden');
+      const r = rtCache[m.id], n = rtHechos(r);
+      btn.innerHTML = !r ? '✨ Empezar ritual' : r.cerrado_en ? '📖 Ver mi ritual' : `🌙 Continuar ritual · ${n}/6`;
+    }
+
+    async function abrirRitual() {
+      const m = manillaSeleccionadaActual; if (!m) return;
+      let r = rtCache[m.id];
+      if (!r) {
+        const tipo = ['Abundancia', 'Proteccion', 'Amor'].includes((m.tipo_manilla || '').trim()) ? m.tipo_manilla.trim() : null;
+        const { data, error } = await db.from('rituales').insert({ manilla_id: m.id, usuario_id: usuarioActual.id, tipo_ritual: tipo }).select().single();
+        if (error) { alert('No se pudo empezar el ritual. Intenta de nuevo.'); return; }
+        r = rtCache[m.id] = data;
+      }
+      rtActual = { m, r };
+      ['secInicio','secDeseos','secPiedras','secDiario','secPerfil'].forEach(id => document.getElementById(id).classList.add('hidden'));
+      document.getElementById('secRitual').classList.remove('hidden');
+      renderRitual();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function cerrarVistaRitual() { flushRitual(); cambiarTab('inicio'); }
+
+    function rtGuardarLuego() {
+      const est = document.getElementById('rtEstado'); if (est) est.innerText = 'Guardando…';
+      clearTimeout(rtTimer); rtTimer = setTimeout(flushRitual, 700);
+    }
+    async function flushRitual() {
+      clearTimeout(rtTimer); rtTimer = null;
+      if (!rtActual || rtActual.r.cerrado_en) return true;
+      const r = rtActual.r;
+      rtGuardando = db.from('rituales').update({ tipo_ritual: r.tipo_ritual, pasos: r.pasos, antes: r.antes, reflexion: r.reflexion, metas: r.metas, frase: r.frase })
+        .eq('manilla_id', r.manilla_id);
+      const { error } = await rtGuardando; rtGuardando = null;
+      const est = document.getElementById('rtEstado'); if (est) est.innerText = error ? '⚠️ No se pudo guardar. Revisa tu conexión.' : 'Guardado ✓';
+      actualizarBotonRitual();
+      return !error;
+    }
+
+    function rtCampo(campo, i, valor) {
+      const r = rtActual.r; r[campo] = Array.isArray(r[campo]) ? r[campo].slice() : [];
+      r[campo][i] = valor; rtGuardarLuego();
+    }
+    function rtFrase(v) { rtActual.r.frase = v; rtGuardarLuego(); }
+    function rtElegirTipo(t) {
+      const r = rtActual.r;
+      if (r.tipo_ritual === t) return;
+      r.tipo_ritual = t; r.reflexion = []; r.metas = []; r.pasos = { ...r.pasos, reflexion: false, metas: false, palabras: false };
+      rtGuardarLuego(); renderRitual();
+    }
+    function rtMarcar(paso, marcado) {
+      const r = rtActual.r, t = RT_TIPOS[r.tipo_ritual];
+      if (marcado) {
+        if (paso === 'antes' && !rtLleno(r.antes, 5)) { alert('Responde las 5 preguntas antes de continuar 🌙'); renderRitual(); return; }
+        if (paso === 'reflexion' && (!t || !rtLleno(r.reflexion, t.preguntas.length))) { alert('Responde todas las preguntas de tu reflexión antes de continuar 🌙'); renderRitual(); return; }
+        if (paso === 'metas' && !rtLleno(r.metas, 3)) { alert(`Escribe tus tres ${t ? t.metasNombre : 'metas'} antes de continuar 🌙`); renderRitual(); return; }
+      }
+      r.pasos = { ...r.pasos, [paso]: marcado };
+      rtGuardarLuego(); renderRitual();
+    }
+
+    async function sellarRitual() {
+      const r = rtActual.r;
+      if (!String(r.frase || '').trim()) { alert('Escribe tu intención para esta manilla en una frase 🌙'); return; }
+      const ok = await hvDialog({ titulo: 'Sellar mi ritual', mensaje: 'Al sellarlo, tu ritual queda guardado tal como está y no podrás editarlo. Siempre podrás volver a leerlo.', tipo: 'confirm' });
+      if (!ok) return;
+      if (!(await flushRitual())) return;
+      const { error } = await db.rpc('cerrar_ritual', { p_manilla_id: r.manilla_id });
+      if (error) { alert(/INCOMPLETO/.test(error.message) ? 'Aún falta completar alguna fase del ritual.' : 'No se pudo sellar tu ritual. Intenta de nuevo.'); return; }
+      r.cerrado_en = new Date().toISOString();
+      rtActual.m.intencion = r.frase.trim();
+      const enLista = misManillas.find(x => x.id === r.manilla_id); if (enLista) enLista.intencion = r.frase.trim();
+      actualizarDetallesManillaActiva();
+      renderRitual(); window.scrollTo({ top: 0, behavior: 'smooth' });
+      alert('Tu ritual quedó sellado ✨ Tu manilla ya lleva tu intención.');
+    }
+
+    function renderRitual() {
+      const cont = document.getElementById('secRitual'); if (!cont || !rtActual) return;
+      const { m, r } = rtActual, t = RT_TIPOS[r.tipo_ritual], p = r.pasos || {}, sellado = !!r.cerrado_en;
+      const n = rtHechos(r), tipoNombre = t ? t.titulo : 'Personalizada';
+      const ta = (campo, i, ph) => sellado
+        ? `<p class="rt-resp">${esc((r[campo] || [])[i] || '')}</p>`
+        : `<textarea class="dv-in rt-ta" rows="2" placeholder="${ph || 'Escribe aquí…'}" oninput="rtCampo('${campo}', ${i}, this.value)">${esc((r[campo] || [])[i] || '')}</textarea>`;
+      const check = (paso, texto) => sellado ? '' : `<label class="rt-check"><input type="checkbox" ${p[paso] ? 'checked' : ''} onchange="rtMarcar('${paso}', this.checked)"> <span>${texto}</span></label>`;
+      const fase = (num, titulo, abierta, hecha, cuerpo) => `<section class="hv-card rt-fase${hecha ? ' hecha' : ''}${abierta ? '' : ' bloq'}">
+          <p class="rt-num">${hecha ? '✓' : abierta ? num : '🔒'} · Fase ${num} de 6</p>
+          <h4 class="rt-h">${titulo}</h4>
+          ${abierta ? cuerpo : '<p class="rt-p rt-mut">Se abre al terminar la fase anterior.</p>'}
+        </section>`;
+
+      let html = `<button type="button" class="rt-volver" onclick="cerrarVistaRitual()">← Volver a Inicio</button>
+        <section class="hv-card rt-head">
+          <p class="rt-kicker">Ritual de intencionamiento</p>
+          <h3 class="rt-titulo">Manilla de ${esc(m.tipo_manilla)}</h3>
+          ${t && m.tipo_manilla !== t.titulo ? `<p class="rt-p">Ritual de ${t.titulo}</p>` : ''}
+          <div class="rt-barra" aria-label="Progreso"><i style="width:${n / 6 * 100}%"></i></div>
+          <p class="rt-mut" id="rtEstado">${sellado ? `Sellado el ${new Date(r.cerrado_en).toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' })} ✨` : `Fase ${Math.min(n + 1, 6)} de 6 · tu progreso se guarda solo`}</p>
+        </section>`;
+
+      html += fase(1, 'Prepara tu espacio', true, p.espacio || sellado, `
+        <p class="rt-p">Busca un lugar tranquilo. Enciende tu palo santo, deja que el humo recorra el espacio y tu manilla, y respira profundo tres veces. Este es tu momento.</p>
+        ${check('espacio', 'Mi espacio está listo')}`);
+
+      html += fase(2, 'Antes de comenzar', p.espacio || sellado, p.antes || sellado, `
+        ${sellado ? '' : RT_ANTES_TEXTO.map((x, i) => `<p class="rt-p${i === 0 ? ' rt-dest' : ''}">${x}</p>`).join('')}
+        ${RT_ANTES_PREGUNTAS.map((q, i) => `<p class="rt-q">${q}</p>${ta('antes', i)}`).join('')}
+        ${sellado ? '' : `<p class="rt-p rt-mut">${RT_ANTES_CIERRE}</p>`}
+        ${check('antes', 'Terminé mis respuestas')}`);
+
+      const abre3 = p.antes || sellado;
+      let cuerpo3 = '';
+      if (!t || (!sellado && !['Abundancia', 'Proteccion', 'Amor'].includes(m.tipo_manilla))) {
+        cuerpo3 += `<p class="rt-p">Tu manilla es personalizada. Elige qué quieres trabajar en este ritual:</p>
+          <div class="rt-tipos">${Object.entries(RT_TIPOS).map(([k, v]) => `<button type="button" class="rt-tipo${r.tipo_ritual === k ? ' on' : ''}" onclick="rtElegirTipo('${k}')" ${sellado ? 'disabled' : ''}>${v.emoji} ${v.titulo}</button>`).join('')}</div>`;
+      }
+      if (t) {
+        cuerpo3 += `<p class="rt-lema">${t.lema}</p><p class="rt-p">${t.reflexTitulo}</p>
+          ${t.preguntas.map((q, i) => `<p class="rt-q">${q}</p>${ta('reflexion', i)}`).join('')}
+          ${check('reflexion', 'Terminé mi reflexión')}`;
+      }
+      html += fase(3, t ? `${t.emoji} ${t.titulo}` : 'Reflexiona', abre3, (p.reflexion && t) || sellado, cuerpo3);
+
+      html += fase(4, t ? (t.metasNombre === 'metas' ? 'Tus tres metas' : 'Tus tres compromisos') : 'Tus tres metas o compromisos', (p.reflexion && t) || sellado, p.metas || sellado, t ? `
+        <p class="rt-p">${t.metasTitulo}</p>
+        ${[0, 1, 2].map(i => `<div class="rt-meta"><b>${i + 1}.</b>${ta('metas', i, 'Escribe aquí…')}</div>`).join('')}
+        ${check('metas', 'Escribí mis tres')}` : '');
+
+      html += fase(5, 'Palabras para intencionar tu manilla', p.metas || sellado, p.palabras || sellado, t ? `
+        <p class="rt-p">Sostén tu manilla entre las manos y lee en voz alta:</p>
+        <blockquote class="rt-palabras">${t.palabras}</blockquote>
+        ${check('palabras', 'Lo leí en voz alta')}` : '');
+
+      html += fase(6, 'Mi compromiso', p.palabras || sellado, sellado, t ? `
+        <p class="rt-p rt-dest">Mi compromiso: ${t.compromiso}</p>
+        <p class="rt-q">Mi intención para esta manilla (en una frase):</p>
+        ${sellado ? `<p class="rt-resp rt-frase">“${esc(r.frase)}”</p>` : `<textarea class="dv-in rt-ta" rows="2" maxlength="300" placeholder="Ej: Me elijo cada día y cuido mi paz." oninput="rtFrase(this.value)">${esc(r.frase || '')}</textarea>
+        <p class="rt-p rt-mut">Esta frase será la intención de tu manilla, la que verán tus amigos. Al sellar tu ritual quedará guardado y no podrás editarlo.</p>
+        <button type="button" class="hv-gold rt-sellar" onclick="sellarRitual()">Sellar mi ritual ✨</button>`}` : '');
+
+      cont.innerHTML = html;
+      cont.querySelectorAll('.rt-ta').forEach(x => { x.style.height = 'auto'; x.style.height = x.scrollHeight + 'px'; x.addEventListener('input', () => { x.style.height = 'auto'; x.style.height = x.scrollHeight + 'px'; }); });
+    }
+
     // ===================== DIARIO =====================
-    // Se guarda solo en este dispositivo (localStorage), por privacidad.
+    // Se guarda en Supabase (tablas diario y perfil_privado), privado gracias a RLS.
     const DV_EMOCIONES = [
       ['Alegría','😊'], ['Calma','🍃'], ['Gratitud','🙏'], ['Amor','💗'], ['Esperanza','🌱'], ['Entusiasmo','✨'],
       ['Tristeza','🌧️'], ['Ansiedad','🌀'], ['Miedo','🫧'], ['Ira','🔥'], ['Frustración','😤'], ['Cansancio','😴']
@@ -1556,10 +1802,58 @@ Escríbele un deseo que apoye este propósito.`,
     const dvDias = (a, b) => Math.round((dvParse(a) - dvParse(b)) / 864e5);
     const dvMay = t => t.charAt(0).toUpperCase() + t.slice(1);
     const dvClave = t => `hv_${t}_${usuarioActual ? usuarioActual.id : 'anon'}`;
-    function dvLeer(t, def) { try { const v = localStorage.getItem(dvClave(t)); return v ? JSON.parse(v) : def; } catch (e) { return def; } }
+    // El diario y el ciclo se guardan en Supabase (privados: solo la dueña los ve). Caché en memoria.
+    const dvCache = { cargado: false, cargando: null, diario: {}, ciclo: null };
+    function dvLeer(t, def) {
+      if (t === 'diario') return dvCache.diario;
+      if (t === 'ciclo') return dvCache.ciclo || def;
+      return def;
+    }
+    function dvAviso(error) { if (error) alert('No se pudo guardar. Revisa tu conexión e intenta de nuevo.'); }
     function dvEscribir(t, v) {
-      try { localStorage.setItem(dvClave(t), JSON.stringify(v)); return true; }
-      catch (e) { alert('No se pudo guardar en este dispositivo. Revisa que no estés en modo privado.'); return false; }
+      if (t === 'ciclo') {
+        dvCache.ciclo = v;
+        db.from('perfil_privado').upsert({ usuario_id: usuarioActual.id, ciclo: v, actualizado_en: new Date().toISOString() }, { onConflict: 'usuario_id' })
+          .then(({ error }) => dvAviso(error));
+      }
+      return true;
+    }
+    function dvGuardarDia(fecha, datos) {
+      dvCache.diario[fecha] = datos;
+      db.from('diario').upsert({ usuario_id: usuarioActual.id, fecha, datos, actualizado_en: new Date().toISOString() }, { onConflict: 'usuario_id,fecha' })
+        .then(({ error }) => dvAviso(error));
+      return true;
+    }
+    // Carga el diario y el ciclo; la primera vez sube lo que estaba guardado solo en este celular
+    function dvCargar() {
+      if (dvCache.cargado) return Promise.resolve();
+      if (dvCache.cargando) return dvCache.cargando;
+      dvCache.cargando = (async () => {
+        if (!usuarioActual) return;
+        const [{ data: filas }, { data: perfil }] = await Promise.all([
+          db.from('diario').select('fecha, datos').eq('usuario_id', usuarioActual.id),
+          db.from('perfil_privado').select('ciclo').eq('usuario_id', usuarioActual.id).maybeSingle()
+        ]);
+        dvCache.diario = {}; (filas || []).forEach(f => dvCache.diario[f.fecha] = f.datos || {});
+        dvCache.ciclo = perfil ? perfil.ciclo : null;
+        try {
+          const local = JSON.parse(localStorage.getItem(dvClave('diario')) || 'null');
+          if (local && typeof local === 'object') {
+            const nuevas = Object.keys(local).filter(f => !dvCache.diario[f])
+              .map(f => ({ usuario_id: usuarioActual.id, fecha: f, datos: local[f] }));
+            const { error } = nuevas.length ? await db.from('diario').upsert(nuevas, { onConflict: 'usuario_id,fecha' }) : { error: null };
+            if (!error) { nuevas.forEach(n => dvCache.diario[n.fecha] = n.datos); localStorage.removeItem(dvClave('diario')); }
+          }
+          const cicloLocal = JSON.parse(localStorage.getItem(dvClave('ciclo')) || 'null');
+          if (cicloLocal) {
+            let error = null;
+            if (!dvCache.ciclo) ({ error } = await db.from('perfil_privado').upsert({ usuario_id: usuarioActual.id, ciclo: cicloLocal }, { onConflict: 'usuario_id' }));
+            if (!error) { if (!dvCache.ciclo) dvCache.ciclo = cicloLocal; localStorage.removeItem(dvClave('ciclo')); }
+          }
+        } catch (e) {}
+        dvCache.cargado = true;
+      })().finally(() => { dvCache.cargando = null; });
+      return dvCache.cargando;
     }
 
     function faseLunar(d = new Date()) {
@@ -1778,6 +2072,11 @@ Escríbele un deseo que apoye este propósito.`,
 
     function renderizarDiario() {
       const cont = document.getElementById('secDiario'); if (!cont) return;
+      if (!dvCache.cargado) {
+        cont.innerHTML = '<p class="dv-priv" style="padding:2rem 0">Cargando tu diario… 🌙</p>';
+        dvCargar().then(() => { if (dvCache.cargado) renderizarDiario(); });
+        return;
+      }
       const hoy = dvFecha();
       const diario = dvLeer('diario', {}) || {};
       if (dvFechaHoy !== hoy || !dvHoy) {
@@ -1842,7 +2141,7 @@ Escríbele un deseo que apoye este propósito.`,
         </section>
 
         <button type="button" class="dv-btn dv-cerrar" onclick="abrirGratitud()">${yaGuardado ? 'Actualizar mi día' : 'Cerrar mi día'} 🌙</button>
-        <p class="dv-priv">🔒 Tu diario se guarda solo en este celular.</p>
+        <p class="dv-priv">🔒 Tu diario es privado: solo tú puedes verlo.</p>
 
         <section class="dv-card">
           <h4 class="dv-h">Mis reportes 📊</h4>
@@ -1914,9 +2213,9 @@ Escríbele un deseo que apoye este propósito.`,
       if (conGratitud) dvHoy.gratitud = document.getElementById('dvGratInput').value.trim();
       const diario = dvLeer('diario', {}) || {};
       const fase = faseCiclo(dvLeer('ciclo', null), dvFechaHoy);
-      diario[dvFechaHoy] = { ...dvHoy, sentir: (dvHoy.sentir || '').trim(), reflexion: (dvHoy.reflexion || '').trim(),
+      const datosDia = { ...dvHoy, sentir: (dvHoy.sentir || '').trim(), reflexion: (dvHoy.reflexion || '').trim(),
                              fase: fase ? fase.fase : null, guardado: new Date().toISOString() };
-      if (dvEscribir('diario', diario)) {
+      if (dvGuardarDia(dvFechaHoy, datosDia)) {
         alert(conGratitud && dvHoy.gratitud ? 'Tu día quedó guardado. Gracias por agradecer 🙏✨' : 'Tu día quedó guardado ✨');
         renderizarDiario();
       }
