@@ -1560,22 +1560,41 @@ Escríbele un deseo que apoye este propósito.`,
     }
 
     // ===================== RITUAL DE INTENCIONAMIENTO =====================
+    // Versión 2 (actual): 3 preguntas
+    const RT_ANTES_TITULO = 'Un momento para conectar contigo.';
     const RT_ANTES_TEXTO = [
-      'Un momento para conectar con tu intención.',
       'Una intención es mucho más que un deseo: es una decisión consciente sobre aquello que quieres atraer, fortalecer o transformar en tu vida.',
-      'Esta experiencia es una invitación a hacer una pausa, mirar hacia tu interior y reconocer qué necesitas en este momento de tu vida. La manilla que recibiste representa una intención particular: abundancia, protección o amor. A través de este ritual, tendrás la oportunidad de darle un significado personal y convertirla en un recordatorio de aquello que quieres cultivar.',
-      'No se trata solamente de pedir o esperar que algo suceda, sino de reconocer qué deseas, qué necesitas soltar y qué acciones puedes comenzar a tomar para acercarte a ello.',
-      'Busca un espacio tranquilo, deja a un lado las distracciones y permítete vivir cada momento con calma. No hay respuestas correctas o incorrectas; lo importante es que cada palabra y cada intención tengan un significado verdadero para ti.',
-      'Antes de comenzar, tómate unos minutos para responder:'
+      'Este espacio es una invitación a hacer una pausa en medio de la rutina, desconectarte por un momento de las distracciones y dedicarte tiempo. Es una oportunidad para conectar contigo, reconocer lo que realmente es importante para ti y darle un propósito a la experiencia que estás por vivir.',
+      'La manilla que recibiste será un símbolo de esa intención. Sin embargo, su significado no estará únicamente en llevarla puesta, sino en lo que representa para ti y en el compromiso que decides asumir contigo mismo/a.'
     ];
+    const RT_ANTES_INTRO_PREGUNTAS = 'Antes de comenzar, tómate unos minutos para reflexionar:';
     const RT_ANTES_PREGUNTAS = [
-      '¿Cómo me siento en este momento de mi vida?',
-      '¿Qué aspecto de mi vida necesita más atención?',
-      '¿Qué deseo atraer, transformar o fortalecer?',
-      '¿Qué estoy listo/a para soltar?',
-      '¿Qué quiero comprometerme a hacer por mí a partir de hoy?'
+      '¿En qué momento de mi vida siento que estoy y cómo describiría esta etapa?',
+      '¿Qué deseo profundamente en este momento de mi vida y por qué es tan importante para mí conseguirlo?',
+      'Si lograra aquello que tanto deseo, ¿qué cambiaría dentro de mí y cómo me gustaría sentirme?'
     ];
-    const RT_ANTES_CIERRE = 'Escribe tus respuestas con honestidad. Este será el punto de partida para intencionar tu manilla.';
+    const RT_ANTES_CIERRE = 'No busques respuestas perfectas. Escribe desde la honestidad, incluso si encuentras respuestas que no esperabas. Este es un momento para reconocerte, comprender tus motivaciones y conectar con aquello que verdaderamente tiene valor para ti.';
+    // Versión 1: solo para rituales que se empezaron antes del cambio (conservan sus 5 respuestas)
+    const RT_ANTES_V1 = {
+      titulo: 'Un momento para conectar con tu intención.',
+      texto: [
+        'Una intención es mucho más que un deseo: es una decisión consciente sobre aquello que quieres atraer, fortalecer o transformar en tu vida.',
+        'Esta experiencia es una invitación a hacer una pausa, mirar hacia tu interior y reconocer qué necesitas en este momento de tu vida. La manilla que recibiste representa una intención particular: abundancia, protección o amor. A través de este ritual, tendrás la oportunidad de darle un significado personal y convertirla en un recordatorio de aquello que quieres cultivar.',
+        'No se trata solamente de pedir o esperar que algo suceda, sino de reconocer qué deseas, qué necesitas soltar y qué acciones puedes comenzar a tomar para acercarte a ello.',
+        'Busca un espacio tranquilo, deja a un lado las distracciones y permítete vivir cada momento con calma. No hay respuestas correctas o incorrectas; lo importante es que cada palabra y cada intención tengan un significado verdadero para ti.'
+      ],
+      intro: 'Antes de comenzar, tómate unos minutos para responder:',
+      preguntas: [
+        '¿Cómo me siento en este momento de mi vida?',
+        '¿Qué aspecto de mi vida necesita más atención?',
+        '¿Qué deseo atraer, transformar o fortalecer?',
+        '¿Qué estoy listo/a para soltar?',
+        '¿Qué quiero comprometerme a hacer por mí a partir de hoy?'
+      ],
+      cierre: 'Escribe tus respuestas con honestidad. Este será el punto de partida para intencionar tu manilla.'
+    };
+    const rtAntes = r => (r && r.version === 1) ? RT_ANTES_V1
+      : { titulo: RT_ANTES_TITULO, texto: RT_ANTES_TEXTO, intro: RT_ANTES_INTRO_PREGUNTAS, preguntas: RT_ANTES_PREGUNTAS, cierre: RT_ANTES_CIERRE };
     const RT_TIPOS = {
       Abundancia: {
         titulo: 'Abundancia', emoji: '✨', lema: 'Abrirme a recibir, crecer y construir prosperidad.',
@@ -1690,7 +1709,7 @@ Escríbele un deseo que apoye este propósito.`,
     function rtMarcar(paso, marcado) {
       const r = rtActual.r, t = RT_TIPOS[r.tipo_ritual];
       if (marcado) {
-        if (paso === 'antes' && !rtLleno(r.antes, 5)) { alert('Responde las 5 preguntas antes de continuar 🌙'); renderRitual(); return; }
+        if (paso === 'antes' && !rtLleno(r.antes, rtAntes(r).preguntas.length)) { alert(`Responde las ${rtAntes(r).preguntas.length} preguntas antes de continuar 🌙`); renderRitual(); return; }
         if (paso === 'reflexion' && (!t || !rtLleno(r.reflexion, t.preguntas.length))) { alert('Responde todas las preguntas de tu reflexión antes de continuar 🌙'); renderRitual(); return; }
         if (paso === 'metas' && !rtLleno(r.metas, 3)) { alert(`Escribe tus tres ${t ? t.metasNombre : 'metas'} antes de continuar 🌙`); renderRitual(); return; }
       }
@@ -1738,13 +1757,13 @@ Escríbele un deseo que apoye este propósito.`,
         </section>`;
 
       html += fase(1, 'Prepara tu espacio', true, p.espacio || sellado, `
-        <p class="rt-p">Busca un lugar tranquilo. Enciende tu palo santo, deja que el humo recorra el espacio y tu manilla, y respira profundo tres veces. Este es tu momento.</p>
+        <p class="rt-p">Busca un lugar tranquilo donde nadie te interrumpa. Si quieres, pon música relajante. Enciende tu palo santo, deja que el humo recorra el espacio y tu manilla, y respira profundo tres veces. Este es un momento para ti.</p>
         ${check('espacio', 'Mi espacio está listo')}`);
 
       html += fase(2, 'Antes de comenzar', p.espacio || sellado, p.antes || sellado, `
-        ${sellado ? '' : RT_ANTES_TEXTO.map((x, i) => `<p class="rt-p${i === 0 ? ' rt-dest' : ''}">${x}</p>`).join('')}
-        ${RT_ANTES_PREGUNTAS.map((q, i) => `<p class="rt-q">${q}</p>${ta('antes', i)}`).join('')}
-        ${sellado ? '' : `<p class="rt-p rt-mut">${RT_ANTES_CIERRE}</p>`}
+        ${sellado ? '' : `<p class="rt-p rt-dest">${rtAntes(r).titulo}</p>${rtAntes(r).texto.map(x => `<p class="rt-p">${x}</p>`).join('')}<p class="rt-p" style="font-weight:600">${rtAntes(r).intro}</p>`}
+        ${rtAntes(r).preguntas.map((q, i) => `<p class="rt-q">${i + 1}. ${q}</p>${ta('antes', i)}`).join('')}
+        ${sellado ? '' : `<p class="rt-p rt-mut">${rtAntes(r).cierre}</p>`}
         ${check('antes', 'Terminé mis respuestas')}`);
 
       const abre3 = p.antes || sellado;
