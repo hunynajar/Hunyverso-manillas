@@ -437,7 +437,7 @@
         </div>
 
         <div>
-          <p class="amigos-t">Mis amigos · toca uno para enviarle un deseo</p>
+          <p class="amigos-t">Mis amigos · toca uno para escribirle</p>
           <div id="listaAmigos" class="amigos"></div>
         </div>
 
@@ -1184,7 +1184,7 @@ async function convertirManillaPendienteEnActiva() {
             </div>
             <p class="wq">${esc(d.mensaje_deseo)}</p>
             <div class="flex justify-end gap-4 pt-1">
-              <button onclick="enviarDeseoA(${esc(JSON.stringify(d.remitente_id ?? null))}, ${esc(JSON.stringify(quien))})" class="wa">${esTarea ? 'Enviar deseo 💌' : 'Enviar apoyo'}</button>
+              <button onclick="escribirA(${esc(JSON.stringify(d.remitente_id ?? null))}, ${esc(JSON.stringify(quien))})" class="wa">${esTarea ? 'Enviar deseo 💌' : 'Enviar apoyo'}</button>
               ${esTarea ? '' : `<button onclick="eliminarDeseo(${d.id})" class="wd">Eliminar</button>`}
             </div>
           </div>
@@ -1196,7 +1196,7 @@ async function convertirManillaPendienteEnActiva() {
           <div class="wish${d.leido === false ? ' nuevo' : ''}">
             <div class="flex justify-between items-center gap-2">
               <span class="wf">De: ${esc(d.remitente_nombre)}</span>
-              <span class="flex items-center gap-2">${nuevo}<span class="chip">Manilla ${esc(tipoManillaRef)}</span></span>
+              <span class="flex items-center gap-2">${nuevo}<span class="chip">${d.tipo === 'respuesta' ? 'Respuesta 💬' : 'Manilla ' + esc(tipoManillaRef)}</span></span>
             </div>
             <p class="wq">“${esc(d.mensaje_deseo)}”</p>
             <div class="flex justify-end gap-4 pt-1">
@@ -1292,7 +1292,7 @@ async function convertirManillaPendienteEnActiva() {
     // "Responder" usa el mismo flujo: ver las manillas del amigo y enviarle un deseo
     function responderDeseo(nombreRemitente, remitenteId) {
       if (!remitenteId) { alert('Este deseo es anterior a la función de respuestas y no se puede responder.'); return; }
-      enviarDeseoA(remitenteId, nombreRemitente);
+      escribirA(remitenteId, nombreRemitente);
     }
 
     const SUGERENCIAS_DESEO = {
@@ -1311,10 +1311,12 @@ async function convertirManillaPendienteEnActiva() {
 
     // Muestra las manillas (y propósitos) de un amigo, pide el deseo, lo envía
     // y cierra las tareas de Universo pendientes con ese amigo. Devuelve true si se envió.
-    async function enviarDeseoA(amigoId, nombre) {
+    async function enviarDeseoA(amigoId, nombre, manillaFija = null) {
       if (!amigoId || !usuarioActual) return false;
       nombre = nombre || 'tu amigo';
 
+      let manillaElegida = manillaFija;
+      if (!manillaElegida) {
       const { data: manillasAmigo, error: errMan } = await db.from('manillas_usuario').select('*').eq('usuario_id', amigoId).order('id');
       if (errMan) { alert('Error al leer las manillas: ' + errMan.message); return false; }
       if (!manillasAmigo || manillasAmigo.length === 0) { alert(`${nombre} aún no tiene manillas registradas.`); return false; }
@@ -1330,7 +1332,8 @@ async function convertirManillaPendienteEnActiva() {
         }))
       });
       if (idx === null || idx === undefined) return false;
-      const manillaElegida = manillasAmigo[idx];
+      manillaElegida = manillasAmigo[idx];
+      }
 
       const sugerencia = SUGERENCIAS_DESEO[(manillaElegida.tipo_manilla || '').trim()] || 'Que la luz y la buena energía te acompañen siempre.';
       const mensajeDeseo = await hvDialog({
@@ -1349,17 +1352,66 @@ Escríbele un deseo que apoye este propósito.`,
       }]);
       if (errIns) { alert('No se pudo enviar el deseo: ' + errIns.message); return false; }
 
-      // Las tareas y señales de ayuda de Universo sobre este amigo quedan completadas
-      if (misManillas.length) {
-        await db.from('deseos_amigos').delete()
-          .in('tipo', ['tarea', 'ayuda'])
-          .eq('remitente_id', amigoId)
-          .in('manilla_id', misManillas.map(m => m.id));
-      }
-
+      await completarTareasDe(amigoId);
       alert(`¡Tu deseo llegó a la manilla de ${nombre}! ✨`);
       cargarDeseosYChatGeneral();
       return true;
+    }
+
+    // Las tareas y señales de ayuda de Universo sobre este amigo quedan completadas
+    async function completarTareasDe(amigoId) {
+      if (!misManillas.length) return;
+      await db.from('deseos_amigos').delete()
+        .in('tipo', ['tarea', 'ayuda'])
+        .eq('remitente_id', amigoId)
+        .in('manilla_id', misManillas.map(m => m.id));
+    }
+
+    // Escribirle a un amigo:
+    //  - la primera vez: ver sus manillas y enviar un deseo a sus propósitos;
+    //  - después: responder directo en el chat;
+    //  - si tiene una manilla nueva (sin deseo tuyo): elegir entre responder o enviarle un deseo a esa manilla.
+    async function escribirA(amigoId, nombre) {
+      if (!amigoId || !usuarioActual) return;
+      nombre = nombre || 'tu amigo';
+      const { data: manillas, error } = await db.from('manillas_usuario').select('*').eq('usuario_id', amigoId).order('id');
+      if (error) { alert('Error al leer las manillas: ' + error.message); return; }
+      if (!manillas || !manillas.length) { alert(`${nombre} aún no tiene manillas registradas.`); return; }
+
+      const { data: mios } = await db.from('deseos_amigos').select('manilla_id, tipo, created_at, id')
+        .eq('remitente_id', usuarioActual.id).in('manilla_id', manillas.map(m => m.id))
+        .order('created_at', { ascending: false }).order('id', { ascending: false });
+      const conDeseo = new Set((mios || []).filter(d => (d.tipo || 'deseo') === 'deseo').map(d => d.manilla_id));
+      const nuevas = manillas.filter(m => !conDeseo.has(m.id));
+
+      if (nuevas.length === manillas.length) { await enviarDeseoA(amigoId, nombre); return; }
+
+      if (nuevas.length) {
+        const idx = await hvDialog({
+          titulo: `Escribirle a ${nombre}`,
+          mensaje: `${nombre} tiene ${nuevas.length === 1 ? 'una manilla nueva' : 'manillas nuevas'}. ¿Qué quieres hacer?`,
+          tipo: 'choose',
+          opciones: [{ titulo: '💬 Responder en el chat', detalle: 'Un mensaje directo' }].concat(nuevas.map(m => ({
+            titulo: `✨ Deseo para su Manilla de ${m.tipo_manilla}`,
+            detalle: m.intencion ? `“${m.intencion}”` : 'Sin intención registrada',
+            img: miniaturaManilla(m)
+          })))
+        });
+        if (idx === null || idx === undefined) return;
+        if (idx > 0) { await enviarDeseoA(amigoId, nombre, nuevas[idx - 1]); return; }
+      }
+
+      const destino = (mios && mios.length && mios[0].manilla_id) || (manillas.find(m => m.estado === 'ACTIVA') || manillas[0]).id;
+      const texto = await hvDialog({ titulo: `Responder a ${nombre}`, mensaje: 'Escribe tu mensaje', tipo: 'prompt', placeholder: 'Tu mensaje…' });
+      if (!texto) return;
+      const { error: errIns } = await db.from('deseos_amigos').insert([{
+        manilla_id: destino, remitente_id: usuarioActual.id, remitente_nombre: usuarioActual.nombre,
+        mensaje_deseo: texto, tipo: 'respuesta'
+      }]);
+      if (errIns) { alert('No se pudo enviar el mensaje: ' + errIns.message); return; }
+      await completarTareasDe(amigoId);
+      alert(`Tu mensaje llegó a ${nombre} 💬`);
+      cargarDeseosYChatGeneral();
     }
 
     // Universo le deja al amigo la tarea de responder con un deseo (una sola pendiente por amigo)
@@ -1397,7 +1449,7 @@ Escríbele un deseo que apoye este propósito.`,
       const { data: amigos } = await db.from('usuarios').select('id, nombre').in('id', ids);
       cont.innerHTML = (amigos || [])
         .sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''))
-        .map(a => `<button class="amigo" onclick="enviarDeseoA(${esc(JSON.stringify(a.id))}, ${esc(JSON.stringify(a.nombre))})"><i>${esc((a.nombre || '?').trim().charAt(0).toUpperCase())}</i>${esc(a.nombre)}</button>`)
+        .map(a => `<button class="amigo" onclick="escribirA(${esc(JSON.stringify(a.id))}, ${esc(JSON.stringify(a.nombre))})"><i>${esc((a.nombre || '?').trim().charAt(0).toUpperCase())}</i>${esc(a.nombre)}</button>`)
         .join('');
     }
 
@@ -1823,7 +1875,7 @@ Escríbele un deseo que apoye este propósito.`,
         opciones: lista.map(a => ({ titulo: a.nombre, detalle: a.username ? '@' + a.username : '' }))
       });
       if (idx === null || idx === undefined) return;
-      enviarDeseoA(lista[idx].id, lista[idx].nombre);
+      escribirA(lista[idx].id, lista[idx].nombre);
     }
 
     function abrirGratitud() {
