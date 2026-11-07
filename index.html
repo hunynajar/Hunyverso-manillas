@@ -234,7 +234,7 @@
 
         <div id="campoCodigoRegistro">
           <label class="text-[11px] text-purple-300 font-semibold">Código de la Manilla Física</label>
-          <input type="text" id="inputCodigoManilla" placeholder="Ej: HUNY-1001" class="w-full text-sm uppercase mt-1 hv-f">
+          <input type="text" id="inputCodigoManilla" placeholder="Ej: 7KQ2XM" class="w-full text-sm uppercase mt-1 hv-f">
         </div>
 
         <div id="seccionElegirManilla">
@@ -438,7 +438,7 @@
         <!-- CAMPO CÓDIGO (Se oculta si es Personalizada) -->
         <div id="modalCampoCodigo">
           <label class="text-[11px] text-purple-300 font-semibold">Código de la Manilla Física</label>
-          <input type="text" id="modalInputCodigo" placeholder="Ej: HUNY-1002" class="w-full text-xs uppercase hv-f">
+          <input type="text" id="modalInputCodigo" placeholder="Ej: 7KQ2XM" class="w-full text-xs uppercase hv-f">
         </div>
 
         <!-- SECCIÓN PIEDRAS (Solo para Personalizada) -->
@@ -849,7 +849,7 @@ function actualizarDetallesManillaActiva() {
           divActivacion.className = 'mt-3 pt-3 border-t border-amber-500/20 space-y-2 text-left';
           divActivacion.innerHTML = `
             <p class="text-[11px] text-amber-300 font-semibold">¿Ya tienes tu código físico de esta manilla?</p>
-            <input type="text" id="inputActivarCodigo" placeholder="Ingresa tu código (Ej: HUNY-1050)" class="w-full text-xs uppercase hv-f">
+            <input type="text" id="inputActivarCodigo" placeholder="Ingresa tu código (Ej: 7KQ2XM)" class="w-full text-xs uppercase hv-f">
             <textarea id="inputActivarIntencion" rows="2" placeholder="Escribe la intención definitiva para tu manilla..." class="w-full text-xs resize-none hv-f"></textarea>
             <button onclick="convertirManillaPendienteEnActiva()" class="w-full py-2 text-xs transition hv-gold">
               Registrar Código & Activar Manilla
