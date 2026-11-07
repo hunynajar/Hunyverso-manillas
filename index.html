@@ -86,61 +86,85 @@
     .hv-bottom button.on{color:var(--gold-hi)}.hv-bottom button.on .ic{filter:drop-shadow(0 0 6px rgba(232,201,138,.7))}
     .hv-bottom button.on::after{content:"";position:absolute;bottom:-.2rem;width:1.8rem;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
 
-    /* ===== DIARIO: cálido sobre oscuro ===== */
-    :root{--sand:#E9D6BC;--terra:#C98B6B;--blush:#E8B4A8;--sage:#A9B79A;--cocoa:#3A2A2A}
-    .dv-card{position:relative;padding:1.15rem 1.15rem 1.2rem;border-radius:1.4rem;color:#f3e7da;
-      background:linear-gradient(160deg,rgba(74,52,46,.58),rgba(40,26,30,.78));box-shadow:inset 0 0 0 1px rgba(233,214,188,.2),0 16px 34px -20px rgba(0,0,0,.9);
+    /* ===== DIARIO: azul noche y luna ===== */
+    :root{--dv-acc:#A8C8EC;--dv-plata:#DDE4F0;--dv-oro:#E8C98A;--dv-txt:#E6EDF8;--dv-mut:#93A4BF;--dv-borde:rgba(168,200,236,.2)}
+    .dv-card{position:relative;padding:1.15rem 1.15rem 1.2rem;border-radius:1.4rem;color:var(--dv-txt);
+      background:linear-gradient(160deg,rgba(30,46,82,.66),rgba(14,20,40,.86));box-shadow:inset 0 0 0 1px var(--dv-borde),0 16px 34px -20px rgba(0,0,0,.9);
       -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
-    .dv-h{font-family:var(--ital);font-style:italic;font-weight:600;font-size:1.3rem;line-height:1.2;color:var(--sand)}
-    .dv-sub{font-size:.72rem;color:#c9b6a4;margin-top:.15rem}
-    .dv-head{text-align:center;padding:1.4rem 1rem 1.25rem;background:radial-gradient(120% 90% at 50% 0,rgba(232,180,168,.22),transparent 65%),linear-gradient(160deg,rgba(74,52,46,.58),rgba(40,26,30,.78))}
-    .dv-dia{font-family:var(--ital);font-weight:600;font-size:1.85rem;line-height:1.1;color:#fbeee0}
-    .dv-anio{font-size:.7rem;letter-spacing:.3em;color:var(--terra);margin-top:.3rem}
-    .dv-luna{display:inline-flex;align-items:center;gap:.35rem;margin-top:.7rem;padding:.25rem .75rem;border-radius:999px;font-size:.72rem;color:#e9dccb;background:rgba(233,214,188,.08);box-shadow:inset 0 0 0 1px rgba(233,214,188,.18)}
+    .dv-h{font-family:var(--ital);font-style:italic;font-weight:600;font-size:1.3rem;line-height:1.2;color:var(--dv-plata)}
+    .dv-sub{font-size:.72rem;color:var(--dv-mut);margin-top:.15rem}
+    .dv-head{text-align:center;padding:1.4rem 1rem 1.25rem;background:radial-gradient(120% 90% at 50% 0,rgba(168,200,236,.2),transparent 65%),linear-gradient(160deg,rgba(30,46,82,.66),rgba(14,20,40,.86))}
+    .dv-dia{font-family:var(--ital);font-weight:600;font-size:1.85rem;line-height:1.1;color:#F5F8FD}
+    .dv-anio{font-size:.7rem;letter-spacing:.3em;color:var(--dv-oro);margin-top:.3rem}
+    .dv-luna{display:inline-flex;align-items:center;gap:.35rem;margin-top:.7rem;padding:.25rem .75rem;border-radius:999px;font-size:.72rem;color:var(--dv-plata);background:rgba(168,200,236,.08);box-shadow:inset 0 0 0 1px var(--dv-borde)}
     .dv-chips{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.85rem}
-    .dv-chip{display:inline-flex;align-items:center;gap:.3rem;padding:.45rem .8rem;border-radius:999px;font-size:.78rem;color:#f3e7da;background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px rgba(233,214,188,.22);transition:.25s}
-    .dv-chip.on{color:#2b1d1a;background:var(--c);box-shadow:0 6px 16px -8px var(--c);font-weight:600}
+    .dv-chip{display:inline-flex;align-items:center;gap:.3rem;padding:.45rem .8rem;border-radius:999px;font-size:.78rem;color:var(--dv-txt);background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px var(--dv-borde);transition:.25s}
+    .dv-chip.on{color:#16213A;background:var(--dv-plata);box-shadow:0 6px 16px -8px rgba(221,228,240,.8);font-weight:600}
     .dv-chip.nope{animation:dvNope .4s}
     @keyframes dvNope{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-    .dv-aviso{min-height:1.1rem;margin-top:.55rem;font-size:.72rem;color:var(--blush);opacity:0;transition:opacity .3s}
+    .dv-aviso{min-height:1.1rem;margin-top:.55rem;font-size:.72rem;color:var(--dv-acc);opacity:0;transition:opacity .3s}
     .dv-aviso.show{opacity:1}
     .dv-met{display:grid;gap:.95rem;margin-top:.9rem}
-    .dv-met-l{display:flex;justify-content:space-between;font-size:.8rem;color:#efe2d3}
-    .dv-met-l b{font-weight:600;color:var(--sand)}
+    .dv-met-l{display:flex;justify-content:space-between;font-size:.8rem;color:var(--dv-txt)}
+    .dv-met-l b{font-weight:600;color:var(--dv-oro)}
     .dv-dots{display:flex;align-items:center;gap:.45rem;margin-top:.4rem}
-    .dv-dots small{font-size:.62rem;color:#a99383;width:2rem}.dv-dots small:last-child{text-align:right}
-    .dv-dot{flex:1;height:2.1rem;border-radius:999px;font-size:.78rem;font-weight:600;color:#c9b6a4;background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px rgba(233,214,188,.2);transition:.2s}
-    .dv-dot.on{color:#2b1d1a;background:linear-gradient(135deg,var(--sand),var(--terra));box-shadow:none}
-    .dv-ciclo{background:radial-gradient(110% 80% at 100% 0,rgba(201,139,107,.22),transparent 60%),linear-gradient(160deg,rgba(74,52,46,.58),rgba(40,26,30,.78))}
-    .dv-fase{font-family:var(--ital);font-weight:600;font-size:1.25rem;color:#fbeee0;margin-top:.5rem}
-    .dv-fase-d{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--terra)}
-    .dv-frase{font-size:.85rem;line-height:1.55;color:#ecdfd0;margin-top:.35rem}
-    .dv-nota{font-size:.66rem;color:#a99383;margin-top:.55rem}
-    .dv-edit{position:absolute;top:.9rem;right:.9rem;font-size:.72rem;color:var(--sand);padding:.25rem .6rem;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(233,214,188,.3)}
-    .dv-in{width:100%;margin-top:.35rem;padding:.7rem .85rem;border-radius:1rem;border:0;outline:0;color:#fbeee0;background:rgba(20,12,14,.45);box-shadow:inset 0 0 0 1px rgba(233,214,188,.22);color-scheme:dark}
-    .dv-in:focus{box-shadow:inset 0 0 0 1px var(--terra),0 0 0 3px rgba(201,139,107,.2)}
-    .dv-ta{min-height:7rem;resize:none;line-height:1.6;font-size:.9rem;font-family:var(--ital);font-size:1.05rem}
-    .dv-lbl{font-size:.72rem;color:#c9b6a4}
+    .dv-dots small{font-size:.62rem;color:var(--dv-mut);width:2rem}.dv-dots small:last-child{text-align:right}
+    .dv-dot{flex:1;height:2.1rem;border-radius:999px;font-size:.78rem;font-weight:600;color:var(--dv-mut);background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px var(--dv-borde);transition:.2s}
+    .dv-dot.on{color:#16213A;background:linear-gradient(135deg,var(--dv-plata),var(--dv-acc));box-shadow:none}
+    .dv-sino{display:flex;gap:.5rem;margin-top:.75rem}
+    .dv-sino button{flex:1;padding:.65rem;border-radius:999px;font-size:.82rem;font-weight:600;color:var(--dv-txt);background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px var(--dv-borde);transition:.2s}
+    .dv-sino button.on{color:#16213A;background:linear-gradient(135deg,var(--dv-plata),var(--dv-acc))}
+    .dv-preg{font-size:.88rem;color:var(--dv-txt);margin-top:1.1rem}
+    .dv-preg:first-of-type{margin-top:.2rem}
+    .dv-sola{margin-top:.8rem;padding:.8rem .9rem;border-radius:1rem;font-size:.82rem;line-height:1.55;color:var(--dv-txt);background:rgba(232,201,138,.08);box-shadow:inset 0 0 0 1px rgba(232,201,138,.3)}
+    .dv-ciclo{background:radial-gradient(110% 80% at 100% 0,rgba(232,201,138,.14),transparent 60%),linear-gradient(160deg,rgba(30,46,82,.66),rgba(14,20,40,.86))}
+    .dv-fase{font-family:var(--ital);font-weight:600;font-size:1.25rem;color:#F5F8FD;margin-top:.5rem}
+    .dv-fase-d{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dv-oro)}
+    .dv-frase{font-size:.85rem;line-height:1.55;color:var(--dv-txt);margin-top:.35rem}
+    .dv-nota{font-size:.66rem;color:var(--dv-mut);margin-top:.55rem}
+    .dv-edit{position:absolute;top:.9rem;right:.9rem;font-size:.72rem;color:var(--dv-plata);padding:.25rem .6rem;border-radius:999px;box-shadow:inset 0 0 0 1px var(--dv-borde)}
+    .dv-in{width:100%;margin-top:.35rem;padding:.7rem .85rem;border-radius:1rem;border:0;outline:0;color:#F5F8FD;background:rgba(8,12,26,.5);box-shadow:inset 0 0 0 1px var(--dv-borde);color-scheme:dark}
+    .dv-in:focus{box-shadow:inset 0 0 0 1px var(--dv-acc),0 0 0 3px rgba(168,200,236,.18)}
+    .dv-ta{min-height:6rem;resize:none;line-height:1.6;font-family:var(--ital);font-size:1.05rem}
+    .dv-lbl{font-size:.72rem;color:var(--dv-mut)}
     .dv-btns{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
-    .dv-btn{flex:1;min-width:7rem;padding:.8rem 1rem;border-radius:999px;font-size:.82rem;font-weight:600;color:#2b1d1a;background:linear-gradient(135deg,#f3dcc0,var(--terra));box-shadow:0 10px 22px -12px rgba(201,139,107,.9)}
-    .dv-btn2{flex:1;min-width:6rem;padding:.8rem 1rem;border-radius:999px;font-size:.8rem;font-weight:600;color:var(--sand);background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px rgba(233,214,188,.35)}
+    .dv-btn{flex:1;min-width:7rem;padding:.8rem 1rem;border-radius:999px;font-size:.82rem;font-weight:600;color:#16213A;background:linear-gradient(135deg,#F8E7BC,var(--dv-oro));box-shadow:0 10px 22px -12px rgba(232,201,138,.8)}
+    .dv-btn2{flex:1;min-width:6rem;padding:.8rem 1rem;border-radius:999px;font-size:.8rem;font-weight:600;color:var(--dv-plata);background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px rgba(168,200,236,.35)}
     .dv-cerrar{width:100%;padding:1rem;font-size:.92rem}
-    .dv-priv{text-align:center;font-size:.68rem;color:#a99383}
-    .dv-past{padding:.85rem 1rem;border-radius:1.1rem;background:rgba(74,52,46,.35);box-shadow:inset 0 0 0 1px rgba(233,214,188,.15);cursor:pointer}
-    .dv-past-t{display:flex;align-items:center;justify-content:space-between;gap:.5rem;font-size:.8rem;color:#efe2d3}
+    .dv-priv{text-align:center;font-size:.68rem;color:var(--dv-mut)}
+    .dv-past{padding:.85rem 1rem;border-radius:1.1rem;background:rgba(30,46,82,.4);box-shadow:inset 0 0 0 1px rgba(168,200,236,.14);cursor:pointer}
+    .dv-past-t{display:flex;align-items:center;justify-content:space-between;gap:.5rem;font-size:.8rem;color:var(--dv-txt)}
     .dv-past-t span:first-child{font-weight:600}
     .dv-past-e{font-size:1rem;letter-spacing:.1em}
-    .dv-det{display:none;margin-top:.6rem;font-size:.82rem;line-height:1.55;color:#e4d6c6;white-space:pre-line}
+    .dv-det{display:none;margin-top:.6rem;font-size:.82rem;line-height:1.55;color:var(--dv-txt);white-space:pre-line}
     .dv-past.open .dv-det{display:block}
-    .dv-det b{display:block;margin-top:.4rem;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--terra)}
-    .dv-perfil-ciclo{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.75rem;border-radius:.9rem;background:rgba(74,52,46,.4);box-shadow:inset 0 0 0 1px rgba(233,214,188,.2)}
-    .dv-modal{position:fixed;inset:0;z-index:110;display:flex;align-items:flex-end;justify-content:center;padding:1rem;background:rgba(14,8,10,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+    .dv-det b{display:block;margin-top:.4rem;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dv-oro)}
+    .dv-perfil-ciclo{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.75rem;border-radius:.9rem;background:rgba(30,46,82,.45);box-shadow:inset 0 0 0 1px var(--dv-borde)}
+    .dv-modal{position:fixed;inset:0;z-index:110;display:flex;align-items:flex-end;justify-content:center;padding:1rem;background:rgba(6,9,20,.75);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
     @media(min-width:480px){.dv-modal{align-items:center}}
     .dv-modal-box{width:100%;max-width:25rem;max-height:92vh;overflow-y:auto;padding:1.5rem 1.3rem 1.3rem;border-radius:1.6rem;animation:rise .35s backwards;
-      background:linear-gradient(165deg,#4a342e,#2a1c1f);box-shadow:inset 0 0 0 1px rgba(233,214,188,.25),0 30px 60px -20px #000}
-    .dv-modal-box h3{font-family:var(--ital);font-weight:600;font-size:1.55rem;text-align:center;color:#fbeee0}
-    .dv-ciencia{margin-top:.8rem;padding:.85rem .95rem;border-radius:1rem;font-size:.8rem;line-height:1.6;color:#ecdfd0;background:rgba(169,183,154,.12);box-shadow:inset 0 0 0 1px rgba(169,183,154,.3)}
-    .dv-ciencia b{color:var(--sage)}
+      background:linear-gradient(165deg,#1d2b4a,#10182e);box-shadow:inset 0 0 0 1px var(--dv-borde),0 30px 60px -20px #000}
+    .dv-modal-box h3{font-family:var(--ital);font-weight:600;font-size:1.55rem;text-align:center;color:#F5F8FD}
+    .dv-ciencia{margin-top:.8rem;padding:.85rem .95rem;border-radius:1rem;font-size:.8rem;line-height:1.6;color:var(--dv-txt);background:rgba(168,200,236,.08);box-shadow:inset 0 0 0 1px var(--dv-borde)}
+    .dv-ciencia b{color:var(--dv-oro)}
+    /* Reportes */
+    .dv-seg{display:flex;gap:.3rem;padding:.25rem;border-radius:999px;background:rgba(8,12,26,.5);box-shadow:inset 0 0 0 1px var(--dv-borde);margin-top:.8rem}
+    .dv-seg button{flex:1;padding:.5rem;border-radius:999px;font-size:.78rem;font-weight:600;color:var(--dv-mut)}
+    .dv-seg button.on{color:#16213A;background:var(--dv-plata)}
+    .dv-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:.9rem}
+    .dv-kpi{padding:.7rem .4rem;border-radius:1rem;text-align:center;background:rgba(8,12,26,.4);box-shadow:inset 0 0 0 1px var(--dv-borde)}
+    .dv-kpi b{display:block;font-family:var(--ital);font-size:1.45rem;line-height:1;color:var(--dv-oro)}
+    .dv-kpi span{display:block;margin-top:.3rem;font-size:.62rem;color:var(--dv-mut)}
+    .dv-rep-t{margin-top:1.2rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dv-acc)}
+    .dv-barra{display:grid;grid-template-columns:7.2rem 1fr 2.2rem;align-items:center;gap:.5rem;margin-top:.45rem;font-size:.75rem;color:var(--dv-txt)}
+    .dv-barra i{display:block;height:.5rem;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden}
+    .dv-barra i s{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--dv-acc),var(--dv-plata))}
+    .dv-barra em{font-style:normal;text-align:right;color:var(--dv-oro);font-weight:600}
+    .dv-insight{margin-top:.5rem;padding:.7rem .85rem;border-radius:1rem;font-size:.8rem;line-height:1.5;color:var(--dv-txt);background:rgba(168,200,236,.07);box-shadow:inset 0 0 0 1px rgba(168,200,236,.16)}
+    .dv-tabla{width:100%;margin-top:.5rem;border-collapse:collapse;font-size:.74rem}
+    .dv-tabla th{font-weight:600;color:var(--dv-mut);text-align:right;padding:.35rem .25rem;font-size:.64rem}
+    .dv-tabla th:first-child,.dv-tabla td:first-child{text-align:left}
+    .dv-tabla td{padding:.4rem .25rem;text-align:right;color:var(--dv-txt);border-top:1px solid rgba(168,200,236,.1)}
 
     /* Tarjeta de la manilla */
     .manilla{display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:center;padding:1.15rem;overflow:hidden}
@@ -456,8 +480,8 @@
         </div>
         <div class="dv-perfil-ciclo">
           <div class="min-w-0">
-            <p class="text-[11px] font-semibold" style="color:var(--sand)">Mi ciclo</p>
-            <p id="perfilCiclo" class="text-xs mt-0.5" style="color:#e9dccb"></p>
+            <p class="text-[11px] font-semibold" style="color:var(--dv-plata)">Mi ciclo</p>
+            <p id="perfilCiclo" class="text-xs mt-0.5" style="color:var(--dv-acc)"></p>
           </div>
           <button onclick="editarCicloDesdePerfil()" class="text-[11px] px-3 py-1.5 hv-ghost flex-none">Editar</button>
         </div>
@@ -1423,17 +1447,21 @@ Escríbele un deseo que apoye este propósito.`,
     // ===================== DIARIO =====================
     // Se guarda solo en este dispositivo (localStorage), por privacidad.
     const DV_EMOCIONES = [
-      ['Alegría','😊','#F6D9A8'], ['Calma','🍃','#C9D8B6'], ['Gratitud','🙏','#EBC9A9'], ['Amor','💗','#F2BFC6'],
-      ['Esperanza','🌱','#CFE0C3'], ['Entusiasmo','✨','#F7E2A0'], ['Tristeza','🌧️','#B9C7D8'], ['Ansiedad','🌀','#D6C4E3'],
-      ['Miedo','🫧','#C8D3E0'], ['Ira','🔥','#E9A99A'], ['Frustración','😤','#E3B9A0'], ['Cansancio','😴','#D3C5B8']
+      ['Alegría','😊'], ['Calma','🍃'], ['Gratitud','🙏'], ['Amor','💗'], ['Esperanza','🌱'], ['Entusiasmo','✨'],
+      ['Tristeza','🌧️'], ['Ansiedad','🌀'], ['Miedo','🫧'], ['Ira','🔥'], ['Frustración','😤'], ['Cansancio','😴']
     ];
+    const DV_AGRADABLES = ['Alegría','Calma','Gratitud','Amor','Esperanza','Entusiasmo'];
     const DV_METRICAS = [
-      ['energia','Energía','⚡'], ['sueno','Calidad de sueño','🌙'], ['calma','Calma mental','🍃'], ['animo','Ánimo general','☀️']
+      ['energia','Energía','⚡'], ['sueno','Calidad de sueño','🌙'], ['calma','Calma mental','🍃'],
+      ['animo','Ánimo general','☀️'], ['alimentacion','Alimentación','🥗'], ['hidratacion','Hidratación','💧']
     ];
+    const DV_EJERCICIOS = ['Cardio', 'Caminata moderada', 'Fuerza', 'Otro'];
+    const DV_FASES = ['Fase Menstrual', 'Fase Folicular', 'Fase Ovulatoria', 'Fase Lútea'];
     let dvHoy = null, dvFechaHoy = null, dvEditandoCiclo = false, dvAvisoTimer = null;
+    let dvRepModo = 'mes', dvRepPeriodo = null;
 
     const dvFecha = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    const dvParse = f => { const [y, m, d] = f.split('-').map(Number); return new Date(y, m - 1, d); };
+    const dvParse = f => { const [y, m, d] = f.split('-').map(Number); return new Date(y, m - 1, d || 1); };
     const dvDias = (a, b) => Math.round((dvParse(a) - dvParse(b)) / 864e5);
     const dvMay = t => t.charAt(0).toUpperCase() + t.slice(1);
     const dvClave = t => `hv_${t}_${usuarioActual ? usuarioActual.id : 'anon'}`;
@@ -1451,17 +1479,18 @@ Escríbele un deseo que apoye este propósito.`,
       return fases[Math.floor(edad / mes * 8 + 0.5) % 8];
     }
 
-    function faseCiclo(ciclo, hoy) {
+    // Fase del ciclo para una fecha. "permitirPasado" estima fechas anteriores al último periodo (para reportes).
+    function faseCiclo(ciclo, fecha, permitirPasado = false) {
       if (!ciclo || ciclo.estado !== 'fecha' || !ciclo.ultimo) return null;
       const dur = Math.min(35, Math.max(21, Number(ciclo.duracion) || 28));
-      const pasados = dvDias(hoy, ciclo.ultimo);
-      if (pasados < 0) return null;
-      const dia = (pasados % dur) + 1, ov = dur - 14;
+      const pasados = dvDias(fecha, ciclo.ultimo);
+      if (pasados < 0 && !permitirPasado) return null;
+      const dia = ((pasados % dur) + dur) % dur + 1, ov = dur - 14;
       let fase, frase;
-      if (dia <= 5) { fase = 'Fase Menstrual'; frase = 'Tu energía puede estar más baja; descansar y ser suave contigo también es avanzar.'; }
-      else if (dia >= ov - 1 && dia <= ov + 1) { fase = 'Fase Ovulatoria'; frase = 'Puedes sentirte más sociable y segura; tu voz y tu presencia brillan.'; }
-      else if (dia < ov - 1) { fase = 'Fase Folicular'; frase = 'La energía suele subir: buen momento para empezar cosas nuevas y conectar.'; }
-      else { fase = 'Fase Lútea'; frase = 'Es normal sentirte más sensible o introspectiva; escucha lo que necesitas.'; }
+      if (dia <= 5) { fase = DV_FASES[0]; frase = 'Tu energía puede estar más baja; descansar y ser suave contigo también es avanzar.'; }
+      else if (dia >= ov - 1 && dia <= ov + 1) { fase = DV_FASES[2]; frase = 'Puedes sentirte más sociable y segura; tu voz y tu presencia brillan.'; }
+      else if (dia < ov - 1) { fase = DV_FASES[1]; frase = 'La energía suele subir: buen momento para empezar cosas nuevas y conectar.'; }
+      else { fase = DV_FASES[3]; frase = 'Es normal sentirte más sensible o introspectiva; escucha lo que necesitas.'; }
       return { dia, fase, frase, desactualizado: pasados >= dur * 2 };
     }
 
@@ -1521,8 +1550,119 @@ Escríbele un deseo que apoye este propósito.`,
         <p class="dv-fase">${f.fase}</p>
         <p class="dv-frase">${f.frase}</p>
         <p class="dv-nota">Orientativo: cada cuerpo es distinto.</p>
-        ${f.desactualizado ? `<p class="dv-frase" style="color:var(--blush)">¿Actualizamos la fecha de tu último periodo? <button type="button" class="underline" onclick="dvEditandoCiclo=true;renderizarDiario()">Actualizar</button></p>` : ''}
+        ${f.desactualizado ? `<p class="dv-frase" style="color:var(--dv-acc)">¿Actualizamos la fecha de tu último periodo? <button type="button" class="underline" onclick="dvEditandoCiclo=true;renderizarDiario()">Actualizar</button></p>` : ''}
       </section>`;
+    }
+
+    // ---------- Reportes (mensual / anual) ----------
+    const dvProm = (rs, k) => { const v = rs.map(r => r[k]).filter(x => typeof x === 'number'); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
+    const dvFmt = x => x === null || x === undefined ? '–' : (Math.round(x * 10) / 10).toLocaleString('es-CO');
+    const dvPct = (n, d) => d ? Math.round(n / d * 100) : 0;
+    function dvAgradable(r) {
+      const e = r.emociones || []; if (!e.length) return null;
+      return e.filter(n => DV_AGRADABLES.includes(n)).length / e.length * 100;
+    }
+    const dvPromAgr = rs => { const v = rs.map(dvAgradable).filter(x => x !== null); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
+
+    function dvInsight(rs, filtroA, filtroB, etiquetaA, etiquetaB, medidas) {
+      const A = rs.filter(filtroA), B = rs.filter(filtroB);
+      if (A.length < 2 || B.length < 2) return '';
+      const partes = medidas.map(([nombre, fn, unidad]) => {
+        const a = fn(A), b = fn(B);
+        if (a === null || b === null) return '';
+        return `${nombre} <b>${dvFmt(a)}${unidad}</b> vs <b>${dvFmt(b)}${unidad}</b>`;
+      }).filter(Boolean);
+      if (!partes.length) return '';
+      return `<p class="dv-insight"><b>${etiquetaA}</b> (${A.length} días) frente a <b>${etiquetaB}</b> (${B.length} días): ${partes.join(' · ')}.</p>`;
+    }
+
+    function dvReporte(diario) {
+      const fechas = Object.keys(diario).sort();
+      if (!fechas.length) return '<p class="dv-sub mt-3">Cuando registres tus días, aquí verás tus reportes del mes y del año.</p>';
+      const meses = [...new Set(fechas.map(f => f.slice(0, 7)))].reverse();
+      const anios = [...new Set(fechas.map(f => f.slice(0, 4)))].reverse();
+      const opciones = dvRepModo === 'mes' ? meses : anios;
+      if (!dvRepPeriodo || !opciones.includes(dvRepPeriodo)) dvRepPeriodo = opciones[0];
+      const nombrePeriodo = p => p.length === 7 ? dvMay(dvParse(p + '-01').toLocaleDateString('es-CO', { month: 'long', year: 'numeric' })) : `Año ${p}`;
+      const ciclo = dvLeer('ciclo', null);
+      const rs = fechas.filter(f => f.startsWith(dvRepPeriodo + '-')).map(f => {
+        const r = diario[f];
+        const fase = r.fase || (faseCiclo(ciclo, f, true) || {}).fase || null;
+        return { ...r, _f: f, _fase: fase };
+      });
+
+      let html = `<div class="dv-seg" role="tablist">
+          <button type="button" class="${dvRepModo === 'mes' ? 'on' : ''}" onclick="dvRepModo='mes';dvRepPeriodo=null;renderizarDiario()">Mensual</button>
+          <button type="button" class="${dvRepModo === 'anio' ? 'on' : ''}" onclick="dvRepModo='anio';dvRepPeriodo=null;renderizarDiario()">Anual</button>
+        </div>
+        <select class="dv-in mt-2" aria-label="Periodo del reporte" onchange="dvRepPeriodo=this.value;renderizarDiario()">
+          ${opciones.map(p => `<option value="${p}"${p === dvRepPeriodo ? ' selected' : ''}>${nombrePeriodo(p)}</option>`).join('')}
+        </select>`;
+
+      const n = rs.length;
+      const conEj = rs.filter(r => r.ejercicio === true), sinEj = rs.filter(r => r.ejercicio === false);
+      const sola = rs.filter(r => r.sola === true), noSola = rs.filter(r => r.sola === false);
+      html += `<div class="dv-kpis">
+          <div class="dv-kpi"><b>${n}</b><span>días registrados</span></div>
+          <div class="dv-kpi"><b>${dvFmt(dvProm(rs, 'animo'))}</b><span>ánimo promedio</span></div>
+          <div class="dv-kpi"><b>${dvFmt(dvProm(rs, 'sueno'))}</b><span>sueño promedio</span></div>
+          <div class="dv-kpi"><b>${conEj.length + sinEj.length ? dvPct(conEj.length, conEj.length + sinEj.length) + '%' : '–'}</b><span>días con ejercicio</span></div>
+          <div class="dv-kpi"><b>${sola.length + noSola.length ? dvPct(sola.length, sola.length + noSola.length) + '%' : '–'}</b><span>días con soledad</span></div>
+          <div class="dv-kpi"><b>${dvPromAgr(rs) === null ? '–' : Math.round(dvPromAgr(rs)) + '%'}</b><span>emociones agradables</span></div>
+        </div>`;
+      if (n < 3) return html + '<p class="dv-insight">Registra al menos 3 días en este periodo para ver relaciones entre tus hábitos y tus emociones 🌙</p>';
+
+      html += `<p class="dv-rep-t">Tu bienestar promedio</p>` + DV_METRICAS.map(([k, nombre, e]) => {
+        const v = dvProm(rs, k);
+        return `<div class="dv-barra"><span>${e} ${nombre}</span><i><s style="width:${v ? v / 5 * 100 : 0}%"></s></i><em>${dvFmt(v)}</em></div>`;
+      }).join('');
+
+      const cuenta = {};
+      rs.forEach(r => (r.emociones || []).forEach(e => cuenta[e] = (cuenta[e] || 0) + 1));
+      const top = Object.entries(cuenta).sort((a, b) => b[1] - a[1]).slice(0, 6);
+      if (top.length) {
+        html += `<p class="dv-rep-t">Emociones más frecuentes</p>` + top.map(([e, c]) => {
+          const emo = (DV_EMOCIONES.find(x => x[0] === e) || ['', '•'])[1];
+          return `<div class="dv-barra"><span>${emo} ${e}</span><i><s style="width:${dvPct(c, n)}%"></s></i><em>${dvPct(c, n)}%</em></div>`;
+        }).join('');
+      }
+
+      const animo = ['Ánimo', rs2 => dvProm(rs2, 'animo'), ''];
+      const energia = ['Energía', rs2 => dvProm(rs2, 'energia'), ''];
+      const calma = ['Calma', rs2 => dvProm(rs2, 'calma'), ''];
+      const agrad = ['Emociones agradables', dvPromAgr, '%'];
+      const relaciones = [
+        dvInsight(rs, r => r.sueno >= 4, r => r.sueno && r.sueno <= 2, '😴 Días que dormiste bien (4–5)', 'días que dormiste poco (1–2)', [animo, energia, agrad]),
+        dvInsight(rs, r => r.ejercicio === true, r => r.ejercicio === false, '🏃 Días con ejercicio', 'días sin ejercicio', [animo, calma, agrad]),
+        dvInsight(rs, r => r.sola === true, r => r.sola === false, '🫂 Días que te sentiste sola/o', 'días que no', [animo, ['Sueño', rs2 => dvProm(rs2, 'sueno'), ''], ['Con ejercicio', rs2 => dvPct(rs2.filter(r => r.ejercicio).length, rs2.length), '%']]),
+        dvInsight(rs, r => r.hidratacion >= 4, r => r.hidratacion && r.hidratacion <= 2, '💧 Días bien hidratada/o', 'días con poca hidratación', [energia, animo]),
+        dvInsight(rs, r => r.alimentacion >= 4, r => r.alimentacion && r.alimentacion <= 2, '🥗 Días que comiste bien', 'días que no tanto', [energia, animo])
+      ].filter(Boolean);
+      html += `<p class="dv-rep-t">Relaciones en tus registros</p>` + (relaciones.length ? relaciones.join('')
+        : '<p class="dv-insight">Aún no hay suficientes días en cada grupo para comparar. Sigue registrando 🌙</p>');
+
+      const conFase = rs.filter(r => r._fase);
+      if (conFase.length) {
+        html += `<p class="dv-rep-t">Tu ánimo según la fase del ciclo</p>
+          <table class="dv-tabla"><tr><th>Fase</th><th>Días</th><th>Ánimo</th><th>Energía</th><th>Agradables</th></tr>
+          ${DV_FASES.map(fz => {
+            const g = conFase.filter(r => r._fase === fz);
+            if (!g.length) return '';
+            const pa = dvPromAgr(g);
+            return `<tr><td>${fz.replace('Fase ', '')}</td><td>${g.length}</td><td>${dvFmt(dvProm(g, 'animo'))}</td><td>${dvFmt(dvProm(g, 'energia'))}</td><td>${pa === null ? '–' : Math.round(pa) + '%'}</td></tr>`;
+          }).join('')}</table>`;
+      }
+
+      if (dvRepModo === 'anio') {
+        const porMes = {};
+        rs.forEach(r => (porMes[r._f.slice(0, 7)] = porMes[r._f.slice(0, 7)] || []).push(r));
+        html += `<p class="dv-rep-t">Ánimo mes a mes</p>` + Object.keys(porMes).sort().map(m => {
+          const v = dvProm(porMes[m], 'animo');
+          return `<div class="dv-barra"><span>${dvMay(dvParse(m + '-01').toLocaleDateString('es-CO', { month: 'long' }))}</span><i><s style="width:${v ? v / 5 * 100 : 0}%"></s></i><em>${dvFmt(v)}</em></div>`;
+        }).join('');
+      }
+
+      return html + '<p class="dv-nota">Estas relaciones muestran tendencias en tus propios registros, no causas. Mientras más días registres, más claras serán.</p>';
     }
 
     function dvHistorial(diario) {
@@ -1531,15 +1671,19 @@ Escríbele un deseo que apoye este propósito.`,
       return dias.map(f => {
         const r = diario[f];
         const emojis = (r.emociones || []).map(n => (DV_EMOCIONES.find(e => e[0] === n) || ['', '•'])[1]).join(' ');
-        const vals = DV_METRICAS.map(m => r[m[0]]).filter(Boolean);
-        const prom = vals.length ? (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1) : null;
         const fecha = dvMay(dvParse(f).toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short' }));
+        const ej = r.ejercicio ? `<b>Ejercicio</b>${esc((r.ejercicioTipos || []).join(', ') || 'Sí')}` : '';
         return `<div class="dv-past" onclick="hvToggle(this)" role="button" aria-expanded="false">
-          <div class="dv-past-t"><span>${esc(fecha)}</span><span class="dv-past-e">${emojis}</span>${prom ? `<span>☀️ ${prom}</span>` : ''}</div>
-          <div class="dv-det">${(r.emociones || []).length ? `<b>Emociones</b>${esc(r.emociones.join(', '))}` : ''}${r.reflexion ? `<b>Reflexión</b>${esc(r.reflexion)}` : ''}${r.gratitud ? `<b>Agradecí</b>${esc(r.gratitud)}` : ''}</div>
+          <div class="dv-past-t"><span>${esc(fecha)}</span><span class="dv-past-e">${emojis}</span>${r.animo ? `<span>☀️ ${r.animo}/5</span>` : ''}</div>
+          <div class="dv-det">${r.sentir ? `<b>Cómo me sentí</b>${esc(r.sentir)}` : ''}${(r.emociones || []).length ? `<b>Emociones</b>${esc(r.emociones.join(', '))}` : ''}${ej}${r.sola ? '<b>Soledad</b>Me sentí sola/o' : ''}${r.reflexion ? `<b>Reflexión / Agradecimiento</b>${esc(r.reflexion)}` : ''}${r.gratitud ? `<b>Agradecí</b>${esc(r.gratitud)}` : ''}</div>
         </div>`;
       }).join('');
     }
+
+    const dvAutoAlto = 'this.style.height=\'auto\';this.style.height=this.scrollHeight+\'px\'';
+    const dvSiNo = (k, preg) => `<p class="dv-preg">${preg}</p><div class="dv-sino" role="group" aria-label="${preg}">
+        <button type="button" class="${dvHoy[k] === true ? 'on' : ''}" aria-pressed="${dvHoy[k] === true}" onclick="dvSet('${k}', true)">Sí</button>
+        <button type="button" class="${dvHoy[k] === false ? 'on' : ''}" aria-pressed="${dvHoy[k] === false}" onclick="dvSet('${k}', false)">No</button></div>`;
 
     function renderizarDiario() {
       const cont = document.getElementById('secDiario'); if (!cont) return;
@@ -1548,11 +1692,13 @@ Escríbele un deseo que apoye este propósito.`,
       if (dvFechaHoy !== hoy || !dvHoy) {
         dvFechaHoy = hoy;
         const g = diario[hoy];
-        dvHoy = g ? JSON.parse(JSON.stringify(g)) : { emociones: [], reflexion: '', gratitud: '' };
+        dvHoy = g ? JSON.parse(JSON.stringify(g)) : { emociones: [], ejercicioTipos: [], sentir: '', reflexion: '', gratitud: '' };
+        dvHoy.emociones = dvHoy.emociones || []; dvHoy.ejercicioTipos = dvHoy.ejercicioTipos || [];
       }
       const ciclo = dvLeer('ciclo', null);
       const ahora = new Date(), [lunaEmoji, lunaNombre] = faseLunar(ahora);
       const yaGuardado = !!diario[hoy];
+      const scroll = window.scrollY;
 
       let html = `<section class="dv-card dv-head">
           <p class="dv-dia">${dvMay(ahora.toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' }))}</p>
@@ -1563,10 +1709,16 @@ Escríbele un deseo que apoye este propósito.`,
       if (!ciclo || dvEditandoCiclo) html += dvFormCiclo(ciclo, !!ciclo);
 
       html += `<section class="dv-card">
+          <h4 class="dv-h">¿Cómo te sentiste hoy?</h4>
+          <p class="dv-sub">Con tus palabras, sin filtros</p>
+          <textarea id="dvSentir" class="dv-in dv-ta mt-3" placeholder="Hoy me sentí…" oninput="dvHoy.sentir=this.value;${dvAutoAlto}">${esc(dvHoy.sentir || '')}</textarea>
+        </section>
+
+        <section class="dv-card">
           <h4 class="dv-h">¿Qué emociones dominan hoy?</h4>
           <p class="dv-sub">Elige hasta 3 · las principales</p>
-          <div class="dv-chips">${DV_EMOCIONES.map(([n, e, c], i) =>
-            `<button type="button" class="dv-chip${dvHoy.emociones.includes(n) ? ' on' : ''}" style="--c:${c}" aria-pressed="${dvHoy.emociones.includes(n)}" onclick="dvEmocion(${i}, this)">${e} ${n}</button>`).join('')}</div>
+          <div class="dv-chips">${DV_EMOCIONES.map(([n, e], i) =>
+            `<button type="button" class="dv-chip${dvHoy.emociones.includes(n) ? ' on' : ''}" aria-pressed="${dvHoy.emociones.includes(n)}" onclick="dvEmocion(${i}, this)">${e} ${n}</button>`).join('')}</div>
           <p id="dvAviso" class="dv-aviso" role="status">Elige hasta 3 para enfocarnos en las principales 🌿</p>
         </section>
 
@@ -1574,32 +1726,58 @@ Escríbele un deseo que apoye este propósito.`,
           <h4 class="dv-h">Tu bienestar hoy</h4>
           <p class="dv-sub">Del 1 al 5, sin pensarlo mucho</p>
           <div class="dv-met">${DV_METRICAS.map(([k, n, e]) => `<div>
-            <div class="dv-met-l"><span>${e} ${n}</span><b id="dvVal_${k}">${dvHoy[k] ? dvHoy[k] + '/5' : ''}</b></div>
+            <div class="dv-met-l"><span>${e} ${n}</span><b>${dvHoy[k] ? dvHoy[k] + '/5' : ''}</b></div>
             <div class="dv-dots" role="group" aria-label="${n}"><small>Baja</small>${[1,2,3,4,5].map(v =>
-              `<button type="button" class="dv-dot${dvHoy[k] >= v ? ' on' : ''}" aria-label="${n} ${v} de 5" aria-pressed="${dvHoy[k] === v}" onclick="dvMetrica('${k}', ${v})">${v}</button>`).join('')}<small>Alta</small></div>
+              `<button type="button" class="dv-dot${dvHoy[k] >= v ? ' on' : ''}" aria-label="${n} ${v} de 5" aria-pressed="${dvHoy[k] === v}" onclick="dvSet('${k}', ${v})">${v}</button>`).join('')}<small>Alta</small></div>
           </div>`).join('')}</div>
+        </section>
+
+        <section class="dv-card">
+          <h4 class="dv-h">Tu día</h4>
+          ${dvSiNo('ejercicio', '🏃 ¿Hiciste ejercicio hoy?')}
+          ${dvHoy.ejercicio === true ? `<div class="dv-chips">${DV_EJERCICIOS.map((t, i) =>
+            `<button type="button" class="dv-chip${dvHoy.ejercicioTipos.includes(t) ? ' on' : ''}" aria-pressed="${dvHoy.ejercicioTipos.includes(t)}" onclick="dvEjTipo(${i})">${t}</button>`).join('')}</div>` : ''}
+          ${dvSiNo('sola', '🫂 ¿Hoy te sentiste sola/o?')}
+          ${dvHoy.sola === true ? `<div class="dv-sola">Gracias por contarlo 💙 Sentirse sola es humano, y no tienes que atravesarlo en silencio. A veces un mensaje acerca más de lo que imaginamos.
+            <div class="dv-btns" style="margin-top:.7rem"><button type="button" class="dv-btn" onclick="dvEscribirAmigo()">Escribirle a mis amigos 💌</button></div></div>` : ''}
         </section>`;
 
       if (!dvEditandoCiclo) html += dvTarjetaCiclo(ciclo);
 
       html += `<section class="dv-card">
-          <h4 class="dv-h">Reflexión</h4>
+          <h4 class="dv-h">Reflexión / Agradecimiento</h4>
           <p class="dv-sub">Un espacio solo para ti</p>
-          <textarea id="dvReflexion" class="dv-in dv-ta mt-3" placeholder="¿Qué quieres recordar de hoy?" oninput="dvHoy.reflexion=this.value;this.style.height='auto';this.style.height=this.scrollHeight+'px'">${esc(dvHoy.reflexion || '')}</textarea>
+          <textarea id="dvReflexion" class="dv-in dv-ta mt-3" placeholder="¿Qué quieres recordar de hoy?" oninput="dvHoy.reflexion=this.value;${dvAutoAlto}">${esc(dvHoy.reflexion || '')}</textarea>
         </section>
 
         <button type="button" class="dv-btn dv-cerrar" onclick="abrirGratitud()">${yaGuardado ? 'Actualizar mi día' : 'Cerrar mi día'} 🌙</button>
         <p class="dv-priv">🔒 Tu diario se guarda solo en este celular.</p>
+
+        <section class="dv-card">
+          <h4 class="dv-h">Mis reportes 📊</h4>
+          <p class="dv-sub">Tu extracto emocional del mes o del año</p>
+          ${dvReporte(diario)}
+        </section>
 
         <section class="space-y-2">
           <div class="hv-sep"><span></span><h3><svg class="ic"><use href="#i-journal"/></svg>Días anteriores</h3><span></span></div>
           ${dvHistorial(diario)}
         </section>`;
       cont.innerHTML = html;
-      const ta = document.getElementById('dvReflexion');
-      if (ta && ta.value) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
+      cont.querySelectorAll('.dv-ta').forEach(ta => { if (ta.value) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; } });
+      if (!cont.classList.contains('hidden')) window.scrollTo(0, scroll);
     }
 
+    function dvSet(k, v) {
+      dvHoy[k] = dvHoy[k] === v ? undefined : v;
+      if (k === 'ejercicio' && dvHoy.ejercicio !== true) dvHoy.ejercicioTipos = [];
+      renderizarDiario();
+    }
+    function dvEjTipo(i) {
+      const t = DV_EJERCICIOS[i], sel = dvHoy.ejercicioTipos;
+      sel.includes(t) ? sel.splice(sel.indexOf(t), 1) : sel.push(t);
+      renderizarDiario();
+    }
     function dvEmocion(i, btn) {
       const n = DV_EMOCIONES[i][0], sel = dvHoy.emociones;
       if (sel.includes(n)) sel.splice(sel.indexOf(n), 1);
@@ -1614,17 +1792,25 @@ Escríbele un deseo que apoye este propósito.`,
       btn.setAttribute('aria-pressed', sel.includes(n));
     }
 
-    function dvMetrica(k, v) {
-      dvHoy[k] = dvHoy[k] === v ? undefined : v;
-      document.querySelectorAll(`[aria-label^="${DV_METRICAS.find(m => m[0] === k)[1]} "]`).forEach((b, idx) => {
-        b.classList.toggle('on', dvHoy[k] >= idx + 1); b.setAttribute('aria-pressed', dvHoy[k] === idx + 1);
+    // Soledad: abre la lista de amigos para escribirle a alguien
+    async function dvEscribirAmigo() {
+      const { data: contactos } = await db.from('contactos_usuarios').select('amigo_id').eq('usuario_id', usuarioActual.id);
+      const ids = [...new Set((contactos || []).map(c => c.amigo_id))];
+      if (!ids.length) { alert('Aún no tienes amigos conectados. Agrégalos en Chat con su usuario único 💙'); return; }
+      const { data: amigos } = await db.from('usuarios').select('id, nombre, username').in('id', ids);
+      const lista = (amigos || []).sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''));
+      const idx = await hvDialog({
+        titulo: 'Escribirle a alguien 💌', mensaje: '¿A quién quieres escribirle hoy?', tipo: 'choose',
+        opciones: lista.map(a => ({ titulo: a.nombre, detalle: a.username ? '@' + a.username : '' }))
       });
-      document.getElementById('dvVal_' + k).innerText = dvHoy[k] ? dvHoy[k] + '/5' : '';
+      if (idx === null || idx === undefined) return;
+      enviarDeseoA(lista[idx].id, lista[idx].nombre);
     }
 
     function abrirGratitud() {
-      const vacio = !dvHoy.emociones.length && !DV_METRICAS.some(m => dvHoy[m[0]]) && !(dvHoy.reflexion || '').trim();
-      if (vacio) { alert('Elige al menos una emoción, marca tu bienestar o escribe algo antes de cerrar tu día 🌿'); return; }
+      const vacio = !dvHoy.emociones.length && !DV_METRICAS.some(m => dvHoy[m[0]]) && !(dvHoy.reflexion || '').trim()
+        && !(dvHoy.sentir || '').trim() && dvHoy.ejercicio === undefined && dvHoy.sola === undefined;
+      if (vacio) { alert('Cuéntanos al menos un poco de tu día antes de cerrarlo 🌙'); return; }
       document.getElementById('dvGratInput').value = dvHoy.gratitud || '';
       document.getElementById('dvGratitud').classList.remove('hidden');
       setTimeout(() => document.getElementById('dvGratInput').focus(), 80);
@@ -1636,7 +1822,9 @@ Escríbele un deseo que apoye este propósito.`,
       modal.classList.add('hidden');
       if (conGratitud) dvHoy.gratitud = document.getElementById('dvGratInput').value.trim();
       const diario = dvLeer('diario', {}) || {};
-      diario[dvFechaHoy] = { ...dvHoy, reflexion: (dvHoy.reflexion || '').trim(), guardado: new Date().toISOString() };
+      const fase = faseCiclo(dvLeer('ciclo', null), dvFechaHoy);
+      diario[dvFechaHoy] = { ...dvHoy, sentir: (dvHoy.sentir || '').trim(), reflexion: (dvHoy.reflexion || '').trim(),
+                             fase: fase ? fase.fase : null, guardado: new Date().toISOString() };
       if (dvEscribir('diario', diario)) {
         alert(conGratitud && dvHoy.gratitud ? 'Tu día quedó guardado. Gracias por agradecer 🙏✨' : 'Tu día quedó guardado ✨');
         renderizarDiario();
