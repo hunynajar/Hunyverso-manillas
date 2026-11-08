@@ -142,6 +142,8 @@
     .rt-tipo{padding:.7rem .3rem;border-radius:1rem;font-size:.78rem;color:var(--lav);background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(168,85,247,.3)}
     .rt-tipo.on{color:var(--gold-hi);background:rgba(232,201,138,.14);box-shadow:inset 0 0 0 1px var(--gold)}
     .rt-sellar{width:100%;padding:.95rem;font-size:.9rem;margin-top:.3rem}
+    .rt-tierra{text-align:center;padding:1rem;border-radius:1rem;background:rgba(169,183,154,.1);box-shadow:inset 0 0 0 1px rgba(169,183,154,.35)}
+    .rt-cuenta{font-family:var(--serif);font-size:1.4rem;color:var(--gold-hi);margin:.35rem 0}
 
     /* ===== DIARIO: azul noche y luna ===== */
     :root{--dv-acc:#A8C8EC;--dv-plata:#DDE4F0;--dv-oro:#E8C98A;--dv-txt:#E6EDF8;--dv-mut:#93A4BF;--dv-borde:rgba(168,200,236,.2)}
@@ -1640,11 +1642,15 @@ Escríbele un deseo que apoye este propósito.`,
         compromiso: 'Cada vez que mire esta manilla, recordaré que el amor que merezco también comienza en la forma en que me trato.'
       }
     };
-    const RT_PASOS = ['espacio', 'antes', 'reflexion', 'metas', 'palabras'];
+    const RT_PASOS = ['espacio', 'antes', 'reflexion', 'metas', 'limpieza', 'palabras'];
+    const RT_TOTAL = 7;
+    const RT_HORAS_TIERRA = 24;
+    const RT_TIERRA_TEXTO = 'Busca un espacio con tierra natural, puede ser en una matera o en un jardín, y entierra tu manilla completamente durante 24 horas. Mientras lo haces, establece la intención de liberar cualquier energía anterior y preparar las piedras para recibir una nueva intención. Pasado este tiempo, desentiérrala, retira cuidadosamente los restos de tierra y asegúrate de que esté limpia y seca antes de continuar con el ritual.';
+    let rtReloj = null;
     let rtCache = {}, rtActual = null, rtTimer = null, rtGuardando = null;
 
     const rtLleno = (arr, n) => Array.isArray(arr) && arr.length >= n && arr.slice(0, n).every(x => String(x || '').trim());
-    const rtHechos = r => !r ? 0 : (r.cerrado_en ? 6 : RT_PASOS.filter(p => r.pasos && r.pasos[p]).length);
+    const rtHechos = r => !r ? 0 : (r.cerrado_en ? RT_TOTAL : RT_PASOS.filter(p => r.pasos && r.pasos[p]).length);
 
     async function cargarRituales() {
       rtCache = {};
@@ -1659,7 +1665,7 @@ Escríbele un deseo que apoye este propósito.`,
       if (!m || m.estado === 'PENDIENTE') { btn.classList.add('hidden'); return; }
       btn.classList.remove('hidden');
       const r = rtCache[m.id], n = rtHechos(r);
-      btn.innerHTML = !r ? '✨ Empezar ritual' : r.cerrado_en ? '📖 Ver mi ritual' : `🌙 Continuar ritual · ${n}/6`;
+      btn.innerHTML = !r ? '✨ Empezar ritual' : r.cerrado_en ? '📖 Ver mi ritual' : `🌙 Continuar ritual · ${n}/${RT_TOTAL}`;
     }
 
     async function abrirRitual() {
@@ -1706,11 +1712,31 @@ Escríbele un deseo que apoye este propósito.`,
       r.tipo_ritual = t; r.reflexion = []; r.metas = []; r.pasos = { ...r.pasos, reflexion: false, metas: false, palabras: false };
       rtGuardarLuego(); renderRitual();
     }
+    // Limpieza en tierra: guarda la hora en que se enterró y habilita el paso después de 24 horas
+    function rtFaltaTierra(r) {
+      const t = r.pasos && r.pasos.enterrada ? new Date(r.pasos.enterrada).getTime() : null;
+      return t ? Math.max(0, t + RT_HORAS_TIERRA * 3600e3 - Date.now()) : null;
+    }
+    function rtEnterrar() {
+      const r = rtActual.r;
+      r.pasos = { ...r.pasos, enterrada: new Date().toISOString(), limpieza: false };
+      rtGuardarLuego(); renderRitual();
+    }
+    function rtCancelarTierra() {
+      const r = rtActual.r; const p = { ...r.pasos }; delete p.enterrada; p.limpieza = false;
+      r.pasos = p; rtGuardarLuego(); renderRitual();
+    }
+    function rtTextoFalta(ms) {
+      const h = Math.floor(ms / 3600e3), m = Math.floor(ms % 3600e3 / 60e3), sg = Math.floor(ms % 60e3 / 1e3);
+      return `${h} h ${String(m).padStart(2, '0')} min ${String(sg).padStart(2, '0')} s`;
+    }
+
     function rtMarcar(paso, marcado) {
       const r = rtActual.r, t = RT_TIPOS[r.tipo_ritual];
       if (marcado) {
         if (paso === 'antes' && !rtLleno(r.antes, rtAntes(r).preguntas.length)) { alert(`Responde las ${rtAntes(r).preguntas.length} preguntas antes de continuar 🌙`); renderRitual(); return; }
         if (paso === 'reflexion' && (!t || !rtLleno(r.reflexion, t.preguntas.length))) { alert('Responde todas las preguntas de tu reflexión antes de continuar 🌙'); renderRitual(); return; }
+        if (paso === 'limpieza' && (rtFaltaTierra(r) === null || rtFaltaTierra(r) > 0)) { alert('Tu manilla necesita estar 24 horas en la tierra antes de continuar 🌱'); renderRitual(); return; }
         if (paso === 'metas' && !rtLleno(r.metas, 3)) { alert(`Escribe tus tres ${t ? t.metasNombre : 'metas'} antes de continuar 🌙`); renderRitual(); return; }
       }
       r.pasos = { ...r.pasos, [paso]: marcado };
@@ -1742,7 +1768,7 @@ Escríbele un deseo que apoye este propósito.`,
         : `<textarea class="dv-in rt-ta" rows="2" placeholder="${ph || 'Escribe aquí…'}" oninput="rtCampo('${campo}', ${i}, this.value)">${esc((r[campo] || [])[i] || '')}</textarea>`;
       const check = (paso, texto) => sellado ? '' : `<label class="rt-check"><input type="checkbox" ${p[paso] ? 'checked' : ''} onchange="rtMarcar('${paso}', this.checked)"> <span>${texto}</span></label>`;
       const fase = (num, titulo, abierta, hecha, cuerpo) => `<section class="hv-card rt-fase${hecha ? ' hecha' : ''}${abierta ? '' : ' bloq'}">
-          <p class="rt-num">${hecha ? '✓' : abierta ? num : '🔒'} · Fase ${num} de 6</p>
+          <p class="rt-num">${hecha ? '✓' : abierta ? num : '🔒'} · Fase ${num} de ${RT_TOTAL}</p>
           <h4 class="rt-h">${titulo}</h4>
           ${abierta ? cuerpo : '<p class="rt-p rt-mut">Se abre al terminar la fase anterior.</p>'}
         </section>`;
@@ -1752,8 +1778,8 @@ Escríbele un deseo que apoye este propósito.`,
           <p class="rt-kicker">Ritual de intencionamiento</p>
           <h3 class="rt-titulo">Manilla de ${esc(m.tipo_manilla)}</h3>
           ${t && m.tipo_manilla !== t.titulo ? `<p class="rt-p">Ritual de ${t.titulo}</p>` : ''}
-          <div class="rt-barra" aria-label="Progreso"><i style="width:${n / 6 * 100}%"></i></div>
-          <p class="rt-mut" id="rtEstado">${sellado ? `Sellado el ${new Date(r.cerrado_en).toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' })} ✨` : `Fase ${Math.min(n + 1, 6)} de 6 · tu progreso se guarda solo`}</p>
+          <div class="rt-barra" aria-label="Progreso"><i style="width:${n / RT_TOTAL * 100}%"></i></div>
+          <p class="rt-mut" id="rtEstado">${sellado ? `Sellado el ${new Date(r.cerrado_en).toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' })} ✨` : `Fase ${Math.min(n + 1, RT_TOTAL)} de ${RT_TOTAL} · tu progreso se guarda solo`}</p>
         </section>`;
 
       html += fase(1, 'Prepara tu espacio', true, p.espacio || sellado, `
@@ -1784,12 +1810,26 @@ Escríbele un deseo que apoye este propósito.`,
         ${[0, 1, 2].map(i => `<div class="rt-meta"><b>${i + 1}.</b>${ta('metas', i, 'Escribe aquí…')}</div>`).join('')}
         ${check('metas', 'Escribí mis tres')}` : '');
 
-      html += fase(5, 'Palabras para intencionar tu manilla', p.metas || sellado, p.palabras || sellado, t ? `
+      const falta = rtFaltaTierra(r);
+      let cuerpoTierra = `<p class="rt-p">${RT_TIERRA_TEXTO}</p>`;
+      if (!sellado && !p.limpieza) {
+        if (falta === null) cuerpoTierra += `<button type="button" class="hv-gold rt-sellar" onclick="rtEnterrar()">🌱 Ya enterré mi manilla</button>
+          <p class="rt-p rt-mut">Al tocarlo empieza la cuenta de 24 horas. Puedes cerrar la página: tu progreso queda guardado.</p>`;
+        else if (falta > 0) cuerpoTierra += `<div class="rt-tierra"><p class="rt-mut">Tu manilla está en la tierra 🌱 Podrás desenterrarla en</p>
+          <p class="rt-cuenta" id="rtCuenta">${rtTextoFalta(falta)}</p>
+          <p class="rt-mut">Enterrada el ${new Date(p.enterrada).toLocaleString('es-CO', { day: 'numeric', month: 'long', hour: 'numeric', minute: '2-digit' })}</p></div>
+          <button type="button" class="rt-volver" onclick="rtCancelarTierra()">Me equivoqué, aún no la he enterrado</button>`;
+        else cuerpoTierra += `<p class="rt-p rt-dest">Ya pasaron las 24 horas 🌙 Desentiérrala, límpiala con cuidado y asegúrate de que esté seca.</p>`;
+      }
+      if (!sellado && falta === 0) cuerpoTierra += check('limpieza', 'Ya la desenterré y está limpia y seca');
+      html += fase(5, 'Limpia tu manilla en la tierra', p.metas || sellado, p.limpieza || sellado, cuerpoTierra);
+
+      html += fase(6, 'Palabras para intencionar tu manilla', p.limpieza || sellado, p.palabras || sellado, t ? `
         <p class="rt-p">Sostén tu manilla entre las manos y lee en voz alta:</p>
         <blockquote class="rt-palabras">${t.palabras}</blockquote>
         ${check('palabras', 'Lo leí en voz alta')}` : '');
 
-      html += fase(6, 'Mi compromiso', p.palabras || sellado, sellado, t ? `
+      html += fase(7, 'Mi compromiso', p.palabras || sellado, sellado, t ? `
         <p class="rt-p rt-dest">Mi compromiso: ${t.compromiso}</p>
         <p class="rt-q">Mi intención para esta manilla (en una frase):</p>
         ${sellado ? `<p class="rt-resp rt-frase">“${esc(r.frase)}”</p>` : `<textarea class="dv-in rt-ta" rows="2" maxlength="300" placeholder="Ej: Me elijo cada día y cuido mi paz." oninput="rtFrase(this.value)">${esc(r.frase || '')}</textarea>
@@ -1797,6 +1837,13 @@ Escríbele un deseo que apoye este propósito.`,
         <button type="button" class="hv-gold rt-sellar" onclick="sellarRitual()">Sellar mi ritual ✨</button>`}` : '');
 
       cont.innerHTML = html;
+      clearInterval(rtReloj); rtReloj = null;
+      if (!sellado && !p.limpieza && falta > 0) rtReloj = setInterval(() => {
+        const el = document.getElementById('rtCuenta');
+        if (!el || !rtActual || rtActual.r !== r) { clearInterval(rtReloj); rtReloj = null; return; }
+        const f = rtFaltaTierra(r); if (f <= 0) { renderRitual(); return; }
+        el.innerText = rtTextoFalta(f);
+      }, 1000);
       cont.querySelectorAll('.rt-ta').forEach(x => { x.style.height = 'auto'; x.style.height = x.scrollHeight + 'px'; x.addEventListener('input', () => { x.style.height = 'auto'; x.style.height = x.scrollHeight + 'px'; }); });
     }
 
