@@ -160,6 +160,11 @@
     .dv-chip{display:inline-flex;align-items:center;gap:.3rem;padding:.45rem .8rem;border-radius:999px;font-size:.78rem;color:var(--dv-txt);background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px var(--dv-borde);transition:.25s}
     .dv-chip.on{color:#16213A;background:var(--dv-plata);box-shadow:0 6px 16px -8px rgba(221,228,240,.8);font-weight:600}
     .dv-chip.nope{animation:dvNope .4s}
+    .dv-rank{font-weight:700;font-size:.95rem;line-height:1}
+    .dv-grupo-t{margin-top:.95rem;font-size:.72rem;font-weight:700;letter-spacing:.06em;color:var(--dv-acc)}
+    .dv-emo-det{margin-top:.8rem;padding:.75rem .85rem;border-radius:1rem;background:rgba(8,12,26,.35);box-shadow:inset 0 0 0 1px var(--dv-borde)}
+    .dv-emo-n{font-weight:600;font-size:.88rem;color:var(--dv-plata);margin-bottom:.4rem}
+    .dv-mini{gap:.35rem;margin-top:.35rem}.dv-mini .dv-chip{padding:.32rem .65rem;font-size:.72rem}
     @keyframes dvNope{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
     .dv-aviso{min-height:1.1rem;margin-top:.55rem;font-size:.72rem;color:var(--dv-acc);opacity:0;transition:opacity .3s}
     .dv-aviso.show{opacity:1}
@@ -587,7 +592,7 @@
   <div id="dvGratitud" class="hidden dv-modal" role="dialog" aria-modal="true" aria-labelledby="dvGratTitulo">
     <div class="dv-modal-box">
       <h3 id="dvGratTitulo">Un momento de gratitud 🙏</h3>
-      <p class="dv-ciencia">Según investigaciones de la <b>Universidad de California en Davis</b> (Robert Emmons) y estudios sobre neuroplasticidad, practicar la gratitud de forma consciente se asocia con <b>menos estrés y mejor bienestar</b>, y ayuda a reentrenar la atención hacia lo positivo.</p>
+      <p class="dv-ciencia">Estudios de psicología positiva, incluyendo investigación de la <b>Universidad de California Berkeley</b>, asocian la gratitud con <b>mejor bienestar emocional</b>.</p>
       <label for="dvGratInput" class="dv-lbl block mt-4">Hoy agradezco…</label>
       <textarea id="dvGratInput" rows="3" class="dv-in dv-ta" placeholder="1. &#10;2. &#10;3. "></textarea>
       <div class="dv-btns">
@@ -1850,11 +1855,18 @@ Escríbele un deseo que apoye este propósito.`,
 
     // ===================== DIARIO =====================
     // Se guarda en Supabase (tablas diario y perfil_privado), privado gracias a RLS.
-    const DV_EMOCIONES = [
-      ['Alegría','😊'], ['Calma','🍃'], ['Gratitud','🙏'], ['Amor','💗'], ['Esperanza','🌱'], ['Entusiasmo','✨'],
-      ['Tristeza','🌧️'], ['Ansiedad','🌀'], ['Miedo','🫧'], ['Ira','🔥'], ['Frustración','😤'], ['Cansancio','😴']
+    const DV_GRUPOS = [
+      { titulo: '😊 Agradables', clave: 'agradable', items: [['Alegría','😊'], ['Calma','🍃'], ['Gratitud','🙏'], ['Amor','💗'], ['Esperanza','🌱'], ['Entusiasmo','✨'], ['Alivio','😌'], ['Orgullo','🌟']] },
+      { titulo: '😣 Difíciles', clave: 'dificil', items: [['Tristeza','🌧️'], ['Ansiedad','🌀'], ['Miedo','🫧'], ['Ira','🔥'], ['Frustración','😤'], ['Agobio','😵‍💫'], ['Culpa','🥀'], ['Vergüenza','🙈'], ['Soledad','🫂']] },
+      { titulo: '😴 Baja energía', clave: 'baja', items: [['Cansancio','😴'], ['Apatía/vacío','🌫️'], ['Aburrimiento','🥱']] }
     ];
-    const DV_AGRADABLES = ['Alegría','Calma','Gratitud','Amor','Esperanza','Entusiasmo'];
+    const DV_EMOCIONES = DV_GRUPOS.flatMap(g => g.items);
+    const DV_AGRADABLES = DV_GRUPOS[0].items.map(x => x[0]);
+    const DV_MAX_EMO = 4, DV_PESOS = [4, 3, 2, 1], DV_RANGOS = ['①', '②', '③', '④'];
+    const DV_MOMENTOS = ['Mañana', 'Tarde', 'Noche', 'Todo el día'];
+    const DV_DISPARADORES = ['Trabajo', 'Familia', 'Pareja', 'Dinero', 'Salud', 'Sueño', 'Nada claro'];
+    const DV_SUSTANCIAS = ['Alcohol', 'Café', 'Azúcar', 'Otra'];
+    const dvEmoji = n => (DV_EMOCIONES.find(x => x[0] === n) || ['', '•'])[1];
     const DV_METRICAS = [
       ['energia','Energía','⚡'], ['sueno','Calidad de sueño','🌙'], ['calma','Calma mental','🍃'],
       ['animo','Ánimo general','☀️'], ['alimentacion','Alimentación','🥗'], ['hidratacion','Hidratación','💧']
@@ -2010,9 +2022,12 @@ Escríbele un deseo que apoye este propósito.`,
     const dvProm = (rs, k) => { const v = rs.map(r => r[k]).filter(x => typeof x === 'number'); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
     const dvFmt = x => x === null || x === undefined ? '–' : (Math.round(x * 10) / 10).toLocaleString('es-CO');
     const dvPct = (n, d) => d ? Math.round(n / d * 100) : 0;
+    // % de emociones agradables del día, ponderado por orden (1.ª = 4, 2.ª = 3, 3.ª = 2, 4.ª = 1)
     function dvAgradable(r) {
-      const e = r.emociones || []; if (!e.length) return null;
-      return e.filter(n => DV_AGRADABLES.includes(n)).length / e.length * 100;
+      const e = (r.emociones || []).slice(0, DV_MAX_EMO); if (!e.length) return null;
+      let tot = 0, agr = 0;
+      e.forEach((n, i) => { const w = DV_PESOS[i]; tot += w; if (DV_AGRADABLES.includes(n)) agr += w; });
+      return agr / tot * 100;
     }
     const dvPromAgr = rs => { const v = rs.map(dvAgradable).filter(x => x !== null); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
 
@@ -2069,15 +2084,24 @@ Escríbele un deseo que apoye este propósito.`,
         return `<div class="dv-barra"><span>${e} ${nombre}</span><i><s style="width:${v ? v / 5 * 100 : 0}%"></s></i><em>${dvFmt(v)}</em></div>`;
       }).join('');
 
-      const cuenta = {};
-      rs.forEach(r => (r.emociones || []).forEach(e => cuenta[e] = (cuenta[e] || 0) + 1));
-      const top = Object.entries(cuenta).sort((a, b) => b[1] - a[1]).slice(0, 6);
+      const peso = {}; let pesoTot = 0;
+      const disp = {}, mom = {};
+      rs.forEach(r => (r.emociones || []).slice(0, DV_MAX_EMO).forEach((e, i) => {
+        const w = DV_PESOS[i]; peso[e] = (peso[e] || 0) + w; pesoTot += w;
+        const d = (r.emoDetalle || {})[e] || {};
+        if (d.momento) mom[d.momento] = (mom[d.momento] || 0) + 1;
+        if (d.disparador && !DV_AGRADABLES.includes(e)) disp[d.disparador] = (disp[d.disparador] || 0) + 1;
+      }));
+      const top = Object.entries(peso).sort((a, b) => b[1] - a[1]).slice(0, 6);
       if (top.length) {
-        html += `<p class="dv-rep-t">Emociones más frecuentes</p>` + top.map(([e, c]) => {
-          const emo = (DV_EMOCIONES.find(x => x[0] === e) || ['', '•'])[1];
-          return `<div class="dv-barra"><span>${emo} ${e}</span><i><s style="width:${dvPct(c, n)}%"></s></i><em>${dvPct(c, n)}%</em></div>`;
+        html += `<p class="dv-rep-t">Emociones más presentes</p><p class="dv-nota" style="margin-top:.2rem">Cuentan más las que elegiste primero.</p>` + top.map(([e, w]) => {
+          return `<div class="dv-barra"><span>${dvEmoji(e)} ${esc(e)}</span><i><s style="width:${dvPct(w, top[0][1])}%"></s></i><em>${dvPct(w, pesoTot)}%</em></div>`;
         }).join('');
       }
+      const barras = (obj, orden) => { const tot = Object.values(obj).reduce((a, b) => a + b, 0);
+        return orden.filter(k => obj[k]).map(k => `<div class="dv-barra"><span>${k}</span><i><s style="width:${dvPct(obj[k], tot)}%"></s></i><em>${dvPct(obj[k], tot)}%</em></div>`).join(''); };
+      if (Object.keys(disp).length) html += `<p class="dv-rep-t">Qué disparó tus emociones difíciles</p>` + barras(disp, DV_DISPARADORES);
+      if (Object.keys(mom).length) html += `<p class="dv-rep-t">Cuándo se sintieron más</p>` + barras(mom, DV_MOMENTOS);
 
       const animo = ['Ánimo', rs2 => dvProm(rs2, 'animo'), ''];
       const energia = ['Energía', rs2 => dvProm(rs2, 'energia'), ''];
@@ -2088,7 +2112,9 @@ Escríbele un deseo que apoye este propósito.`,
         dvInsight(rs, r => r.ejercicio === true, r => r.ejercicio === false, '🏃 Días con ejercicio', 'días sin ejercicio', [animo, calma, agrad]),
         dvInsight(rs, r => r.sola === true, r => r.sola === false, '🫂 Días que te sentiste sola/o', 'días que no', [animo, ['Sueño', rs2 => dvProm(rs2, 'sueno'), ''], ['Con ejercicio', rs2 => dvPct(rs2.filter(r => r.ejercicio).length, rs2.length), '%']]),
         dvInsight(rs, r => r.hidratacion >= 4, r => r.hidratacion && r.hidratacion <= 2, '💧 Días bien hidratada/o', 'días con poca hidratación', [energia, animo]),
-        dvInsight(rs, r => r.alimentacion >= 4, r => r.alimentacion && r.alimentacion <= 2, '🥗 Días que comiste bien', 'días que no tanto', [energia, animo])
+        dvInsight(rs, r => r.alimentacion >= 4, r => r.alimentacion && r.alimentacion <= 2, '🥗 Días que comiste bien', 'días que no tanto', [energia, animo]),
+        dvInsight(rs, r => (r.sustanciasTipos || []).includes('Alcohol'), r => r.sustancias === false || (r.sustancias === true && !(r.sustanciasTipos || []).includes('Alcohol')), '🍷 Días con alcohol', 'días sin alcohol', [animo, ['Sueño', rs2 => dvProm(rs2, 'sueno'), ''], agrad]),
+        dvInsight(rs, r => (r.sustanciasTipos || []).includes('Café'), r => r.sustancias === false || (r.sustancias === true && !(r.sustanciasTipos || []).includes('Café')), '☕ Días con café', 'días sin café', [animo, ['Sueño', rs2 => dvProm(rs2, 'sueno'), ''], calma])
       ].filter(Boolean);
       html += `<p class="dv-rep-t">Relaciones en tus registros</p>` + (relaciones.length ? relaciones.join('')
         : '<p class="dv-insight">Aún no hay suficientes días en cada grupo para comparar. Sigue registrando 🌙</p>');
@@ -2122,12 +2148,16 @@ Escríbele un deseo que apoye este propósito.`,
       if (!dias.length) return '<p class="dv-priv">Aquí verás tus días anteriores.</p>';
       return dias.map(f => {
         const r = diario[f];
-        const emojis = (r.emociones || []).map(n => (DV_EMOCIONES.find(e => e[0] === n) || ['', '•'])[1]).join(' ');
+        const emojis = (r.emociones || []).map(dvEmoji).join(' ');
+        const emoTxt = (r.emociones || []).map((n, i) => { const d = (r.emoDetalle || {})[n] || {};
+          const extra = [d.momento, d.disparador].filter(Boolean).map(x => x.toLowerCase()).join(' · ');
+          return `${i + 1}. ${n}${extra ? ` (${extra})` : ''}`; }).join('\n');
+        const sus = r.sustancias ? (r.sustanciasTipos || []).map(x => x === 'Otra' && r.sustanciaOtra ? r.sustanciaOtra : x).join(', ') || 'Sí' : '';
         const fecha = dvMay(dvParse(f).toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short' }));
         const ej = r.ejercicio ? `<b>Ejercicio</b>${esc((r.ejercicioTipos || []).join(', ') || 'Sí')}` : '';
         return `<div class="dv-past" onclick="hvToggle(this)" role="button" aria-expanded="false">
           <div class="dv-past-t"><span>${esc(fecha)}</span><span class="dv-past-e">${emojis}</span>${r.animo ? `<span>☀️ ${r.animo}/5</span>` : ''}</div>
-          <div class="dv-det">${r.sentir ? `<b>Cómo me sentí</b>${esc(r.sentir)}` : ''}${(r.emociones || []).length ? `<b>Emociones</b>${esc(r.emociones.join(', '))}` : ''}${ej}${r.sola ? '<b>Soledad</b>Me sentí sola/o' : ''}${r.reflexion ? `<b>Reflexión</b>${esc(r.reflexion)}` : ''}${r.gratitud ? `<b>Agradecí</b>${esc(r.gratitud)}` : ''}</div>
+          <div class="dv-det">${r.sentir ? `<b>Cómo me sentí</b>${esc(r.sentir)}` : ''}${(r.emociones || []).length ? `<b>Emociones</b>${esc(emoTxt)}` : ''}${ej}${sus ? `<b>Sustancias</b>${esc(sus)}` : ''}${r.sola ? '<b>Soledad</b>Me sentí sola/o' : ''}${r.reflexion ? `<b>Reflexión</b>${esc(r.reflexion)}` : ''}${r.gratitud ? `<b>Agradecí</b>${esc(r.gratitud)}` : ''}</div>
         </div>`;
       }).join('');
     }
@@ -2151,6 +2181,7 @@ Escríbele un deseo que apoye este propósito.`,
         const g = diario[hoy];
         dvHoy = g ? JSON.parse(JSON.stringify(g)) : { emociones: [], ejercicioTipos: [], sentir: '', reflexion: '', gratitud: '' };
         dvHoy.emociones = dvHoy.emociones || []; dvHoy.ejercicioTipos = dvHoy.ejercicioTipos || [];
+        dvHoy.emoDetalle = dvHoy.emoDetalle || {}; dvHoy.sustanciasTipos = dvHoy.sustanciasTipos || [];
       }
       const ciclo = dvLeer('ciclo', null);
       const ahora = new Date(), [lunaEmoji, lunaNombre] = faseLunar(ahora);
@@ -2172,11 +2203,18 @@ Escríbele un deseo que apoye este propósito.`,
         </section>
 
         <section class="dv-card">
-          <h4 class="dv-h">¿Qué emociones dominan hoy?</h4>
-          <p class="dv-sub">Elige hasta 3 · las principales</p>
-          <div class="dv-chips">${DV_EMOCIONES.map(([n, e], i) =>
-            `<button type="button" class="dv-chip${dvHoy.emociones.includes(n) ? ' on' : ''}" aria-pressed="${dvHoy.emociones.includes(n)}" onclick="dvEmocion(${i}, this)">${e} ${n}</button>`).join('')}</div>
-          <p id="dvAviso" class="dv-aviso" role="status">Elige hasta 3 para enfocarnos en las principales 🌿</p>
+          <h4 class="dv-h">¿Qué emociones dominaron tu día?</h4>
+          <p class="dv-sub">Elige de 1 a 4 en orden: la primera que toques es la más fuerte de tu día y las siguientes pesan menos.</p>
+          ${DV_GRUPOS.map(g => `<p class="dv-grupo-t">${g.titulo}</p><div class="dv-chips" style="margin-top:.45rem">${g.items.map(([n, e]) => {
+            const pos = dvHoy.emociones.indexOf(n), i = DV_EMOCIONES.findIndex(x => x[0] === n);
+            return `<button type="button" class="dv-chip${pos >= 0 ? ' on' : ''}" aria-pressed="${pos >= 0}" aria-label="${n}${pos >= 0 ? ', número ' + (pos + 1) : ''}" onclick="dvEmocion(${i}, this)">${pos >= 0 ? `<span class="dv-rank">${DV_RANGOS[pos]}</span>` : e} ${n}</button>`;
+          }).join('')}</div>`).join('')}
+          <p id="dvAviso" class="dv-aviso" role="status">Puedes elegir hasta 4 · la primera es la más dominante 🌿</p>
+          ${dvHoy.emociones.map((n, k) => { const d = dvHoy.emoDetalle[n] || {};
+            const fila = (campo, lista) => `<div class="dv-chips dv-mini">${lista.map((x, j) => `<button type="button" class="dv-chip${d[campo] === x ? ' on' : ''}" aria-pressed="${d[campo] === x}" onclick="dvDetalle(${k}, '${campo}', ${j})">${x}</button>`).join('')}</div>`;
+            return `<div class="dv-emo-det"><p class="dv-emo-n">${DV_RANGOS[k]} ${dvEmoji(n)} ${n}</p>
+              <p class="dv-lbl">¿Cuándo predominó?</p>${fila('momento', DV_MOMENTOS)}
+              <p class="dv-lbl" style="margin-top:.5rem">¿Qué la disparó?</p>${fila('disparador', DV_DISPARADORES)}</div>`; }).join('')}
         </section>
 
         <section class="dv-card">
@@ -2194,6 +2232,10 @@ Escríbele un deseo que apoye este propósito.`,
           ${dvSiNo('ejercicio', '🏃 ¿Hiciste ejercicio hoy?')}
           ${dvHoy.ejercicio === true ? `<div class="dv-chips">${DV_EJERCICIOS.map((t, i) =>
             `<button type="button" class="dv-chip${dvHoy.ejercicioTipos.includes(t) ? ' on' : ''}" aria-pressed="${dvHoy.ejercicioTipos.includes(t)}" onclick="dvEjTipo(${i})">${t}</button>`).join('')}</div>` : ''}
+          ${dvSiNo('sustancias', '☕ ¿Consumiste alcohol, café, azúcar u otra sustancia hoy?')}
+          ${dvHoy.sustancias === true ? `<div class="dv-chips">${DV_SUSTANCIAS.map((t, i) =>
+            `<button type="button" class="dv-chip${dvHoy.sustanciasTipos.includes(t) ? ' on' : ''}" aria-pressed="${dvHoy.sustanciasTipos.includes(t)}" onclick="dvSustancia(${i})">${t}</button>`).join('')}</div>
+            ${dvHoy.sustanciasTipos.includes('Otra') ? `<input type="text" class="dv-in" maxlength="80" placeholder="¿Cuál?" aria-label="¿Cuál otra sustancia?" value="${esc(dvHoy.sustanciaOtra || '')}" oninput="dvHoy.sustanciaOtra=this.value">` : ''}` : ''}
           ${dvSiNo('sola', '🫂 ¿Hoy te sentiste sola/o?')}
           ${dvHoy.sola === true ? `<div class="dv-sola">Gracias por contarlo 💙 Sentirse sola es humano, y no tienes que atravesarlo en silencio. A veces un mensaje acerca más de lo que imaginamos.
             <div class="dv-btns" style="margin-top:.7rem"><button type="button" class="dv-btn" onclick="dvEscribirAmigo()">Escribirle a mis amigos 💌</button></div></div>` : ''}
@@ -2228,6 +2270,19 @@ Escríbele un deseo que apoye este propósito.`,
     function dvSet(k, v) {
       dvHoy[k] = dvHoy[k] === v ? undefined : v;
       if (k === 'ejercicio' && dvHoy.ejercicio !== true) dvHoy.ejercicioTipos = [];
+      if (k === 'sustancias' && dvHoy.sustancias !== true) { dvHoy.sustanciasTipos = []; dvHoy.sustanciaOtra = ''; }
+      renderizarDiario();
+    }
+    function dvSustancia(i) {
+      const t = DV_SUSTANCIAS[i], sel = dvHoy.sustanciasTipos;
+      sel.includes(t) ? sel.splice(sel.indexOf(t), 1) : sel.push(t);
+      if (!sel.includes('Otra')) dvHoy.sustanciaOtra = '';
+      renderizarDiario();
+    }
+    function dvDetalle(k, campo, j) {
+      const n = dvHoy.emociones[k]; if (!n) return;
+      const lista = campo === 'momento' ? DV_MOMENTOS : DV_DISPARADORES, d = dvHoy.emoDetalle[n] = dvHoy.emoDetalle[n] || {};
+      d[campo] = d[campo] === lista[j] ? undefined : lista[j];
       renderizarDiario();
     }
     function dvEjTipo(i) {
@@ -2237,16 +2292,16 @@ Escríbele un deseo que apoye este propósito.`,
     }
     function dvEmocion(i, btn) {
       const n = DV_EMOCIONES[i][0], sel = dvHoy.emociones;
-      if (sel.includes(n)) sel.splice(sel.indexOf(n), 1);
-      else if (sel.length >= 3) {
+      if (sel.includes(n)) { sel.splice(sel.indexOf(n), 1); delete dvHoy.emoDetalle[n]; renderizarDiario(); return; }
+      else if (sel.length >= DV_MAX_EMO) {
         const av = document.getElementById('dvAviso');
         av.classList.add('show'); clearTimeout(dvAvisoTimer);
         dvAvisoTimer = setTimeout(() => av.classList.remove('show'), 2500);
         btn.classList.remove('nope'); void btn.offsetWidth; btn.classList.add('nope');
         return;
-      } else sel.push(n);
-      btn.classList.toggle('on', sel.includes(n));
-      btn.setAttribute('aria-pressed', sel.includes(n));
+      }
+      sel.push(n);
+      renderizarDiario();
     }
 
     // Soledad: abre la lista de amigos para escribirle a alguien
@@ -2268,6 +2323,7 @@ Escríbele un deseo que apoye este propósito.`,
       const vacio = !dvHoy.emociones.length && !DV_METRICAS.some(m => dvHoy[m[0]]) && !(dvHoy.reflexion || '').trim()
         && !(dvHoy.sentir || '').trim() && dvHoy.ejercicio === undefined && dvHoy.sola === undefined;
       if (vacio) { alert('Cuéntanos al menos un poco de tu día antes de cerrarlo 🌙'); return; }
+      if (!dvHoy.emociones.length) { alert('Elige al menos una emoción para cerrar tu día 🌙'); return; }
       document.getElementById('dvGratInput').value = dvHoy.gratitud || '';
       document.getElementById('dvGratitud').classList.remove('hidden');
       setTimeout(() => document.getElementById('dvGratInput').focus(), 80);
