@@ -1642,7 +1642,7 @@ Escríbele un deseo que apoye este propósito.`,
         compromiso: 'Cada vez que mire esta manilla, recordaré que el amor que merezco también comienza en la forma en que me trato.'
       }
     };
-    const RT_PASOS = ['espacio', 'antes', 'reflexion', 'metas', 'limpieza', 'palabras'];
+    const RT_PASOS = ['espacio', 'antes', 'limpieza', 'reflexion', 'metas', 'palabras'];
     const RT_TOTAL = 7;
     const RT_HORAS_TIERRA = 24;
     const RT_TIERRA_TEXTO = 'Busca un espacio con tierra natural, puede ser en una matera o en un jardín, y entierra tu manilla completamente durante 24 horas. Mientras lo haces, establece la intención de liberar cualquier energía anterior y preparar las piedras para recibir una nueva intención. Pasado este tiempo, desentiérrala, retira cuidadosamente los restos de tierra y asegúrate de que esté limpia y seca antes de continuar con el ritual.';
@@ -1792,24 +1792,6 @@ Escríbele un deseo que apoye este propósito.`,
         ${sellado ? '' : `<p class="rt-p rt-mut">${rtAntes(r).cierre}</p>`}
         ${check('antes', 'Terminé mis respuestas')}`);
 
-      const abre3 = p.antes || sellado;
-      let cuerpo3 = '';
-      if (!t || (!sellado && !['Abundancia', 'Proteccion', 'Amor'].includes(m.tipo_manilla))) {
-        cuerpo3 += `<p class="rt-p">Tu manilla es personalizada. Elige qué quieres trabajar en este ritual:</p>
-          <div class="rt-tipos">${Object.entries(RT_TIPOS).map(([k, v]) => `<button type="button" class="rt-tipo${r.tipo_ritual === k ? ' on' : ''}" onclick="rtElegirTipo('${k}')" ${sellado ? 'disabled' : ''}>${v.emoji} ${v.titulo}</button>`).join('')}</div>`;
-      }
-      if (t) {
-        cuerpo3 += `<p class="rt-lema">${t.lema}</p><p class="rt-p">${t.reflexTitulo}</p>
-          ${t.preguntas.map((q, i) => `<p class="rt-q">${q}</p>${ta('reflexion', i)}`).join('')}
-          ${check('reflexion', 'Terminé mi reflexión')}`;
-      }
-      html += fase(3, t ? `${t.emoji} ${t.titulo}` : 'Reflexiona', abre3, (p.reflexion && t) || sellado, cuerpo3);
-
-      html += fase(4, t ? (t.metasNombre === 'metas' ? 'Tus tres metas' : 'Tus tres compromisos') : 'Tus tres metas o compromisos', (p.reflexion && t) || sellado, p.metas || sellado, t ? `
-        <p class="rt-p">${t.metasTitulo}</p>
-        ${[0, 1, 2].map(i => `<div class="rt-meta"><b>${i + 1}.</b>${ta('metas', i, 'Escribe aquí…')}</div>`).join('')}
-        ${check('metas', 'Escribí mis tres')}` : '');
-
       const falta = rtFaltaTierra(r);
       let cuerpoTierra = `<p class="rt-p">${RT_TIERRA_TEXTO}</p>`;
       if (!sellado && !p.limpieza) {
@@ -1822,9 +1804,28 @@ Escríbele un deseo que apoye este propósito.`,
         else cuerpoTierra += `<p class="rt-p rt-dest">Ya pasaron las 24 horas 🌙 Desentiérrala, límpiala con cuidado y asegúrate de que esté seca.</p>`;
       }
       if (!sellado && falta === 0) cuerpoTierra += check('limpieza', 'Ya la desenterré y está limpia y seca');
-      html += fase(5, 'Limpia tu manilla en la tierra', p.metas || sellado, p.limpieza || sellado, cuerpoTierra);
+      html += fase(3, 'Limpia tu manilla en la tierra', p.antes || sellado, p.limpieza || sellado, cuerpoTierra);
 
-      html += fase(6, 'Palabras para intencionar tu manilla', p.limpieza || sellado, p.palabras || sellado, t ? `
+      const abre3 = p.limpieza || sellado;
+      let cuerpo3 = '';
+      if (!t || (!sellado && !['Abundancia', 'Proteccion', 'Amor'].includes(m.tipo_manilla))) {
+        cuerpo3 += `<p class="rt-p">Tu manilla es personalizada. Elige qué quieres trabajar en este ritual:</p>
+          <div class="rt-tipos">${Object.entries(RT_TIPOS).map(([k, v]) => `<button type="button" class="rt-tipo${r.tipo_ritual === k ? ' on' : ''}" onclick="rtElegirTipo('${k}')" ${sellado ? 'disabled' : ''}>${v.emoji} ${v.titulo}</button>`).join('')}</div>`;
+      }
+      if (t) {
+        cuerpo3 += `<p class="rt-lema">${t.lema}</p><p class="rt-p">${t.reflexTitulo}</p>
+          ${t.preguntas.map((q, i) => `<p class="rt-q">${q}</p>${ta('reflexion', i)}`).join('')}
+          ${check('reflexion', 'Terminé mi reflexión')}`;
+      }
+      html += fase(4, t ? `${t.emoji} ${t.titulo}` : 'Reflexiona', abre3, (p.reflexion && t) || sellado, cuerpo3);
+
+      html += fase(5, t ? (t.metasNombre === 'metas' ? 'Tus tres metas' : 'Tus tres compromisos') : 'Tus tres metas o compromisos', (p.reflexion && t) || sellado, p.metas || sellado, t ? `
+        <p class="rt-p">${t.metasTitulo}</p>
+        ${[0, 1, 2].map(i => `<div class="rt-meta"><b>${i + 1}.</b>${ta('metas', i, 'Escribe aquí…')}</div>`).join('')}
+        ${check('metas', 'Escribí mis tres')}` : '');
+
+
+      html += fase(6, 'Palabras para intencionar tu manilla', p.metas || sellado, p.palabras || sellado, t ? `
         <p class="rt-p">Sostén tu manilla entre las manos y lee en voz alta:</p>
         <blockquote class="rt-palabras">${t.palabras}</blockquote>
         ${check('palabras', 'Lo leí en voz alta')}` : '');
