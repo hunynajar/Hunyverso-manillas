@@ -1,5 +1,5 @@
 // Sube este número cada vez que cambies archivos para que los usuarios reciban la versión nueva
-const CACHE_NAME = 'hunyverso-v20';
+const CACHE_NAME = 'hunyverso-v21';
 const urlsToCache = [
   './',
   './index.html',
