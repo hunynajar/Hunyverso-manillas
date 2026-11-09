@@ -2232,7 +2232,7 @@ Escríbele un deseo que apoye este propósito.`,
           <p id="dvAviso" class="dv-aviso" role="status">Puedes elegir hasta 4 · la primera es la más dominante 🌿</p>
           ${dvHoy.emociones.some(n => DV_APOYO.includes(n)) ? `<div class="dv-sola">Gracias por ponerle nombre a lo que sientes 💙 Si este sentimiento pesa mucho o se queda varios días, no tienes que cargarlo sola/o.
             <div class="dv-btns" style="margin-top:.7rem"><button type="button" class="dv-btn" onclick="dvEscribirAmigo()">Escribirle a mis amigos 💌</button></div>
-            <p class="dv-nota" style="margin-top:.7rem">Línea gratuita de salud mental: <a class="underline" href="tel:192">192, opción 4</a>. En una emergencia, llama al <a class="underline" href="tel:123">123</a>.</p></div>` : ''}
+            <p class="dv-nota" style="margin-top:.7rem">Si necesitas hablar con alguien: <a class="underline" href="tel:106">Línea 106</a> (gratuita, 24 horas) o por WhatsApp al <a class="underline" href="https://wa.me/573007548933" target="_blank" rel="noopener">300 754 8933</a> (Bogotá). En una emergencia, llama al <a class="underline" href="tel:123">123</a>.</p></div>` : ''}
           ${dvHoy.emociones.map((n, k) => { const d = dvHoy.emoDetalle[n] || {};
             const fila = (campo, lista) => `<div class="dv-chips dv-mini">${lista.map((x, j) => `<button type="button" class="dv-chip${d[campo] === x ? ' on' : ''}" aria-pressed="${d[campo] === x}" onclick="dvDetalle(${k}, '${campo}', ${j})">${x}</button>`).join('')}</div>`;
             return `<div class="dv-emo-det"><p class="dv-emo-n">${DV_RANGOS[k]} ${dvEmoji(n)} ${n}</p>
