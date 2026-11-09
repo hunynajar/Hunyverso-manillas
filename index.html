@@ -1861,12 +1861,15 @@ Escríbele un deseo que apoye este propósito.`,
     // ===================== DIARIO =====================
     // Se guarda en Supabase (tablas diario y perfil_privado), privado gracias a RLS.
     const DV_GRUPOS = [
-      { titulo: '😊 Agradables', clave: 'agradable', items: [['Alegría','😊'], ['Calma','🍃'], ['Gratitud','🙏'], ['Amor','💗'], ['Esperanza','🌱'], ['Entusiasmo','✨'], ['Alivio','😌'], ['Orgullo','🌟']] },
-      { titulo: '😣 Difíciles', clave: 'dificil', items: [['Tristeza','🌧️'], ['Ansiedad','🌀'], ['Miedo','🫧'], ['Ira','🔥'], ['Frustración','😤'], ['Agobio','😵‍💫'], ['Culpa','🥀'], ['Vergüenza','🙈'], ['Soledad','🫂']] },
-      { titulo: '😴 Baja energía', clave: 'baja', items: [['Cansancio','😴'], ['Apatía/vacío','🌫️'], ['Aburrimiento','🥱']] }
+      { titulo: '😊 Agradables', clave: 'agradable', items: [['Alegría','😊'], ['Calma','🍃'], ['Gratitud','🙏'], ['Amor','💗'], ['Esperanza','🌱'], ['Entusiasmo','✨'], ['Alivio','😌'], ['Orgullo','🌟'], ['Satisfacción','☺️'], ['Ternura','🥹'], ['Inspiración','💡'], ['Diversión','😄']] },
+      { titulo: '😣 Difíciles', clave: 'dificil', items: [['Tristeza','🌧️'], ['Ansiedad','🌀'], ['Miedo','🫧'], ['Ira','🔥'], ['Frustración','😤'], ['Agobio','😵‍💫'], ['Culpa','🥀'], ['Vergüenza','🙈'], ['Soledad','🫂'], ['Desolación','🌑'], ['Desesperanza','🕳️'], ['Decepción','😞'], ['Inseguridad','😟'], ['Irritabilidad','😠'], ['Celos/envidia','💚']] },
+      { titulo: '🌗 Mixtas', clave: 'mixta', items: [['Nostalgia','🍂'], ['Melancolía','🎻'], ['Confusión','😕']] },
+      { titulo: '😴 Baja energía', clave: 'baja', items: [['Cansancio','😴'], ['Apatía/vacío','🌫️'], ['Aburrimiento','🥱'], ['Desmotivación','🪫']] }
     ];
     const DV_EMOCIONES = DV_GRUPOS.flatMap(g => g.items);
     const DV_AGRADABLES = DV_GRUPOS[0].items.map(x => x[0]);
+    const DV_MIXTAS = DV_GRUPOS.find(g => g.clave === 'mixta').items.map(x => x[0]);
+    const DV_APOYO = ['Desolación', 'Desesperanza'];
     const DV_MAX_EMO = 4, DV_PESOS = [4, 3, 2, 1], DV_RANGOS = ['①', '②', '③', '④'];
     const DV_MOMENTOS = ['Mañana', 'Tarde', 'Noche', 'Todo el día'];
     const DV_DISPARADORES = ['Trabajo', 'Universidad', 'Familia', 'Hijos', 'Pareja', 'Amigos', 'Mascota', 'Dinero', 'Salud', 'Sueño', 'Nada claro'];
@@ -2035,7 +2038,7 @@ Escríbele un deseo que apoye este propósito.`,
     function dvAgradable(r) {
       const e = (r.emociones || []).slice(0, DV_MAX_EMO); if (!e.length) return null;
       let tot = 0, agr = 0;
-      e.forEach((n, i) => { const w = DV_PESOS[i]; tot += w; if (DV_AGRADABLES.includes(n)) agr += w; });
+      e.forEach((n, i) => { const w = DV_PESOS[i]; tot += w; if (DV_AGRADABLES.includes(n)) agr += w; else if (DV_MIXTAS.includes(n)) agr += w / 2; });
       return agr / tot * 100;
     }
     const dvPromAgr = rs => { const v = rs.map(dvAgradable).filter(x => x !== null); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
@@ -2227,6 +2230,9 @@ Escríbele un deseo que apoye este propósito.`,
             return `<button type="button" class="dv-chip${pos >= 0 ? ' on' : ''}" aria-pressed="${pos >= 0}" aria-label="${n}${pos >= 0 ? ', número ' + (pos + 1) : ''}" onclick="dvEmocion(${i}, this)">${pos >= 0 ? `<span class="dv-rank">${DV_RANGOS[pos]}</span>` : e} ${n}</button>`;
           }).join('')}</div>`).join('')}
           <p id="dvAviso" class="dv-aviso" role="status">Puedes elegir hasta 4 · la primera es la más dominante 🌿</p>
+          ${dvHoy.emociones.some(n => DV_APOYO.includes(n)) ? `<div class="dv-sola">Gracias por ponerle nombre a lo que sientes 💙 Si este sentimiento pesa mucho o se queda varios días, no tienes que cargarlo sola/o.
+            <div class="dv-btns" style="margin-top:.7rem"><button type="button" class="dv-btn" onclick="dvEscribirAmigo()">Escribirle a mis amigos 💌</button></div>
+            <p class="dv-nota" style="margin-top:.7rem">Línea gratuita de salud mental: <a class="underline" href="tel:192">192, opción 4</a>. En una emergencia, llama al <a class="underline" href="tel:123">123</a>.</p></div>` : ''}
           ${dvHoy.emociones.map((n, k) => { const d = dvHoy.emoDetalle[n] || {};
             const fila = (campo, lista) => `<div class="dv-chips dv-mini">${lista.map((x, j) => `<button type="button" class="dv-chip${d[campo] === x ? ' on' : ''}" aria-pressed="${d[campo] === x}" onclick="dvDetalle(${k}, '${campo}', ${j})">${x}</button>`).join('')}</div>`;
             return `<div class="dv-emo-det"><p class="dv-emo-n">${DV_RANGOS[k]} ${dvEmoji(n)} ${n}</p>
