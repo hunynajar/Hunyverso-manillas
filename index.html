@@ -253,7 +253,7 @@
     .m-intt{margin-top:.15rem;font-family:var(--ital);font-style:italic;font-size:1.3rem;line-height:1.2;color:#f1e8ff;word-break:break-word}
     .pend{grid-column:1/-1;padding:.9rem;border-radius:1.1rem;text-align:center;background:rgba(232,201,138,.07);box-shadow:inset 0 0 0 1px rgba(232,201,138,.3)}
     .pt1{color:var(--gold);font-weight:700;font-size:.8rem}.pt2{color:var(--mut);font-size:.72rem}
-    .hv-wa{display:block;padding:.65rem;border-radius:.95rem;font-size:.75rem;font-weight:700;color:#fff;background:linear-gradient(135deg,#15803d,#22a55a)}
+    .hv-wa{display:block;padding:.65rem;border-radius:.95rem;font-size:.75rem;font-weight:700;color:#fff;background:linear-gradient(135deg,#7b2ff7,#d62976 55%,#fa7e1e)}
 
     /* Separador y tarjetas de piedras */
     .hv-sep{display:flex;align-items:center;gap:.8rem}
@@ -470,8 +470,8 @@
         <button type="button" id="btnRitual" class="rt-btn hidden" onclick="abrirRitual()">✨ Empezar ritual</button>
         <div id="estadoPendienteBanner" class="hidden pend space-y-2">
           <p class="pt1">Manilla en proceso pendiente</p>
-          <p class="pt2">Continúa tu compra en WhatsApp para recibir el código físico.</p>
-          <a id="btnWhatsappPendiente" href="#" target="_blank" rel="noopener" class="hv-wa">Continuar proceso en WhatsApp</a>
+          <p class="pt2">Continúa tu compra por Instagram (@hunyverso_shop) para recibir el código físico.</p>
+          <a id="btnWhatsappPendiente" href="https://ig.me/m/hunyverso_shop" target="_blank" rel="noopener" class="hv-wa" onclick="hvCopiarMensaje(this.dataset.msg)">Continuar en Instagram</a>
         </div>
       </section>
 
@@ -651,6 +651,8 @@
           <label class="flex items-center gap-2"><input type="checkbox" name="modalPiedra" value="Ojo de Tigre" class="accent-amber-500"> Ojo de Tigre</label>
           <label class="flex items-center gap-2"><input type="checkbox" name="modalPiedra" value="Citrino" class="accent-amber-500"> Citrino</label>
           <label class="flex items-center gap-2"><input type="checkbox" name="modalPiedra" value="Cuarzo Ahumado" class="accent-amber-500"> Cuarzo Ahumado</label>
+          <label class="flex items-center gap-2"><input type="checkbox" name="modalPiedra" value="Turmalina Negra" class="accent-amber-500"> Turmalina Negra</label>
+          <label class="flex items-center gap-2"><input type="checkbox" name="modalPiedra" value="Ágata Verde" class="accent-amber-500"> Ágata Verde</label>
         </div>
 
       </div>
@@ -717,6 +719,24 @@
         curioso: "El color oscuro del cuarzo ahumado no se debe a impurezas, sino a cambios producidos por la radiación natural que recibe el mineral durante millones de años bajo la superficie terrestre.",
         emoji: "🛡️",
         signos: ["Piscis", "Acuario"]
+      },
+      "Turmalina Negra": {
+        nombre: "Turmalina Negra",
+        frase: "La raíz firme en la tierra protege el alma de cualquier tormenta.",
+        simboliza: "La turmalina negra está considerada universalmente como una de las piedras de protección más potentes del entorno mineral. Se asocia con la capacidad de disipar las energías densas, transformar la negatividad en vibraciones más ligeras y crear un escudo protector alrededor de quien la lleva. También se relaciona con la estabilidad emocional, el anclaje a tierra y la seguridad interior frente a entornos caóticos o situaciones de estrés intenso.",
+        historia: "En la antigua Grecia y entre diversas culturas orientales, la turmalina negra se utilizaba como un talismán de protección contra las fuerzas oscuras y las energías malintencionadas. Los chamanes de antiguas tribus la empleaban en rituales para protegerse durante los viajes espirituales y mantener el cuerpo físico conectado a la tierra.",
+        curioso: "Esta piedra posee propiedades piroeléctricas y piezoeléctricas naturales; esto significa que es capaz de generar una carga eléctrica al ser calentada, frotada o sometida a presión, atrayendo pequeñas partículas de polvo o ceniza.",
+        emoji: "🖤",
+        signos: ["Capricornio", "Escorpio", "Aries"]
+      },
+      "Ágata Verde": {
+        nombre: "Ágata Verde",
+        frase: "El equilibrio del corazón florece cuando la mente descansa en la naturaleza.",
+        simboliza: "El ágata verde suele asociarse con la sanación emocional, la tranquilidad, la renovación y la apertura del corazón hacia nuevas oportunidades de bienestar. Tradicionalmente se considera un amuleto de buena suerte y crecimiento, que ayuda a calmar la ansiedad, fomenta la compasión y restaura el equilibrio interno tras etapas de agotamiento o cambios profundos.",
+        historia: "Civilizaciones antiguas como la egipcia y la mesopotámica utilizaban el ágata verde en la elaboración de sellos, anillos y amuletos curativos. Se creía que llevarla colgando ayudaba a calmar la fiebre, purificar la sangre y atraer la benevolencia de los dioses de la naturaleza para tener buenas cosechas.",
+        curioso: "Aunque el color verde en el ágata puede encontrarse de forma natural debido a la presencia de minerales como el níquel o el cromo, gran parte de las piezas pulidas que se comercializan pasan por un proceso tradicional de teñido que resalta sus hermosas vetas translúcidas.",
+        emoji: "🍃",
+        signos: ["Tauro", "Virgo", "Géminis"]
       }
     };
     const manillasPiedrasMap = {
@@ -736,14 +756,18 @@
   'Rodonita': 'rodonita.jpg',
   'Ojo de Tigre': 'ojo-de-tigre.jpg',
   'Citrino': 'citrino.jpg',
-  'Cuarzo Ahumado': 'cuarzo-ahumado.jpg'
+  'Cuarzo Ahumado': 'cuarzo-ahumado.jpg',
+  'Turmalina Negra': 'turmalina-negra.jpg',
+  'Ágata Verde': 'agata-verde.jpg'
    };
     const HV_PAL = {
       'Cuarzo Rosado': ['#ffe3ee', '#f2a9c4', '#b8648f'],
       'Rodonita': ['#f07ad2', '#a02a86', '#541050'],
       'Ojo de Tigre': ['#f0c070', '#9a6422', '#38200e'],
       'Citrino': ['#fff0a0', '#f0b429', '#a8680c'],
-      'Cuarzo Ahumado': ['#c9bcc2', '#74666e', '#2a232a']
+      'Cuarzo Ahumado': ['#c9bcc2', '#74666e', '#2a232a'],
+      'Turmalina Negra': ['#8a8a94', '#2c2c33', '#0b0b0e'],
+      'Ágata Verde': ['#c8f0d4', '#4caf7a', '#1d5c3c']
     };
     let hvUid = 0;
     const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -1047,8 +1071,7 @@ function actualizarDetallesManillaActiva() {
       const bannerWpp = document.getElementById('estadoPendienteBanner');
       if (manillaSeleccionadaActual.estado === 'PENDIENTE') {
         bannerWpp.classList.remove('hidden');
-        const mensajeWpp = encodeURIComponent(`¡Hola! Vengo a continuar mi proceso de compra para mi Manilla Personalizada. Mi usuario es @${usuarioActual.username} y las piedras elegidas son: ${(manillaSeleccionadaActual.piedras_personalizadas || []).join(', ')}.`);
-        document.getElementById('btnWhatsappPendiente').href = `https://wa.me/573202360380?text=${mensajeWpp}`;
+        document.getElementById('btnWhatsappPendiente').dataset.msg = `¡Hola! Vengo a continuar mi proceso de compra para mi Manilla Personalizada. Mi usuario es @${usuarioActual.username} y las piedras elegidas son: ${(manillaSeleccionadaActual.piedras_personalizadas || []).join(', ')}.`;
         
         // Agregamos el formulario para activar con código físico debajo del banner si no existe
         if (!document.getElementById('formActivarPendiente')) {
@@ -1115,7 +1138,36 @@ async function convertirManillaPendienteEnActiva() {
       contenedor.innerHTML = html || '<p class="text-xs text-slate-400 text-center">No hay piedras asociadas.</p>';
     }
 
-    // MODAL NUEVA MANILLA (Sin código ni intención si es Personalizada, con redirección a WhatsApp +57 3202360380)
+    // Pedidos de manillas personalizadas: chat de Instagram @hunyverso_shop.
+    // Instagram no deja escribir el mensaje por adelantado, así que lo copiamos al portapapeles.
+    const HV_INSTAGRAM = 'https://ig.me/m/hunyverso_shop';
+    function hvCopiarMensaje(msg) {
+      if (!msg) return;
+      try { navigator.clipboard?.writeText(msg).catch(() => {}); } catch (_) {}
+      hvAvisoIg();
+    }
+    function hvAvisoIg() {
+      let t = document.getElementById('hvToastIg');
+      if (!t) {
+        t = document.createElement('div'); t.id = 'hvToastIg';
+        t.style.cssText = 'position:fixed;left:50%;bottom:5.5rem;transform:translateX(-50%);z-index:90;max-width:90vw;padding:.6rem 1rem;border-radius:1rem;font-size:.75rem;text-align:center;color:#fff;background:rgba(40,20,70,.95);border:1px solid rgba(214,41,118,.6);box-shadow:0 6px 20px rgba(0,0,0,.4)';
+        document.body.appendChild(t);
+      }
+      t.textContent = 'Copiamos tu mensaje, solo pégalo en el chat de Instagram 💜';
+      t.style.display = 'block'; clearTimeout(t._h); t._h = setTimeout(() => { t.style.display = 'none'; }, 6000);
+    }
+    // Máximo 3 piedras en la manilla personalizada
+    document.addEventListener('change', e => {
+      const c = e.target;
+      if (c.name !== 'modalPiedra' || !c.checked) return;
+      if (document.querySelectorAll('input[name="modalPiedra"]:checked').length > 3) {
+        c.checked = false;
+        const err = document.getElementById('modalError');
+        err.innerText = 'Puedes elegir hasta 3 piedras.'; err.classList.remove('hidden');
+      }
+    });
+
+    // MODAL NUEVA MANILLA (Sin código ni intención si es Personalizada; el pedido sigue por Instagram)
     function abrirModalNuevaManilla() { 
       document.getElementById('modalNuevaManilla').classList.remove('hidden'); 
       cambiarTipoModal();
@@ -1126,7 +1178,7 @@ async function convertirManillaPendienteEnActiva() {
       const tipo = document.getElementById('modalSelectTipo').value;
       const esPersonalizada = (tipo === 'Personalizada');
       
-      // Si es personalizada, ocultamos código e intención del modal porque se gestionan por WhatsApp
+      // Si es personalizada, ocultamos código e intención del modal porque se gestionan por Instagram
       document.getElementById('modalSeccionPiedras').classList.toggle('hidden', !esPersonalizada);
       document.getElementById('modalCampoCodigo').classList.toggle('hidden', esPersonalizada);
     }
@@ -1153,10 +1205,12 @@ async function convertirManillaPendienteEnActiva() {
         codigoFinal = 'PENDIENTE-' + Math.floor(1000 + Math.random() * 9000);
         intencionFinal = 'Diseño Personalizado (' + piedrasCustom.join(', ') + ')';
 
-        // Abrimos la ventana de inmediato (durante el clic) para que el navegador no la bloquee
+        // Copiamos el mensaje y abrimos la ventana de inmediato (durante el clic) para que el navegador no la bloquee
+        const mensajeIg = `¡Hola! Vengo a encargar mi Manilla Personalizada. Mi usuario es @${usuarioActual.username} y elegí las piedras: ${piedrasCustom.join(', ')}.`;
+        try { navigator.clipboard?.writeText(mensajeIg).catch(() => {}); } catch (_) {}
         const ventanaWpp = window.open('', '_blank');
 
-        // Guardar en Supabase como Pendiente antes de abrir WhatsApp
+        // Guardar en Supabase como Pendiente antes de abrir Instagram
         const { error: errPend } = await db.from('manillas_usuario').insert([{
           usuario_id: usuarioActual.id,
           codigo_manilla: codigoFinal,
@@ -1166,16 +1220,14 @@ async function convertirManillaPendienteEnActiva() {
           piedras_personalizadas: piedrasCustom
         }]);
 
-        // Redirigir a WhatsApp con el número indicado
-        const mensajeWpp = encodeURIComponent(`¡Hola! Vengo a encargar mi Manilla Personalizada. Mi usuario es @${usuarioActual.username} y elegí las piedras: ${piedrasCustom.join(', ')}.`);
         if (errPend) {
           if (ventanaWpp) ventanaWpp.close();
           err.innerText = 'No se pudo guardar tu diseño: ' + errPend.message;
           err.classList.remove('hidden');
           return;
         }
-        const urlWpp = `https://wa.me/573202360380?text=${mensajeWpp}`;
-        if (ventanaWpp) ventanaWpp.location.href = urlWpp; else window.location.href = urlWpp;
+        hvAvisoIg();
+        if (ventanaWpp) ventanaWpp.location.href = HV_INSTAGRAM; else window.location.href = HV_INSTAGRAM;
 
       } else {
         const codInput = document.getElementById('modalInputCodigo').value.trim().toUpperCase();
