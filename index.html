@@ -161,6 +161,11 @@
     .dv-chip.on{color:#16213A;background:var(--dv-plata);box-shadow:0 6px 16px -8px rgba(221,228,240,.8);font-weight:600}
     .dv-chip.nope{animation:dvNope .4s}
     .dv-rank{font-weight:700;font-size:.95rem;line-height:1}
+    .dv-dias{display:flex;gap:.4rem;overflow-x:auto;scrollbar-width:none;padding:.1rem}
+    .dv-dias::-webkit-scrollbar{display:none}.dv-dias .dv-chip{flex:none}
+    .dv-pasado-t{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dv-oro);margin-bottom:.35rem}
+    .dv-pasado-a{margin-top:.7rem;font-size:.75rem;color:var(--dv-acc)}
+    .dv-edit-dia{flex:none;font-size:.7rem;font-weight:600;color:var(--dv-oro);padding:.2rem .55rem;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(232,201,138,.4)}
     .dv-grupo-t{margin-top:.95rem;font-size:.72rem;font-weight:700;letter-spacing:.06em;color:var(--dv-acc)}
     .dv-emo-det{margin-top:.8rem;padding:.75rem .85rem;border-radius:1rem;background:rgba(8,12,26,.35);box-shadow:inset 0 0 0 1px var(--dv-borde)}
     .dv-emo-n{font-weight:600;font-size:.88rem;color:var(--dv-plata);margin-bottom:.4rem}
@@ -1868,12 +1873,16 @@ Escríbele un deseo que apoye este propósito.`,
     const DV_SUSTANCIAS = ['Alcohol', 'Café', 'Azúcar', 'Otra'];
     const dvEmoji = n => (DV_EMOCIONES.find(x => x[0] === n) || ['', '•'])[1];
     const DV_METRICAS = [
-      ['energia','Energía','⚡'], ['sueno','Calidad de sueño','🌙'], ['calma','Calma mental','🍃'],
+      ['energia','Energía','⚡'], ['sueno','Calidad de sueño','🌙'],
       ['animo','Ánimo general','☀️'], ['alimentacion','Alimentación','🥗'], ['hidratacion','Hidratación','💧']
     ];
     const DV_EJERCICIOS = ['Cardio', 'Caminata moderada', 'Fuerza', 'Otro'];
     const DV_FASES = ['Fase Menstrual', 'Fase Folicular', 'Fase Ovulatoria', 'Fase Lútea'];
+    // dvFechaHoy = fecha del día que se está llenando (hoy o hasta 3 días atrás, según dvOffset)
     let dvHoy = null, dvFechaHoy = null, dvEditandoCiclo = false, dvAvisoTimer = null;
+    let dvOffset = 0, dvFoto = null;
+    const DV_DIAS_ATRAS = 3, DV_NOMBRES_DIA = ['Hoy', 'Ayer', 'Anteayer', 'Hace 3 días'];
+    const dvFechaAtras = n => { const d = new Date(); d.setDate(d.getDate() - n); return dvFecha(d); };
     let dvRepModo = 'mes', dvRepPeriodo = null;
 
     const dvFecha = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -1973,7 +1982,7 @@ Escríbele un deseo que apoye este propósito.`,
         <h4 class="dv-h">Para acompañarte mejor 🌙</h4>
         <p class="dv-frase">¿Cuándo empezó tu último periodo? Con esto te mostramos en qué fase de tu ciclo estás. Es opcional.</p>
         <label class="dv-lbl block mt-3" for="dvUltimo">Primer día de tu último periodo</label>
-        <input id="dvUltimo" type="date" class="dv-in" max="${dvFechaHoy}" value="${c && c.ultimo ? c.ultimo : ''}">
+        <input id="dvUltimo" type="date" class="dv-in" max="${dvFecha()}" value="${c && c.ultimo ? c.ultimo : ''}">
         <label class="dv-lbl block mt-3" for="dvDuracion">Duración de tu ciclo (días, opcional)</label>
         <input id="dvDuracion" type="number" inputmode="numeric" min="21" max="35" class="dv-in" value="${c && c.duracion ? c.duracion : 28}">
         <div class="dv-btns">
@@ -1992,7 +2001,7 @@ Escríbele un deseo que apoye este propósito.`,
         const f = document.getElementById('dvUltimo').value;
         const dur = Number(document.getElementById('dvDuracion').value) || 28;
         if (!f) { alert('Elige la fecha en que empezó tu último periodo, o toca «Saltar».'); return; }
-        if (f > dvFechaHoy) { alert('La fecha no puede ser en el futuro.'); return; }
+        if (f > dvFecha()) { alert('La fecha no puede ser en el futuro.'); return; }
         if (dur < 21 || dur > 35) { alert('La duración del ciclo suele estar entre 21 y 35 días.'); return; }
         c.ultimo = f; c.duracion = dur;
       }
@@ -2105,16 +2114,15 @@ Escríbele un deseo que apoye este propósito.`,
 
       const animo = ['Ánimo', rs2 => dvProm(rs2, 'animo'), ''];
       const energia = ['Energía', rs2 => dvProm(rs2, 'energia'), ''];
-      const calma = ['Calma', rs2 => dvProm(rs2, 'calma'), ''];
       const agrad = ['Emociones agradables', dvPromAgr, '%'];
       const relaciones = [
         dvInsight(rs, r => r.sueno >= 4, r => r.sueno && r.sueno <= 2, '😴 Días que dormiste bien (4–5)', 'días que dormiste poco (1–2)', [animo, energia, agrad]),
-        dvInsight(rs, r => r.ejercicio === true, r => r.ejercicio === false, '🏃 Días con ejercicio', 'días sin ejercicio', [animo, calma, agrad]),
+        dvInsight(rs, r => r.ejercicio === true, r => r.ejercicio === false, '🏃 Días con ejercicio', 'días sin ejercicio', [animo, agrad]),
         dvInsight(rs, r => r.sola === true, r => r.sola === false, '🫂 Días que te sentiste sola/o', 'días que no', [animo, ['Sueño', rs2 => dvProm(rs2, 'sueno'), ''], ['Con ejercicio', rs2 => dvPct(rs2.filter(r => r.ejercicio).length, rs2.length), '%']]),
         dvInsight(rs, r => r.hidratacion >= 4, r => r.hidratacion && r.hidratacion <= 2, '💧 Días bien hidratada/o', 'días con poca hidratación', [energia, animo]),
         dvInsight(rs, r => r.alimentacion >= 4, r => r.alimentacion && r.alimentacion <= 2, '🥗 Días que comiste bien', 'días que no tanto', [energia, animo]),
         dvInsight(rs, r => (r.sustanciasTipos || []).includes('Alcohol'), r => r.sustancias === false || (r.sustancias === true && !(r.sustanciasTipos || []).includes('Alcohol')), '🍷 Días con alcohol', 'días sin alcohol', [animo, ['Sueño', rs2 => dvProm(rs2, 'sueno'), ''], agrad]),
-        dvInsight(rs, r => (r.sustanciasTipos || []).includes('Café'), r => r.sustancias === false || (r.sustancias === true && !(r.sustanciasTipos || []).includes('Café')), '☕ Días con café', 'días sin café', [animo, ['Sueño', rs2 => dvProm(rs2, 'sueno'), ''], calma])
+        dvInsight(rs, r => (r.sustanciasTipos || []).includes('Café'), r => r.sustancias === false || (r.sustancias === true && !(r.sustanciasTipos || []).includes('Café')), '☕ Días con café', 'días sin café', [animo, ['Sueño', rs2 => dvProm(rs2, 'sueno'), ''], agrad])
       ].filter(Boolean);
       html += `<p class="dv-rep-t">Relaciones en tus registros</p>` + (relaciones.length ? relaciones.join('')
         : '<p class="dv-insight">Aún no hay suficientes días en cada grupo para comparar. Sigue registrando 🌙</p>');
@@ -2155,8 +2163,10 @@ Escríbele un deseo que apoye este propósito.`,
         const sus = r.sustancias ? (r.sustanciasTipos || []).map(x => x === 'Otra' && r.sustanciaOtra ? r.sustanciaOtra : x).join(', ') || 'Sí' : '';
         const fecha = dvMay(dvParse(f).toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short' }));
         const ej = r.ejercicio ? `<b>Ejercicio</b>${esc((r.ejercicioTipos || []).join(', ') || 'Sí')}` : '';
+        const atras = dvDias(dvFecha(), f);
+        const editar = atras >= 0 && atras <= DV_DIAS_ATRAS ? `<button type="button" class="dv-edit-dia" onclick="event.stopPropagation(); dvElegirDia(${atras})">✎ Editar</button>` : '';
         return `<div class="dv-past" onclick="hvToggle(this)" role="button" aria-expanded="false">
-          <div class="dv-past-t"><span>${esc(fecha)}</span><span class="dv-past-e">${emojis}</span>${r.animo ? `<span>☀️ ${r.animo}/5</span>` : ''}</div>
+          <div class="dv-past-t"><span>${esc(fecha)}</span><span class="dv-past-e">${emojis}</span>${r.animo ? `<span>☀️ ${r.animo}/5</span>` : ''}${editar}</div>
           <div class="dv-det">${r.sentir ? `<b>Cómo me sentí</b>${esc(r.sentir)}` : ''}${(r.emociones || []).length ? `<b>Emociones</b>${esc(emoTxt)}` : ''}${ej}${sus ? `<b>Sustancias</b>${esc(sus)}` : ''}${r.sola ? '<b>Soledad</b>Me sentí sola/o' : ''}${r.reflexion ? `<b>Reflexión</b>${esc(r.reflexion)}` : ''}${r.gratitud ? `<b>Agradecí</b>${esc(r.gratitud)}` : ''}</div>
         </div>`;
       }).join('');
@@ -2174,7 +2184,8 @@ Escríbele un deseo que apoye este propósito.`,
         dvCargar().then(() => { if (dvCache.cargado) renderizarDiario(); });
         return;
       }
-      const hoy = dvFecha();
+      if (!(dvOffset >= 0 && dvOffset <= DV_DIAS_ATRAS)) dvOffset = 0;
+      const hoy = dvFechaAtras(dvOffset);
       const diario = dvLeer('diario', {}) || {};
       if (dvFechaHoy !== hoy || !dvHoy) {
         dvFechaHoy = hoy;
@@ -2182,22 +2193,28 @@ Escríbele un deseo que apoye este propósito.`,
         dvHoy = g ? JSON.parse(JSON.stringify(g)) : { emociones: [], ejercicioTipos: [], sentir: '', reflexion: '', gratitud: '' };
         dvHoy.emociones = dvHoy.emociones || []; dvHoy.ejercicioTipos = dvHoy.ejercicioTipos || [];
         dvHoy.emoDetalle = dvHoy.emoDetalle || {}; dvHoy.sustanciasTipos = dvHoy.sustanciasTipos || [];
+        dvFoto = JSON.stringify(dvHoy);
       }
       const ciclo = dvLeer('ciclo', null);
-      const ahora = new Date(), [lunaEmoji, lunaNombre] = faseLunar(ahora);
-      const yaGuardado = !!diario[hoy];
+      const ahora = dvParse(hoy); ahora.setHours(12);
+      const [lunaEmoji, lunaNombre] = faseLunar(ahora);
+      const yaGuardado = !!diario[hoy], pasado = dvOffset > 0;
       const scroll = window.scrollY;
 
-      let html = `<section class="dv-card dv-head">
+      let html = `<div class="dv-dias" role="group" aria-label="Día que quieres completar">${DV_NOMBRES_DIA.map((n, i) =>
+          `<button type="button" class="dv-chip${i === dvOffset ? ' on' : ''}" aria-pressed="${i === dvOffset}" onclick="dvElegirDia(${i})">${n}</button>`).join('')}</div>
+        <section class="dv-card dv-head">
+          ${pasado ? `<p class="dv-pasado-t">Estás completando: ${DV_NOMBRES_DIA[dvOffset]}</p>` : ''}
           <p class="dv-dia">${dvMay(ahora.toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' }))}</p>
           <p class="dv-anio">${ahora.getFullYear()}</p>
           <span class="dv-luna">${lunaEmoji} ${lunaNombre}</span>
+          ${pasado ? '<p class="dv-pasado-a">Intenta recordar cómo te sentiste ese día, no cómo te sientes ahora.</p>' : ''}
         </section>`;
 
       if (!ciclo || dvEditandoCiclo) html += dvFormCiclo(ciclo, !!ciclo);
 
       html += `<section class="dv-card">
-          <h4 class="dv-h">¿Cómo te sentiste hoy?</h4>
+          <h4 class="dv-h">${pasado ? '¿Cómo te sentiste ese día?' : '¿Cómo te sentiste hoy?'}</h4>
           <p class="dv-sub">Con tus palabras, sin filtros</p>
           <textarea id="dvSentir" class="dv-in dv-ta mt-3" placeholder="Hoy me sentí…" oninput="dvHoy.sentir=this.value;${dvAutoAlto}">${esc(dvHoy.sentir || '')}</textarea>
         </section>
@@ -2249,7 +2266,7 @@ Escríbele un deseo que apoye este propósito.`,
           <textarea id="dvReflexion" class="dv-in dv-ta mt-3" placeholder="¿Qué quieres recordar de hoy?" oninput="dvHoy.reflexion=this.value;${dvAutoAlto}">${esc(dvHoy.reflexion || '')}</textarea>
         </section>
 
-        <button type="button" class="dv-btn dv-cerrar" onclick="abrirGratitud()">${yaGuardado ? 'Actualizar mi día' : 'Cerrar mi día'} 🌙</button>
+        <button type="button" class="dv-btn dv-cerrar" onclick="abrirGratitud()">${pasado ? 'Guardar ese día' : yaGuardado ? 'Actualizar mi día' : 'Cerrar mi día'} 🌙</button>
         <p class="dv-priv">🔒 Tu diario es privado: solo tú puedes verlo.</p>
 
         <section class="dv-card">
@@ -2265,6 +2282,17 @@ Escríbele un deseo que apoye este propósito.`,
       cont.innerHTML = html;
       cont.querySelectorAll('.dv-ta').forEach(ta => { if (ta.value) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; } });
       if (!cont.classList.contains('hidden')) window.scrollTo(0, scroll);
+    }
+
+    async function dvElegirDia(n) {
+      if (n === dvOffset && dvFechaHoy === dvFechaAtras(n)) return;
+      if (dvHoy && dvFoto !== null && JSON.stringify(dvHoy) !== dvFoto) {
+        const ok = await hvDialog({ titulo: 'Cambiar de día', mensaje: 'Tienes cambios sin guardar en este día. ¿Cambiar de todos modos?', tipo: 'confirm' });
+        if (!ok) return;
+      }
+      dvOffset = n; dvHoy = null; dvEditandoCiclo = false;
+      renderizarDiario();
+      window.scrollTo({ top: document.getElementById('secDiario').offsetTop - 10, behavior: 'smooth' });
     }
 
     function dvSet(k, v) {
@@ -2334,11 +2362,13 @@ Escríbele un deseo que apoye este propósito.`,
       if (modal.classList.contains('hidden')) return;
       modal.classList.add('hidden');
       if (conGratitud) dvHoy.gratitud = document.getElementById('dvGratInput').value.trim();
-      const diario = dvLeer('diario', {}) || {};
+      const atras = dvDias(dvFecha(), dvFechaHoy);
+      if (atras < 0 || atras > DV_DIAS_ATRAS) { alert('Solo puedes completar hoy o los 3 días anteriores.'); dvHoy = null; dvOffset = 0; renderizarDiario(); return; }
       const fase = faseCiclo(dvLeer('ciclo', null), dvFechaHoy);
       const datosDia = { ...dvHoy, sentir: (dvHoy.sentir || '').trim(), reflexion: (dvHoy.reflexion || '').trim(),
                              fase: fase ? fase.fase : null, guardado: new Date().toISOString() };
       if (dvGuardarDia(dvFechaHoy, datosDia)) {
+        dvFoto = JSON.stringify(dvHoy);
         alert(conGratitud && dvHoy.gratitud ? 'Tu día quedó guardado. Gracias por agradecer 🙏✨' : 'Tu día quedó guardado ✨');
         renderizarDiario();
       }
