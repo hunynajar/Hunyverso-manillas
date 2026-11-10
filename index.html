@@ -1840,13 +1840,14 @@ Escríbele un deseo que apoye este propósito.`,
             <p class="st-p">Su lista de deseos:</p>
             ${(rec.regalos || []).map(r => `<div class="st-don"><b>${esc(r.desc)}</b><span class="st-mut">Aprox. ${stPesos(r.precio)}</span>${r.link ? `<a href="${esc(r.link)}" target="_blank" rel="noopener noreferrer">${esc(r.link)}</a>` : ''}</div>`).join('')}
           </section>
+          ${yaPaso ? '' : `
           <section class="hv-card st-card">
             <h4 class="st-h">Enviar mensajito a tu persona 🎅</h4>
-            <p class="st-nota">Esto no es un chat: ${esc(rec.nombre || 'tu persona')} recibe tus mensajitos firmados como <b>«Tu Santa Secreto»</b> y no puede responderte. Los mensajitos solo van de cada Santa a la persona a la que le regala.</p>
+            <p class="st-nota">Esto no es un chat: ${esc(rec.nombre || 'tu persona')} recibe tus mensajitos firmados como <b>«Tu Santa Secreto»</b> y no puede responderte. Los mensajitos solo van de cada Santa a la persona a la que le regala, y se pueden enviar hasta que el contador llegue a cero.</p>
             <textarea id="stMsg" class="dv-in rt-ta" rows="2" maxlength="300" placeholder="Escribe algo bonito, una pista o un ánimo…"></textarea>
             <button type="button" class="hv-gold py-2.5 text-xs" onclick="stEnviar()">Enviar mensajito</button>
             <p class="st-mut">${g.enviados ? `Has enviado ${g.enviados} mensajito${g.enviados === 1 ? '' : 's'}.` : 'Aún no le has enviado mensajitos.'}</p>
-          </section>
+          </section>`}
           <section class="hv-card st-card">
             <h4 class="st-h">Mensajitos de tu Santa Secreto</h4>
             ${(g.recibidos || []).map(m => `<div class="st-msg"><p>“${esc(m.mensaje)}”</p><span class="st-mut">— Tu Santa Secreto 🎅 · ${esc(new Date(m.creado_en).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' }))}</span></div>`).join('') || '<p class="st-mut">Todavía no te ha escrito. 👀</p>'}
