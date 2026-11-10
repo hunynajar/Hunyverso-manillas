@@ -1747,7 +1747,7 @@ Escríbele un deseo que apoye este propósito.`,
             <li>Votan en secreto para elegir al <b>administrador(a)</b> del juego.</li>
             <li>El/la administrador(a) elige el <b>día y la hora de la reunión</b> y el <b>valor del regalo</b>.</li>
             <li>Cada persona escribe su <b>lista de deseos</b>: mínimo 1 opción de regalo y hasta 3, en ese rango de precio (con link si quiere).</li>
-            <li>Se hace el <b>sorteo</b>: ves a quién le regalas y su lista. Puedes enviarle mensajitos firmados como «Tu Santa Secreto». El día de la reunión, cuando todas presionen «Revelar», se descubre quién era el Santa de cada una.</li>
+            <li>Se hace el <b>sorteo</b>: ves a quién le regalas y su lista. Puedes enviarle mensajitos firmados como «Tu Santa Secreto». El día de la reunión, cuando todos y todas presionen «Revelar», se descubre quién era el Santa de cada una.</li>
           </ol>
         </section>
         <section class="hv-card st-card">
@@ -1822,7 +1822,7 @@ Escríbele un deseo que apoye este propósito.`,
           <h3 class="st-t">${esc(g.nombre)}</h3>
           <p class="st-mut">${miembros.length}/20 personas${g.admin_id ? ' · Administrador(a): ' + esc(nombreDe(g.admin_id)) : ''}</p>
           ${g.precio_min != null ? `<p class="st-p">Regalo entre <b>${stPesos(g.precio_min)}</b> y <b>${stPesos(g.precio_max)}</b></p>` : ''}
-          ${g.fecha_reunion ? `<p class="st-p">Reunión: <b>${esc(stFechaTxt(g.fecha_reunion))}</b></p>${stContador(g.fecha_reunion)}` : ''}
+          ${g.fecha_reunion ? `<p class="st-p">Reunión: <b>${esc(stFechaTxt(g.fecha_reunion))}</b></p>${g.estado === 'sorteado' && yaPaso ? stBloqueRevelar(g, miembros) : stContador(g.fecha_reunion)}` : ''}
         </section>`;
       if ((g.avisos || []).length) {
         html += `<section class="hv-card st-card">
@@ -1851,19 +1851,7 @@ Escríbele un deseo que apoye este propósito.`,
             <h4 class="st-h">Mensajitos de tu Santa Secreto</h4>
             ${(g.recibidos || []).map(m => `<div class="st-msg"><p>“${esc(m.mensaje)}”</p><span class="st-mut">— Tu Santa Secreto 🎅 · ${esc(new Date(m.creado_en).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' }))}</span></div>`).join('') || '<p class="st-mut">Todavía no te ha escrito. 👀</p>'}
           </section>`;
-        const revelaron = miembros.filter(m => m.revelar).length;
-        if (g.mi_santa) {
-          html += `<section class="hv-card st-card text-center"><p class="st-kick">¡Revelado!</p><h3 class="st-t">Tu Santa Secreto era: ${esc(g.mi_santa.nombre)} 🎁</h3><p class="st-mut">@${esc(g.mi_santa.username || '')}</p></section>`;
-        } else if (yaPaso) {
-          html += `<section class="hv-card st-card text-center" id="stRevelar">
-              <h4 class="st-h">¡Llegó el día! 🎉</h4>
-              <p class="st-p">Tu Santa Secreto se revela cuando <b>todas</b> presionen el botón desde su cuenta.</p>
-              ${g.yo_revele ? '<p class="st-tag ok" style="justify-self:center">Ya presionaste revelar ✓</p>' : '<button type="button" class="rt-btn" onclick="stRevelar()">Revelar Santa Secreto</button>'}
-              <p class="st-mut">${revelaron} de ${miembros.length} ya presionaron.</p>
-            </section>`;
-        } else {
-          html += `<p class="st-mut text-center">Cuando el contador llegue a cero aparecerá el botón para revelar quién es tu Santa Secreto.</p>`;
-        }
+        if (!yaPaso) html += `<p class="st-mut text-center">Cuando el contador llegue a cero, ahí mismo aparecerá el botón para revelar quién es tu Santa Secreto.</p>`;
         if (soyAdmin && !yaPaso) html += stFormAdmin(g, true);
       }
 
@@ -1941,6 +1929,19 @@ Escríbele un deseo que apoye este propósito.`,
       if (g.fecha_reunion) { stTic(); stReloj = setInterval(stTic, 1000); }
       const destino = ancla && document.getElementById(ancla);
       if (destino) setTimeout(() => destino.scrollIntoView({ behavior: 'smooth', block: 'start' }), 350);
+    }
+
+    // Reemplaza al contador cuando llega el día: botón para revelar o el nombre del Santa ya revelado
+    function stBloqueRevelar(g, miembros) {
+      const revelaron = miembros.filter(m => m.revelar).length;
+      if (g.mi_santa) return `<div id="stRevelar" class="st-don text-center" style="margin-top:.4rem">
+          <p class="st-kick">¡Revelado! 🎉</p><h3 class="st-t">Tu Santa Secreto era: ${esc(g.mi_santa.nombre)} 🎁</h3><p class="st-mut">@${esc(g.mi_santa.username || '')}</p></div>`;
+      return `<div id="stRevelar" class="st-don text-center" style="margin-top:.4rem;gap:.5rem">
+          <h4 class="st-h">¡Llegó el día! 🎉</h4>
+          <p class="st-p">Tu Santa Secreto se revela cuando <b>todos y todas</b> presionen el botón desde su cuenta.</p>
+          ${g.yo_revele ? '<p class="st-tag ok" style="justify-self:center">Ya presionaste revelar ✓</p>' : '<button type="button" class="rt-btn" onclick="stRevelar()">Revelar Santa Secreto</button>'}
+          <p class="st-mut">${revelaron} de ${miembros.length} ya lo presionaron.</p>
+        </div>`;
     }
 
     function stFormAdmin(g, soloFecha) {

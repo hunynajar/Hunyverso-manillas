@@ -194,7 +194,7 @@ begin
   if exists (select 1 from public.santa_miembros where grupo_id = p_grupo and usuario_id = v_yo and revelar) then return; end if;
   update public.santa_miembros set revelar = true where grupo_id = p_grupo and usuario_id = v_yo;
   if not exists (select 1 from public.santa_miembros where grupo_id = p_grupo and not revelar) then
-    perform public.santa_avisar(p_grupo, '✨ ¡Ya todos presionaron «Revelar»! Entra a ver quién era tu Santa Secreto.');
+    perform public.santa_avisar(p_grupo, '✨ ¡Ya todos y todas presionaron «Revelar»! Entra a ver quién era tu Santa Secreto.');
   end if;
 end $$;
 
@@ -208,7 +208,7 @@ begin
       and id in (select grupo_id from public.santa_miembros where usuario_id = v_yo)
     returning id
   loop
-    perform public.santa_avisar(v_g, '🎉 ¡Llegó el día de la reunión! Presiona «Revelar»: cuando todos lo hagan se descubre quién era el Santa Secreto de cada uno.', null, 'revelar');
+    perform public.santa_avisar(v_g, '🎉 ¡Llegó el día de la reunión! Presiona «Revelar»: cuando todos y todas lo hagan se descubre quién era el Santa Secreto de cada persona.', null, 'revelar');
   end loop;
   return coalesce((select jsonb_agg(x order by x->>'creado_en' desc) from (
     select jsonb_build_object('id', a.id, 'grupo_id', a.grupo_id, 'grupo', g.nombre, 'texto', a.texto, 'accion', a.accion, 'creado_en', a.creado_en, 'leido', a.leido) x
