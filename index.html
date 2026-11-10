@@ -1672,7 +1672,12 @@ Escríbele un deseo que apoye este propósito.`,
 
     // Numerito del botón: mensajitos sin leer + grupos que esperan algo de ti
     async function stRevisar() {
-      const { data, error } = await db.rpc('santa_mis_grupos');
+      let { data, error } = await db.rpc('santa_mis_grupos');
+      // Si a algún grupo ya le llegó el día, se crea su aviso ("¡Llegó el día!") y se vuelve a contar
+      if (!error && Array.isArray(data) && data.some(g => g.estado === 'sorteado' && g.fecha_reunion && Date.parse(g.fecha_reunion) <= Date.now())) {
+        await db.rpc('santa_mis_avisos');
+        ({ data, error } = await db.rpc('santa_mis_grupos'));
+      }
       const punto = document.getElementById('stPuntoChat');
       if (error || !Array.isArray(data)) { if (punto) punto.classList.add('hidden'); return 0; }
       const sinLeer = data.reduce((a, g) => a + (g.sin_leer || 0), 0);
@@ -1681,12 +1686,24 @@ Escríbele un deseo que apoye este propósito.`,
       return sinLeer;
     }
 
-    // Mensajitos recibidos en el Chat principal (firmados por "Tu Santa Secreto", sin responder)
+    // En el Chat principal: avisos del juego ("Santa Secreto") y mensajitos ("Tu Santa Secreto", sin responder)
     async function stMensajesChat() {
       const cont = document.getElementById('listaSantaChat'); if (!cont) return;
-      const { data, error } = await db.rpc('santa_mis_mensajes');
-      if (error || !Array.isArray(data) || !data.length) { cont.innerHTML = ''; return; }
-      cont.innerHTML = data.slice(0, 20).map(m => `
+      const [{ data: msgs, error: e1 }, { data: avisos, error: e2 }] = await Promise.all([db.rpc('santa_mis_mensajes'), db.rpc('santa_mis_avisos')]);
+      const data = [
+        ...(!e1 && Array.isArray(msgs) ? msgs.map(m => ({ ...m, tipo: 'msg' })) : []),
+        ...(!e2 && Array.isArray(avisos) ? avisos.map(a => ({ ...a, tipo: 'aviso' })) : [])
+      ].sort((a, b) => Date.parse(b.creado_en) - Date.parse(a.creado_en)).slice(0, 15);
+      if (!data.length) { cont.innerHTML = ''; return; }
+      cont.innerHTML = data.map(m => m.tipo === 'aviso' ? `
+        <div class="wish santa${m.leido ? '' : ' nuevo'}">
+          <div class="flex justify-between items-center gap-2">
+            <span class="wf">De: Santa Secreto 🎅</span>
+            <span class="flex items-center gap-2">${m.leido ? '' : '<span class="wnew">Nuevo</span>'}<span class="chip">${esc(m.grupo)}</span></span>
+          </div>
+          <p class="st-p">${esc(m.texto)}</p>
+          <div class="flex justify-end pt-1"><button type="button" class="wa" onclick="stAbrir('${esc(m.grupo_id)}')">Ver grupo →</button></div>
+        </div>` : `
         <div class="wish santa${m.leido ? '' : ' nuevo'}">
           <div class="flex justify-between items-center gap-2">
             <span class="wf">De: Tu Santa Secreto 🎅</span>
@@ -1802,6 +1819,12 @@ Escríbele un deseo que apoye este propósito.`,
           ${g.precio_min != null ? `<p class="st-p">Regalo entre <b>${stPesos(g.precio_min)}</b> y <b>${stPesos(g.precio_max)}</b></p>` : ''}
           ${g.fecha_reunion ? `<p class="st-p">Reunión: <b>${esc(stFechaTxt(g.fecha_reunion))}</b></p>${stContador(g.fecha_reunion)}` : ''}
         </section>`;
+      if ((g.avisos || []).length) {
+        html += `<section class="hv-card st-card">
+            <h4 class="st-h">🔔 Novedades</h4>
+            ${g.avisos.map(a => `<div class="st-fila" style="display:block"><p class="st-p">${a.leido ? '' : '<span class="wnew">Nuevo</span> '}${esc(a.texto)}</p><span class="st-mut">${esc(new Date(a.creado_en).toLocaleString('es-CO', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }))}</span></div>`).join('')}
+          </section>`;
+      }
 
       // ----- Sorteado: tu persona, mensajitos y revelación -----
       if (g.estado === 'sorteado') {
@@ -1909,7 +1932,7 @@ Escríbele un deseo que apoye este propósito.`,
       if (soyCreadora && g.estado === 'sorteado' && yaPaso) html += `<div class="st-acc"><button type="button" class="hv-ghost" onclick="stEliminar()">Eliminar grupo</button></div>`;
       cont.innerHTML = html;
       if (g.estado === 'listo' && soyAdmin) stRango();
-      if (g.estado === 'sorteado' && (g.recibidos || []).some(m => !m.leido)) { db.rpc('santa_marcar_leidos', { p_grupo: g.id }).then(() => stRevisar()); }
+      if ((g.recibidos || []).some(m => !m.leido) || (g.avisos || []).some(a => !a.leido)) { db.rpc('santa_marcar_leidos', { p_grupo: g.id }).then(() => stRevisar()); }
       if (g.fecha_reunion) { stTic(); stReloj = setInterval(stTic, 1000); }
     }
 
