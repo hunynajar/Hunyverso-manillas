@@ -133,6 +133,48 @@
     .rt-frase{font-size:1.15rem;color:var(--gold-hi)}
     .rt-meta{display:grid;grid-template-columns:auto 1fr;gap:.5rem;align-items:start}
     .rt-meta b{font-family:var(--serif);color:var(--gold);padding-top:.7rem}
+    /* ===== SANTA SECRETO ===== */
+    .st-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;padding:.8rem 1rem;border-radius:1.1rem;font-size:.85rem;font-weight:700;color:#fff;position:relative;
+      background:linear-gradient(135deg,#9f1239,#be123c 45%,#15803d);box-shadow:0 10px 24px -12px rgba(190,18,60,.8),inset 0 0 0 1px rgba(255,255,255,.18)}
+    .st-btn .st-dot{position:absolute;top:-.3rem;right:-.2rem}
+    .st-card{padding:1.1rem;display:grid;gap:.6rem}
+    .st-kick{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+    .st-t{font-family:var(--serif);font-size:1.2rem;color:var(--gold-hi)}
+    .st-h{font-family:var(--serif);font-size:1rem;color:var(--gold)}
+    .st-p{font-size:.84rem;line-height:1.55;color:#e6dcf7}
+    .st-mut{font-size:.73rem;color:#a99bc6}
+    .st-pasos{display:grid;gap:.45rem;counter-reset:st}
+    .st-pasos li{list-style:none;position:relative;padding-left:1.9rem;font-size:.82rem;line-height:1.5;color:#e6dcf7}
+    .st-pasos li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.05rem;width:1.35rem;height:1.35rem;border-radius:50%;display:grid;place-items:center;font-size:.7rem;font-weight:700;color:#2a1608;background:var(--gold)}
+    .st-fila{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.6rem .75rem;border-radius:.9rem;background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px rgba(168,85,247,.22)}
+    .st-fila b{font-size:.84rem;color:#f3ecff;font-weight:600}
+    .st-tag{font-size:.62rem;padding:.15rem .5rem;border-radius:999px;color:var(--gold-hi);background:rgba(232,201,138,.12);box-shadow:inset 0 0 0 1px rgba(232,201,138,.35);white-space:nowrap}
+    .st-tag.ok{color:#9fe0b8;background:rgba(159,224,184,.1);box-shadow:inset 0 0 0 1px rgba(159,224,184,.35)}
+    .st-mini{font-size:.7rem;color:var(--rose);text-decoration:underline}
+    .st-cd{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;text-align:center}
+    .st-cd div{padding:.55rem .2rem;border-radius:.9rem;background:rgba(15,7,30,.6);box-shadow:inset 0 0 0 1px rgba(232,201,138,.3)}
+    .st-cd b{display:block;font-family:var(--serif);font-size:1.35rem;color:var(--gold-hi)}
+    .st-cd span{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:#a99bc6}
+    .st-rango{position:relative;height:2.2rem}
+    .st-pista{position:absolute;left:.7rem;right:.7rem;top:50%;height:.35rem;transform:translateY(-50%);border-radius:999px;background:rgba(255,255,255,.12)}
+    .st-pista i{position:absolute;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,#c9b6f2,#e8c98a)}
+    .st-rango input{position:absolute;inset:0;width:100%;margin:0;pointer-events:none;-webkit-appearance:none;appearance:none;background:none}
+    .st-rango input::-webkit-slider-runnable-track{background:none}
+    .st-rango input::-webkit-slider-thumb{pointer-events:auto;-webkit-appearance:none;width:1.45rem;height:1.45rem;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff7df,#e3b36b);border:2px solid #2a1608;box-shadow:0 2px 8px rgba(0,0,0,.5);cursor:pointer}
+    .st-rango input::-moz-range-thumb{pointer-events:auto;width:1.3rem;height:1.3rem;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff7df,#e3b36b);border:2px solid #2a1608;cursor:pointer}
+    .st-rango input::-moz-range-track{background:none}
+    .st-reg{display:grid;gap:.35rem;padding:.7rem;border-radius:.95rem;background:rgba(255,255,255,.03);box-shadow:inset 0 0 0 1px rgba(168,85,247,.22)}
+    .st-reg .dv-in{margin-top:0}
+    .st-don{display:grid;gap:.15rem;padding:.65rem .8rem;border-radius:.9rem;background:rgba(124,58,237,.1);box-shadow:inset 0 0 0 1px rgba(168,85,247,.28)}
+    .st-don b{color:#f3ecff;font-size:.88rem}
+    .st-don a{font-size:.74rem;color:var(--lav);text-decoration:underline;word-break:break-all}
+    .st-nota{font-size:.74rem;line-height:1.5;color:#f8d7e3;padding:.6rem .75rem;border-radius:.85rem;background:rgba(190,18,60,.14);box-shadow:inset 0 0 0 1px rgba(244,182,207,.3)}
+    .st-msg{padding:.7rem .85rem;border-radius:.95rem;background:rgba(190,18,60,.12);box-shadow:inset 0 0 0 1px rgba(244,182,207,.3)}
+    .st-msg p{font-family:var(--ital);font-style:italic;font-size:1.08rem;color:#fbeef3}
+    .st-acc{display:flex;flex-wrap:wrap;gap:.5rem}
+    .st-acc>button{flex:1 1 auto;padding:.65rem .9rem;font-size:.78rem}
+    .wish.santa{background:rgba(190,18,60,.12);box-shadow:inset 0 0 0 1px rgba(244,182,207,.35)}
+
     .rt-palabras{margin:.2rem 0;padding:1rem 1.1rem;border-radius:1rem;font-family:var(--ital);font-size:1.12rem;line-height:1.65;color:#fbf3ff;
       background:radial-gradient(120% 100% at 0 0,rgba(232,201,138,.14),transparent 60%),rgba(124,58,237,.12);box-shadow:inset 0 0 0 1px rgba(232,201,138,.35)}
     .rt-check{display:flex;align-items:center;gap:.6rem;margin-top:.4rem;padding:.75rem .9rem;border-radius:1rem;font-size:.86rem;font-weight:600;color:var(--gold-hi);
@@ -503,11 +545,14 @@
           </button>
         </div>
 
+        <button type="button" class="st-btn" onclick="abrirSanta()">🎅 Santa Secreto <span id="stPuntoChat" class="hv-badge st-dot hidden"></span></button>
+
         <div>
           <p class="amigos-t">Mis amigos · toca uno para escribirle</p>
           <div id="listaAmigos" class="amigos"></div>
         </div>
 
+        <div id="listaSantaChat" class="space-y-3"></div>
         <div id="listaDeseosGeneral" class="space-y-3"></div>
       </section>
     </div>
@@ -544,6 +589,7 @@
 
     <!-- RITUAL DE INTENCIONAMIENTO -->
     <div id="secRitual" class="hidden space-y-4"></div>
+    <div id="secSanta" class="hidden space-y-4"></div>
 
     <!-- SECCIÓN DIARIO -->
     <div id="secDiario" class="hidden space-y-4"></div>
@@ -1253,6 +1299,7 @@ async function convertirManillaPendienteEnActiva() {
     async function cargarDeseosYChatGeneral() {
       const contenedor = document.getElementById('listaDeseosGeneral');
       cargarAmigos();
+      stMensajesChat();
       if(!misManillas || misManillas.length === 0) {
         contenedor.innerHTML = '<p class="text-xs text-slate-500 italic text-center py-4">Aún no tienes manillas registradas.</p>';
         return;
@@ -1332,6 +1379,7 @@ async function convertirManillaPendienteEnActiva() {
           .in('manilla_id', misManillas.map(m => m.id)).eq('leido', false);
         if (!error) total = count || 0;
       }
+      if (usuarioActual) total += await stRevisar();
       badges.forEach(b => {
         b.textContent = total > 9 ? '9+' : String(total);
         b.classList.toggle('hidden', total === 0);
@@ -1607,6 +1655,343 @@ Escríbele un deseo que apoye este propósito.`,
       renderizarGuiaGeneral(signo);
     }
 
+    // ===================== SANTA SECRETO =====================
+    // Todo pasa por funciones de Supabase que verifican quién eres: nadie puede ver a quién le tocó cada quien,
+    // quién votó por quién, ni quién envía los mensajitos.
+    let stGrupo = null, stReloj = null, stDesfase = 0, stAmigosCache = null;
+    const ST_ESTADOS = { abierto: 'Grupo abierto', votacion: 'Votación', listo: 'Preparando', sorteado: 'Sorteado 🎁' };
+    const stPesos = n => '$' + Number(n || 0).toLocaleString('es-CO');
+    const stAhora = () => Date.now() + stDesfase;
+    const stLimpioErr = e => (e && e.message && !/fetch|network|JWT|permission|function/i.test(e.message)) ? e.message : 'Ocurrió un error. Intenta de nuevo.';
+
+    async function stRpc(nombre, args = {}) {
+      const { data, error } = await db.rpc(nombre, args);
+      if (error) { alert(stLimpioErr(error)); return { error }; }
+      return { data };
+    }
+
+    // Numerito del botón: mensajitos sin leer + grupos que esperan algo de ti
+    async function stRevisar() {
+      const { data, error } = await db.rpc('santa_mis_grupos');
+      const punto = document.getElementById('stPuntoChat');
+      if (error || !Array.isArray(data)) { if (punto) punto.classList.add('hidden'); return 0; }
+      const sinLeer = data.reduce((a, g) => a + (g.sin_leer || 0), 0);
+      const pend = sinLeer + data.filter(g => g.accion).length;
+      if (punto) { punto.textContent = pend > 9 ? '9+' : String(pend); punto.classList.toggle('hidden', !pend); }
+      return sinLeer;
+    }
+
+    // Mensajitos recibidos en el Chat principal (firmados por "Tu Santa Secreto", sin responder)
+    async function stMensajesChat() {
+      const cont = document.getElementById('listaSantaChat'); if (!cont) return;
+      const { data, error } = await db.rpc('santa_mis_mensajes');
+      if (error || !Array.isArray(data) || !data.length) { cont.innerHTML = ''; return; }
+      cont.innerHTML = data.slice(0, 20).map(m => `
+        <div class="wish santa${m.leido ? '' : ' nuevo'}">
+          <div class="flex justify-between items-center gap-2">
+            <span class="wf">De: Tu Santa Secreto 🎅</span>
+            <span class="flex items-center gap-2">${m.leido ? '' : '<span class="wnew">Nuevo</span>'}<span class="chip">${esc(m.grupo)}</span></span>
+          </div>
+          <p class="wq">“${esc(m.mensaje)}”</p>
+          <p class="st-mut">Solo tu Santa Secreto puede escribirte aquí y no se puede responder 🤫</p>
+        </div>`).join('');
+      if (data.some(m => !m.leido) && !document.getElementById('secDeseos').classList.contains('hidden')) {
+        await db.rpc('santa_marcar_leidos', { p_grupo: null }); stRevisar();
+      }
+    }
+
+    function stMostrar() {
+      ['secInicio','secDeseos','secPiedras','secDiario','secPerfil','secRitual'].forEach(id => document.getElementById(id).classList.add('hidden'));
+      document.getElementById('secSanta').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function stPararReloj() { clearInterval(stReloj); stReloj = null; }
+
+    async function abrirSanta() {
+      stPararReloj(); stGrupo = null; stAmigosCache = null; stMostrar();
+      const cont = document.getElementById('secSanta');
+      cont.innerHTML = '<p class="st-mut text-center py-6">Cargando…</p>';
+      const { data, error } = await db.rpc('santa_mis_grupos');
+      const grupos = Array.isArray(data) ? data : [];
+      cont.innerHTML = `
+        <button type="button" class="rt-volver" onclick="cambiarTab('deseos')">← Volver al Chat</button>
+        <section class="hv-card st-card">
+          <p class="st-kick">Actividad</p>
+          <h3 class="st-t">🎅 Santa Secreto</h3>
+          <p class="st-p">Un juego para regalarse con cariño entre amigas y amigos. Así funciona:</p>
+          <ol class="st-pasos">
+            <li>Crea un grupo y agrega a tus amigos de la app. Quienes entran también pueden agregar a más personas (de 3 a 20).</li>
+            <li>Cuando ya estén todas, quien creó el grupo lo <b>cierra</b> (y puede reabrirlo si falta alguien).</li>
+            <li>Votan en secreto para elegir a la <b>administradora</b> del juego.</li>
+            <li>La administradora elige el <b>día y la hora de la reunión</b> y el <b>valor del regalo</b>.</li>
+            <li>Cada persona escribe <b>3 opciones de regalo</b> en ese rango de precio (con link si quiere).</li>
+            <li>Se hace el <b>sorteo</b>: ves a quién le regalas y su lista. Puedes enviarle mensajitos firmados como «Tu Santa Secreto». El día de la reunión, cuando todas presionen «Revelar», se descubre quién era el Santa de cada una.</li>
+          </ol>
+        </section>
+        <section class="hv-card st-card">
+          <h4 class="st-h">Mis grupos</h4>
+          ${error ? '<p class="st-mut">No pudimos cargar tus grupos. Intenta de nuevo en un momento.</p>' : ''}
+          ${grupos.map(g => `<button type="button" class="st-fila text-left" onclick="stAbrir('${esc(g.id)}')">
+              <span><b>${esc(g.nombre)}</b><br><span class="st-mut">${g.miembros} persona${g.miembros === 1 ? '' : 's'}${g.fecha_reunion ? ' · ' + stFechaTxt(g.fecha_reunion) : ''}</span></span>
+              <span class="flex items-center gap-1">${g.sin_leer ? `<span class="st-tag">💌 ${g.sin_leer}</span>` : ''}${g.accion ? '<span class="st-tag">Te toca ✨</span>' : ''}<span class="st-tag ok">${ST_ESTADOS[g.estado] || ''}</span></span>
+            </button>`).join('') || (error ? '' : '<p class="st-mut">Aún no estás en ningún grupo. Crea uno, o pídele a una amiga que te agregue al suyo.</p>')}
+          <div class="flex gap-2 pt-1">
+            <input id="stNuevoNombre" class="hv-f text-xs" maxlength="60" placeholder="Nombre del grupo (ej: Amigas de la U)">
+            <button type="button" class="hv-gold text-xs px-3" onclick="stCrear()">Crear</button>
+          </div>
+        </section>`;
+    }
+
+    async function stCrear() {
+      const nombre = document.getElementById('stNuevoNombre').value.trim();
+      if (!nombre) { alert('Escribe un nombre para el grupo.'); return; }
+      const { data, error } = await stRpc('santa_crear', { p_nombre: nombre });
+      if (!error) stAbrir(data);
+    }
+
+    function stFechaTxt(f) {
+      return new Date(f).toLocaleString('es-CO', { weekday: 'long', day: 'numeric', month: 'long', hour: 'numeric', minute: '2-digit' });
+    }
+    function stFechaInput(f) {
+      if (!f) return '';
+      const d = new Date(f), z = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${z(d.getMonth() + 1)}-${z(d.getDate())}T${z(d.getHours())}:${z(d.getMinutes())}`;
+    }
+    function stContador(f) {
+      return `<div class="st-cd" data-fecha="${esc(f)}"><div><b data-u="d">–</b><span>días</span></div><div><b data-u="h">–</b><span>horas</span></div><div><b data-u="m">–</b><span>min</span></div><div><b data-u="s">–</b><span>seg</span></div></div>`;
+    }
+    function stTic() {
+      let llego = false;
+      document.querySelectorAll('#secSanta .st-cd').forEach(el => {
+        let r = Math.max(0, Date.parse(el.dataset.fecha) - stAhora());
+        if (r === 0) llego = true;
+        const v = { d: Math.floor(r / 864e5), h: Math.floor(r / 36e5) % 24, m: Math.floor(r / 6e4) % 60, s: Math.floor(r / 1e3) % 60 };
+        el.querySelectorAll('b').forEach(b => b.textContent = String(v[b.dataset.u]).padStart(2, '0'));
+      });
+      // Cuando el contador llega a cero, se vuelve a cargar para mostrar el botón de revelar
+      if (llego && stGrupo && stGrupo.estado === 'sorteado' && !stGrupo._llego) { stGrupo._llego = true; stAbrir(stGrupo.id); }
+    }
+
+    async function stAmigos() {
+      if (stAmigosCache) return stAmigosCache;
+      const { data: c } = await db.from('contactos_usuarios').select('amigo_id').eq('usuario_id', usuarioActual.id);
+      const ids = (c || []).map(x => x.amigo_id);
+      if (!ids.length) return (stAmigosCache = []);
+      const { data: us } = await db.from('usuarios').select('id, nombre, username').in('id', ids);
+      return (stAmigosCache = (us || []).sort((a, b) => (a.nombre || '').localeCompare(b.nombre || '')));
+    }
+
+    async function stAbrir(id) {
+      stPararReloj(); stMostrar();
+      const cont = document.getElementById('secSanta');
+      if (!stGrupo || stGrupo.id !== id) cont.innerHTML = '<p class="st-mut text-center py-6">Cargando…</p>';
+      const { data: g, error } = await db.rpc('santa_detalle', { p_grupo: id });
+      if (error || !g) { alert(stLimpioErr(error)); abrirSanta(); return; }
+      const llego = stGrupo && stGrupo.id === id && stGrupo._llego;
+      stGrupo = g; if (llego) g._llego = true;
+      stDesfase = Date.parse(g.ahora) - Date.now();
+      const yo = g.yo, soyCreadora = g.creador_id === yo, soyAdmin = g.admin_id === yo;
+      const miembros = g.miembros || [];
+      const nombreDe = uid => (miembros.find(m => m.id === uid) || {}).nombre || '';
+      const yaPaso = g.fecha_reunion && Date.parse(g.fecha_reunion) <= stAhora();
+      let html = `<button type="button" class="rt-volver" onclick="abrirSanta()">← Mis grupos</button>
+        <section class="hv-card st-card text-center">
+          <p class="st-kick">Santa Secreto · ${ST_ESTADOS[g.estado] || ''}</p>
+          <h3 class="st-t">${esc(g.nombre)}</h3>
+          <p class="st-mut">${miembros.length}/20 personas${g.admin_id ? ' · Administradora: ' + esc(nombreDe(g.admin_id)) : ''}</p>
+          ${g.precio_min != null ? `<p class="st-p">Regalo entre <b>${stPesos(g.precio_min)}</b> y <b>${stPesos(g.precio_max)}</b></p>` : ''}
+          ${g.fecha_reunion ? `<p class="st-p">Reunión: <b>${esc(stFechaTxt(g.fecha_reunion))}</b></p>${stContador(g.fecha_reunion)}` : ''}
+        </section>`;
+
+      // ----- Sorteado: tu persona, mensajitos y revelación -----
+      if (g.estado === 'sorteado') {
+        const rec = g.receptor || {};
+        html += `<section class="hv-card st-card">
+            <p class="st-kick">Te tocó regalarle a</p>
+            <h3 class="st-t">🎁 ${esc(rec.nombre || '')} <span class="st-mut">@${esc(rec.username || '')}</span></h3>
+            <p class="st-p">Sus 3 opciones de regalo:</p>
+            ${(rec.regalos || []).map(r => `<div class="st-don"><b>${esc(r.desc)}</b><span class="st-mut">Aprox. ${stPesos(r.precio)}</span>${r.link ? `<a href="${esc(r.link)}" target="_blank" rel="noopener noreferrer">${esc(r.link)}</a>` : ''}</div>`).join('')}
+          </section>
+          <section class="hv-card st-card">
+            <h4 class="st-h">Enviar mensajito a tu persona 🎅</h4>
+            <p class="st-nota">Esto no es un chat: ${esc(rec.nombre || 'tu persona')} recibe tus mensajitos firmados como <b>«Tu Santa Secreto»</b> y no puede responderte. Los mensajitos solo van de cada Santa a la persona a la que le regala.</p>
+            <textarea id="stMsg" class="dv-in rt-ta" rows="2" maxlength="300" placeholder="Escribe algo bonito, una pista o un ánimo…"></textarea>
+            <button type="button" class="hv-gold py-2.5 text-xs" onclick="stEnviar()">Enviar mensajito</button>
+            <p class="st-mut">${g.enviados ? `Has enviado ${g.enviados} mensajito${g.enviados === 1 ? '' : 's'}.` : 'Aún no le has enviado mensajitos.'}</p>
+          </section>
+          <section class="hv-card st-card">
+            <h4 class="st-h">Mensajitos de tu Santa Secreto</h4>
+            ${(g.recibidos || []).map(m => `<div class="st-msg"><p>“${esc(m.mensaje)}”</p><span class="st-mut">— Tu Santa Secreto 🎅 · ${esc(new Date(m.creado_en).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' }))}</span></div>`).join('') || '<p class="st-mut">Todavía no te ha escrito. 👀</p>'}
+          </section>`;
+        const revelaron = miembros.filter(m => m.revelar).length;
+        if (g.mi_santa) {
+          html += `<section class="hv-card st-card text-center"><p class="st-kick">¡Revelado!</p><h3 class="st-t">Tu Santa Secreto era: ${esc(g.mi_santa.nombre)} 🎁</h3><p class="st-mut">@${esc(g.mi_santa.username || '')}</p></section>`;
+        } else if (yaPaso) {
+          html += `<section class="hv-card st-card text-center">
+              <h4 class="st-h">¡Llegó el día! 🎉</h4>
+              <p class="st-p">Tu Santa Secreto se revela cuando <b>todas</b> presionen el botón desde su cuenta.</p>
+              ${g.yo_revele ? '<p class="st-tag ok" style="justify-self:center">Ya presionaste revelar ✓</p>' : '<button type="button" class="rt-btn" onclick="stRevelar()">Revelar Santa Secreto</button>'}
+              <p class="st-mut">${revelaron} de ${miembros.length} ya presionaron.</p>
+            </section>`;
+        } else {
+          html += `<p class="st-mut text-center">Cuando el contador llegue a cero aparecerá el botón para revelar quién es tu Santa Secreto.</p>`;
+        }
+        if (soyAdmin && !yaPaso) html += stFormAdmin(g, true);
+      }
+
+      // ----- Abierto: miembros y agregar -----
+      if (g.estado === 'abierto') {
+        const amigos = await stAmigos();
+        const disponibles = amigos.filter(a => !miembros.some(m => m.id === a.id));
+        html += `<section class="hv-card st-card">
+            <h4 class="st-h">Personas en el grupo</h4>
+            ${miembros.map(m => `<div class="st-fila"><span><b>${esc(m.nombre)}</b> <span class="st-mut">@${esc(m.username || '')}</span></span>
+              <span class="flex items-center gap-2">${m.id === g.creador_id ? '<span class="st-tag">Creó el grupo</span>' : ''}${soyCreadora && m.id !== yo ? `<button type="button" class="st-mini" onclick="stAccion('santa_quitar', { p_usuario: '${esc(m.id)}' }, '¿Quitar a esta persona del grupo?')">Quitar</button>` : ''}</span></div>`).join('')}
+            ${miembros.length >= 20 ? '<p class="st-mut">El grupo está lleno (20 personas).</p>' : `
+            <p class="st-p">Agrega a tus amigos de la app:</p>
+            ${disponibles.length ? `<div class="flex gap-2"><select id="stAgregar" class="hv-f text-xs">${disponibles.map(a => `<option value="${esc(a.id)}">${esc(a.nombre)} (@${esc(a.username || '')})</option>`).join('')}</select>
+              <button type="button" class="hv-gold text-xs px-3" onclick="stAgregar()">Agregar</button></div>`
+              : '<p class="st-mut">Todos tus amigos ya están aquí. Para sumar a alguien más, agrégala primero como amiga en el Chat.</p>'}`}
+            ${miembros.length < 3 ? `<p class="st-mut">Faltan ${3 - miembros.length} persona${3 - miembros.length === 1 ? '' : 's'} para poder cerrar el grupo.</p>` : ''}
+            <div class="st-acc">
+              ${soyCreadora ? `<button type="button" class="hv-gold" ${miembros.length < 3 ? 'disabled style="opacity:.5"' : ''} onclick="stAccion('santa_cerrar', {}, '¿Cerrar el grupo? Ya no se podrá agregar a más personas (puedes reabrirlo después) y empieza la votación.')">Cerrar grupo y votar</button>
+                <button type="button" class="hv-ghost" onclick="stEliminar()">Eliminar grupo</button>`
+                : `<button type="button" class="hv-ghost" onclick="stAccion('santa_salir', {}, '¿Salir de este grupo?', true)">Salir del grupo</button>`}
+            </div>
+            ${soyCreadora ? '' : '<p class="st-mut">Quien creó el grupo lo cerrará cuando ya estén todas.</p>'}
+          </section>`;
+      }
+
+      // ----- Votación de la administradora -----
+      if (g.estado === 'votacion') {
+        const votaron = miembros.filter(m => m.voto).length;
+        html += `<section class="hv-card st-card">
+            <h4 class="st-h">Elige quién será la administradora</h4>
+            <p class="st-p">Ella elegirá el día de la reunión y el valor del regalo. El voto es secreto: solo se ven los conteos. Puedes cambiar tu voto hasta que todas voten.</p>
+            ${miembros.map(m => `<button type="button" class="st-fila text-left" onclick="stAccion('santa_votar', { p_candidata: '${esc(m.id)}' })">
+                <span><b>${esc(m.nombre)}</b>${m.id === yo ? ' <span class="st-mut">(tú)</span>' : ''}</span>
+                <span class="flex items-center gap-2"><span class="st-mut">${m.votos || 0} voto${m.votos === 1 ? '' : 's'}</span>${g.mi_voto === m.id ? '<span class="st-tag ok">Tu voto ✓</span>' : '<span class="st-tag">Votar</span>'}</span>
+              </button>`).join('')}
+            <p class="st-mut">${votaron} de ${miembros.length} ya votaron. Si hay empate, la app elige al azar entre las empatadas.</p>
+            ${soyCreadora ? `<div class="st-acc"><button type="button" class="hv-ghost" onclick="stAccion('santa_reabrir', {}, '¿Reabrir el grupo para agregar a más personas? La votación empezará de nuevo.')">Reabrir grupo</button></div>` : ''}
+          </section>`;
+      }
+
+      // ----- Preparando: configuración, listas y sorteo -----
+      if (g.estado === 'listo') {
+        if (soyAdmin) html += stFormAdmin(g, false);
+        else if (g.precio_min == null) html += `<section class="hv-card st-card"><p class="st-p">✨ <b>${esc(nombreDe(g.admin_id))}</b> es la administradora. Espera a que elija el día de la reunión y el valor del regalo para escribir tu lista.</p></section>`;
+        if (g.precio_min != null) {
+          const mis = Array.isArray(g.mis_regalos) && g.mis_regalos.length === 3 ? g.mis_regalos : [{}, {}, {}];
+          html += `<section class="hv-card st-card">
+              <h4 class="st-h">Mi lista de regalos</h4>
+              <p class="st-p">Escribe 3 opciones entre <b>${stPesos(g.precio_min)}</b> y <b>${stPesos(g.precio_max)}</b>. Le aparecerán a la persona que sea tu Santa Secreto.</p>
+              ${mis.map((r, i) => `<div class="st-reg">
+                  <span class="st-mut">Opción ${i + 1}</span>
+                  <input class="dv-in st-r-desc" maxlength="120" placeholder="¿Qué te gustaría? (ej: un libro de poesía)" value="${esc(r.desc || '')}">
+                  <input class="dv-in st-r-precio" type="number" inputmode="numeric" min="${g.precio_min}" max="${g.precio_max}" step="1000" placeholder="Precio aproximado en pesos" value="${r.precio ?? ''}">
+                  <input class="dv-in st-r-link" type="url" maxlength="500" placeholder="Link (opcional) https://…" value="${esc(r.link || '')}">
+                </div>`).join('')}
+              <button type="button" class="hv-gold py-2.5 text-xs" onclick="stGuardarRegalos()">Guardar mi lista</button>
+            </section>`;
+        }
+        const listas = miembros.filter(m => m.lista).length;
+        html += `<section class="hv-card st-card">
+            <h4 class="st-h">¿Quién ya tiene su lista?</h4>
+            ${miembros.map(m => `<div class="st-fila"><b>${esc(m.nombre)}</b>${m.lista ? '<span class="st-tag ok">Lista ✓</span>' : '<span class="st-tag">Pendiente</span>'}</div>`).join('')}
+            <p class="st-mut">${listas} de ${miembros.length} listas.</p>
+            ${soyAdmin ? `<button type="button" class="rt-btn" ${listas === miembros.length && g.fecha_reunion ? '' : 'disabled style="opacity:.5"'} onclick="stAccion('santa_sortear', {}, '¿Hacer el sorteo ahora? Después ya no se pueden cambiar las listas ni el valor del regalo.')">🎲 Hacer el sorteo</button>
+              <p class="st-mut">El sorteo se activa cuando todas tengan su lista y haya fecha de reunión. A nadie le toca su propio nombre.</p>` : '<p class="st-mut">Cuando todas tengan su lista, la administradora hará el sorteo.</p>'}
+            ${soyCreadora ? `<div class="st-acc"><button type="button" class="hv-ghost" onclick="stAccion('santa_reabrir', {}, '¿Reabrir el grupo para agregar a más personas? Habrá que votar de nuevo la administradora (las listas se conservan).')">Reabrir grupo</button></div>` : ''}
+          </section>`;
+      }
+
+      if (soyCreadora && g.estado === 'sorteado' && yaPaso) html += `<div class="st-acc"><button type="button" class="hv-ghost" onclick="stEliminar()">Eliminar grupo</button></div>`;
+      cont.innerHTML = html;
+      if (g.estado === 'listo' && soyAdmin) stRango();
+      if (g.estado === 'sorteado' && (g.recibidos || []).some(m => !m.leido)) { db.rpc('santa_marcar_leidos', { p_grupo: g.id }).then(() => stRevisar()); }
+      if (g.fecha_reunion) { stTic(); stReloj = setInterval(stTic, 1000); }
+    }
+
+    function stFormAdmin(g, soloFecha) {
+      const min = g.precio_min ?? 20000, max = g.precio_max ?? 100000;
+      return `<section class="hv-card st-card">
+          <h4 class="st-h">👑 Eres la administradora</h4>
+          <p class="st-p">${soloFecha ? 'Si cambian los planes, puedes mover el día y la hora de la reunión.' : 'Elige el día y la hora de la reunión y el valor del regalo.'}</p>
+          <label class="st-mut">Día y hora de la reunión</label>
+          <input id="stFecha" type="datetime-local" class="dv-in" value="${stFechaInput(g.fecha_reunion)}">
+          ${soloFecha ? '' : `<label class="st-mut" style="margin-top:.4rem">Valor del regalo: <b id="stRangoTxt" style="color:var(--gold-hi)"></b></label>
+          <div class="st-rango"><div class="st-pista"><i id="stRangoBarra"></i></div>
+            <input id="stMin" type="range" min="0" max="1000000" step="10000" value="${min}" oninput="stRango('min')" aria-label="Valor mínimo">
+            <input id="stMax" type="range" min="0" max="1000000" step="10000" value="${max}" oninput="stRango('max')" aria-label="Valor máximo">
+          </div>
+          <div class="flex justify-between st-mut"><span>$0</span><span>$1.000.000</span></div>`}
+          <button type="button" class="hv-gold py-2.5 text-xs" onclick="stConfigurar()">Guardar</button>
+        </section>`;
+    }
+    function stRango(cual) {
+      const a = document.getElementById('stMin'), b = document.getElementById('stMax'); if (!a || !b) return;
+      let x = +a.value, y = +b.value;
+      if (x > y) { if (cual === 'min') a.value = x = y; else b.value = y = x; }
+      // Que el punto de arriba no tape al otro cuando están juntos
+      a.style.zIndex = x >= 900000 ? 3 : 2; b.style.zIndex = x >= 900000 ? 2 : 3;
+      const barra = document.getElementById('stRangoBarra');
+      barra.style.left = (x / 1e6 * 100) + '%'; barra.style.right = (100 - y / 1e6 * 100) + '%';
+      document.getElementById('stRangoTxt').textContent = `${stPesos(x)} – ${stPesos(y)}`;
+    }
+
+    async function stAccion(rpc, args = {}, confirmar = '', salirAlFinal = false) {
+      if (!stGrupo) return;
+      if (confirmar && !confirm(confirmar)) return;
+      const { error } = await stRpc(rpc, { p_grupo: stGrupo.id, ...args });
+      if (error) return;
+      if (salirAlFinal) abrirSanta(); else stAbrir(stGrupo.id);
+    }
+    async function stEliminar() {
+      if (!confirm('¿Eliminar el grupo para todas? Esto no se puede deshacer.')) return;
+      const { error } = await stRpc('santa_eliminar', { p_grupo: stGrupo.id });
+      if (!error) abrirSanta();
+    }
+    async function stAgregar() {
+      const id = document.getElementById('stAgregar').value; if (!id) return;
+      stAccion('santa_agregar', { p_usuario: id });
+    }
+    async function stConfigurar() {
+      const v = document.getElementById('stFecha').value;
+      if (!v) { alert('Elige el día y la hora de la reunión.'); return; }
+      const fecha = new Date(v);
+      if (isNaN(fecha) || fecha.getTime() <= stAhora()) { alert('Elige una fecha y hora en el futuro.'); return; }
+      const a = document.getElementById('stMin'), b = document.getElementById('stMax');
+      const args = { p_fecha: fecha.toISOString(), p_min: a ? +a.value : null, p_max: b ? +b.value : null };
+      stAccion('santa_configurar', args);
+    }
+    async function stGuardarRegalos() {
+      const g = stGrupo, filas = [...document.querySelectorAll('#secSanta .st-reg')];
+      const regalos = filas.map(f => ({
+        desc: f.querySelector('.st-r-desc').value.trim(),
+        precio: Number(f.querySelector('.st-r-precio').value),
+        link: f.querySelector('.st-r-link').value.trim()
+      }));
+      for (const [i, r] of regalos.entries()) {
+        if (!r.desc) { alert(`Escribe la opción ${i + 1}.`); return; }
+        if (!f_ok(r.precio)) { alert(`Pon un precio a la opción ${i + 1} entre ${stPesos(g.precio_min)} y ${stPesos(g.precio_max)}.`); return; }
+        if (r.link && !/^https?:\/\/\S+$/i.test(r.link)) { alert(`El link de la opción ${i + 1} debe empezar por https://`); return; }
+      }
+      function f_ok(p) { return Number.isFinite(p) && p > 0 && p >= g.precio_min && p <= g.precio_max; }
+      const { error } = await stRpc('santa_guardar_regalos', { p_grupo: g.id, p_regalos: regalos });
+      if (!error) { alert('¡Tu lista quedó guardada! 🎁'); stAbrir(g.id); }
+    }
+    async function stEnviar() {
+      const t = document.getElementById('stMsg'), msg = t.value.trim();
+      if (!msg) { alert('Escribe tu mensajito.'); return; }
+      const { error } = await stRpc('santa_enviar', { p_grupo: stGrupo.id, p_mensaje: msg });
+      if (!error) { t.value = ''; alert('Mensajito enviado como «Tu Santa Secreto» 🎅'); stAbrir(stGrupo.id); }
+    }
+    async function stRevelar() {
+      const { error } = await stRpc('santa_revelar', { p_grupo: stGrupo.id });
+      if (!error) stAbrir(stGrupo.id);
+    }
+
     function cambiarTab(tab) {
       const mapa = { inicio: ['secInicio','tabInicio','bnInicio'], deseos: ['secDeseos','tabDeseos','bnDeseos'],
                      piedras: ['secPiedras','tabPiedras','bnPiedras'], diario: ['secDiario','tabDiario','bnDiario'],
@@ -1618,6 +2003,7 @@ Escríbele un deseo que apoye este propósito.`,
         document.getElementById(b).classList.toggle('on', on);
       });
       document.getElementById('secRitual').classList.add('hidden');
+      document.getElementById('secSanta').classList.add('hidden'); stPararReloj(); stGrupo = null;
       if (tab === 'deseos') cargarDeseosYChatGeneral();
       if (tab === 'diario') renderizarDiario();
       window.scrollTo({ top: 0, behavior: 'smooth' });
