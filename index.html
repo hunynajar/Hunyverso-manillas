@@ -2375,8 +2375,14 @@ Escríbele un deseo que apoye este propósito.`,
     // dvFechaHoy = fecha del día que se está llenando (hoy o hasta 3 días atrás, según dvOffset)
     let dvHoy = null, dvFechaHoy = null, dvEditandoCiclo = false, dvAvisoTimer = null;
     let dvOffset = 0, dvFoto = null;
-    const DV_DIAS_ATRAS = 3, DV_NOMBRES_DIA = ['Hoy', 'Ayer', 'Anteayer', 'Hace 3 días'];
-    const dvFechaAtras = n => { const d = new Date(); d.setDate(d.getDate() - n); return dvFecha(d); };
+    const DV_DIAS_ATRAS = 3;
+    // El día del diario empieza a las 5:00 p. m.: antes de esa hora se sigue completando el día anterior
+    const DV_HORA_CORTE = 17;
+    const dvAhoraDiario = () => new Date(Date.now() - DV_HORA_CORTE * 3600e3);
+    const dvAntesDelCorte = () => new Date().getHours() < DV_HORA_CORTE;
+    const dvFechaAtras = n => { const d = dvAhoraDiario(); d.setDate(d.getDate() - n); return dvFecha(d); };
+    // Nombre del botón según la fecha real del calendario (nunca dice «Hoy» sobre una fecha que no es hoy)
+    const dvNombreDia = n => ['Hoy', 'Ayer', 'Anteayer', 'Hace 3 días', 'Hace 4 días'][dvDias(dvFecha(), dvFechaAtras(n))] || dvFechaAtras(n);
     let dvRepModo = 'mes', dvRepPeriodo = null;
 
     const dvFecha = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -2657,7 +2663,7 @@ Escríbele un deseo que apoye este propósito.`,
         const sus = r.sustancias ? (r.sustanciasTipos || []).map(x => x === 'Otra' && r.sustanciaOtra ? r.sustanciaOtra : x).join(', ') || 'Sí' : '';
         const fecha = dvMay(dvParse(f).toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short' }));
         const ej = r.ejercicio ? `<b>Ejercicio</b>${esc((r.ejercicioTipos || []).join(', ') || 'Sí')}` : '';
-        const atras = dvDias(dvFecha(), f);
+        const atras = dvDias(dvFechaAtras(0), f);
         const editar = atras >= 0 && atras <= DV_DIAS_ATRAS ? `<button type="button" class="dv-edit-dia" onclick="event.stopPropagation(); dvElegirDia(${atras})">✎ Editar</button>` : '';
         return `<div class="dv-past" onclick="hvToggle(this)" role="button" aria-expanded="false">
           <div class="dv-past-t"><span>${esc(fecha)}</span><span class="dv-past-e">${emojis}</span>${r.animo ? `<span>☀️ ${r.animo}/5</span>` : ''}${editar}</div>
@@ -2695,10 +2701,10 @@ Escríbele un deseo que apoye este propósito.`,
       const yaGuardado = !!diario[hoy], pasado = dvOffset > 0;
       const scroll = window.scrollY;
 
-      let html = `<div class="dv-dias" role="group" aria-label="Día que quieres completar">${DV_NOMBRES_DIA.map((n, i) =>
-          `<button type="button" class="dv-chip${i === dvOffset ? ' on' : ''}" aria-pressed="${i === dvOffset}" onclick="dvElegirDia(${i})">${n}</button>`).join('')}</div>
+      let html = `<div class="dv-dias" role="group" aria-label="Día que quieres completar">${[0, 1, 2, 3].map(i => dvNombreDia(i)).map((n, i) =>
+          `<button type="button" class="dv-chip${i === dvOffset ? ' on' : ''}" aria-pressed="${i === dvOffset}" onclick="dvElegirDia(${i})">${n}</button>`).join('')}</div>${dvAntesDelCorte() ? `<p class="dv-nota" style="margin-top:.5rem">🌙 El registro de hoy se abre a las 5:00 p. m. Mientras tanto, completas el día anterior.</p>` : ''}
         <section class="dv-card dv-head">
-          ${pasado ? `<p class="dv-pasado-t">Estás completando: ${DV_NOMBRES_DIA[dvOffset]}</p>` : ''}
+          ${pasado ? `<p class="dv-pasado-t">Estás completando: <span>${dvNombreDia(dvOffset)}</span></p>` : ''}
           <p class="dv-dia">${dvMay(ahora.toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' }))}</p>
           <p class="dv-anio">${ahora.getFullYear()}</p>
           <span class="dv-luna">${lunaEmoji} ${lunaNombre}</span>
@@ -2859,7 +2865,7 @@ Escríbele un deseo que apoye este propósito.`,
       if (modal.classList.contains('hidden')) return;
       modal.classList.add('hidden');
       if (conGratitud) dvHoy.gratitud = document.getElementById('dvGratInput').value.trim();
-      const atras = dvDias(dvFecha(), dvFechaHoy);
+      const atras = dvDias(dvFechaAtras(0), dvFechaHoy);
       if (atras < 0 || atras > DV_DIAS_ATRAS) { alert('Solo puedes completar hoy o los 3 días anteriores.'); dvHoy = null; dvOffset = 0; renderizarDiario(); return; }
       const fase = faseCiclo(dvLeer('ciclo', null), dvFechaHoy);
       const datosDia = { ...dvHoy, sentir: (dvHoy.sentir || '').trim(), reflexion: (dvHoy.reflexion || '').trim(),
