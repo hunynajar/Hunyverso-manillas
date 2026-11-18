@@ -1,5 +1,5 @@
 // Sube este número cada vez que cambies archivos para que los usuarios reciban la versión nueva
-const CACHE_NAME = 'hunyverso-v34';
+const CACHE_NAME = 'hunyverso-v35';
 const urlsToCache = [
   './',
   './index.html',
@@ -14,7 +14,9 @@ const urlsToCache = [
   './rodonita.jpg',
   './ojo-de-tigre.jpg',
   './citrino.jpg',
-  './cuarzo-ahumado.jpg'
+  './cuarzo-ahumado.jpg',
+  './icon-maskable-192.png',
+  './icon-maskable-512.png'
 ];
 
 self.addEventListener('install', event => {
