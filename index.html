@@ -140,27 +140,37 @@
     .hv-emo{display:inline-flex;align-items:center;justify-content:center;font-size:1rem;line-height:1}
     .hv-bottom .hv-emo{font-size:1.3rem}
     .st-card{padding:1.1rem;display:grid;gap:.6rem}
-    /* ===== AVATAR (prototipo: solo estética; se guarda en este celular) ===== */
-    .av-cuarto{position:relative;border-radius:1.4rem;overflow:hidden;aspect-ratio:1/0.82;background:linear-gradient(180deg,#FFFFFF 0%,#F6F4FA 62%,#ECE8F3 62.2%,#F3F0F8 100%);box-shadow:inset 0 0 0 1px rgba(201,182,242,.35)}
-    .av-cuarto::before{content:"";position:absolute;left:0;right:0;top:62%;height:5px;background:#E4DEEE}
-    .av-cuarto::after{content:"";position:absolute;left:50%;bottom:9%;width:46%;height:7%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(90,70,130,.22),transparent);animation:avSombra 3.6s ease-in-out infinite}
-    .av-cuarto svg.av{position:absolute;left:50%;bottom:10%;width:64%;transform:translateX(-50%);overflow:visible}
+    /* ===== MASCOTA (prototipo: solo estética; se guarda en este celular) ===== */
+    .av-marco{position:relative;overflow:visible;box-shadow:0 0 0 1px rgba(232,201,138,.35),0 0 28px -6px rgba(201,160,255,.55)}
+    .av-deco{position:absolute;pointer-events:none;z-index:2}
+    .av-cuarto{position:relative;border-radius:1.5rem;overflow:hidden;aspect-ratio:1/0.86;background:linear-gradient(180deg,#FFFFFF 0%,#FBF9FE 58%,#F1ECF8 58.3%,#F6F2FB 100%);
+      box-shadow:0 0 0 2px #E8DCFB,0 0 22px 2px rgba(201,160,255,.55)}
+    .av-cuarto svg{position:absolute;inset:0;width:100%;height:100%}
+    .av-cuarto svg.av{inset:auto;left:50%;bottom:3%;width:74%;height:auto;transform:translateX(-50%);overflow:visible}
     .av .cuerpo{transform-box:fill-box;transform-origin:50% 100%;animation:avRespira 3.6s ease-in-out infinite}
     .av .ojo{transform-box:fill-box;transform-origin:50% 50%;animation:avParpadeo 4.6s infinite}
-    @keyframes avRespira{0%,100%{transform:scale(1,1)}50%{transform:scale(1.025,.975)}}
-    @keyframes avSombra{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.05)}}
+    .av .cola{transform-box:fill-box;transform-origin:0% 80%;animation:avCola 2.4s ease-in-out infinite}
+    .av-tw{transform-box:fill-box;transform-origin:50% 50%;animation:avTw 2.8s ease-in-out infinite}
+    @keyframes avRespira{0%,100%{transform:scale(1,1)}50%{transform:scale(1.02,.98)}}
     @keyframes avParpadeo{0%,90%,100%{transform:scaleY(1)}93%,95%{transform:scaleY(.08)}}
-    @media(prefers-reduced-motion:reduce){.av *{animation:none!important}}
-    .av-nombre{position:absolute;left:50%;top:8%;transform:translateX(-50%);padding:.25rem .8rem;border-radius:999px;background:rgba(255,255,255,.9);box-shadow:0 0 0 1px #E4DEEE;color:#5b4a86;font-weight:700;font-size:.8rem;white-space:nowrap}
+    @keyframes avCola{0%,100%{transform:rotate(0)}50%{transform:rotate(-8deg)}}
+    @keyframes avTw{0%,100%{opacity:.35;transform:scale(.75)}50%{opacity:1;transform:scale(1.1)}}
+    @media(prefers-reduced-motion:reduce){.av *,.av-tw{animation:none!important}}
+    .av-nombre{position:absolute;left:50%;top:6%;transform:translateX(-50%);z-index:1;padding:.25rem .9rem;border-radius:999px;background:rgba(255,255,255,.92);box-shadow:0 0 0 1.5px #E8DCFB;color:#5b4a86;font-weight:800;font-size:.85rem;white-space:nowrap}
+    .av-tit{text-align:center;font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem;color:var(--gold-hi)}
     .av-grupo{display:grid;gap:.45rem}
-    .av-lbl{font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+    .av-lbl{font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
     .av-ops{display:flex;flex-wrap:wrap;gap:.45rem}
-    .av-op{min-width:3.1rem;padding:.45rem .7rem;border-radius:.9rem;font-size:.78rem;font-weight:600;color:#E9E1F7;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(168,85,247,.3)}
-    .av-op.on{color:#2a1608;background:linear-gradient(135deg,#f9e2a8,#e3b36b);box-shadow:none}
-    .av-op svg{display:block;width:2.4rem;height:2.4rem;margin:0 auto}
-    .av-sw{width:2.3rem;height:2.3rem;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.25)}
-    .av-sw.on{box-shadow:0 0 0 3px #0B0714,0 0 0 5px var(--gold)}
-    .av-in{width:100%;padding:.7rem .9rem;border-radius:.9rem;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(168,85,247,.3);color:#E9E1F7}
+    .av-op{padding:.5rem .95rem;border-radius:999px;font-size:.82rem;font-weight:700;color:#E9E1F7;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(168,85,247,.35)}
+    .av-op.on{color:#2a1608;background:linear-gradient(135deg,#f9e2a8,#e3b36b);box-shadow:0 0 14px -2px rgba(232,170,80,.7)}
+    .av-esp{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}
+    .av-esp button{display:grid;justify-items:center;gap:.2rem;padding:.35rem .2rem .5rem;border-radius:1rem;font-size:.7rem;font-weight:700;color:#E9E1F7;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(168,85,247,.35)}
+    .av-esp button svg{width:100%;height:auto;aspect-ratio:1/0.9;border-radius:.8rem;background:radial-gradient(circle at 50% 40%,#fff,#F3EEFA)}
+    .av-esp button.on{box-shadow:0 0 0 2px var(--gold),0 0 16px -2px rgba(232,170,80,.8);color:var(--gold-hi)}
+    .av-sw{width:2.6rem;height:2.6rem;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.3)}
+    .av-sw.on{box-shadow:0 0 0 3px #0B0714,0 0 0 5.5px var(--gold)}
+    .av-in{width:100%;padding:.75rem 1rem;border-radius:1rem;background:rgba(20,10,35,.6);border:1.5px solid rgba(232,201,138,.7);color:#F8E7BC;font-weight:700;font-size:1.05rem}
+    .av-in::placeholder{color:#cdb98f;opacity:.75}
     .av-santa{display:flex;align-items:center;justify-content:space-between;gap:.8rem;width:100%;padding:1rem 1.1rem;text-align:left}
     .av-santa .hv-badge{position:static}
 
@@ -2089,80 +2099,208 @@ Escríbele un deseo que apoye este propósito.`,
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // ===================== AVATAR (prototipo) =====================
-    // Por ahora solo la estética: un bebé que parpadea en un cuarto blanco. Se guarda en este celular.
-    const AV_FORMAS = { bolita: 'Bolita', gotita: 'Gotita', huevito: 'Huevito' };
-    const AV_COLORES = { celeste: ['#8ED3F7', '#C9ECFD', '#5AAFDB'], rosa: ['#F7A9C6', '#FDD7E5', '#DA7FA2'], menta: ['#93DFB8', '#CDF3DF', '#5FB98C'],
-                         lila: ['#BBA6F1', '#E2D8FC', '#8F79D3'], amarillo: ['#FFD978', '#FFEFC0', '#E2B547'] };
-    const AV_COLOR_N = { celeste: 'Celeste', rosa: 'Rosa', menta: 'Menta', lila: 'Lila', amarillo: 'Amarillo' };
-    const AV_OJOS = { redondos: 'Redondos', brillantes: 'Brillantes', puntitos: 'Puntitos', pestanas: 'Pestañas' };
-    const AV_BOCAS = { sonrisa: 'Sonrisa', feliz: 'Feliz', gatito: 'Gatito', o: 'Sorpresa' };
-    const AV_NARICES = { ninguna: 'Sin nariz', boton: 'Botón', corazon: 'Corazón' };
-    const AV_ITEMS = { ninguno: 'Ninguno', mono: 'Moñito', gorrito: 'Gorrito', chupete: 'Chupete', babero: 'Babero', sonajero: 'Sonajero' };
-    const AV_DEF = { forma: 'bolita', color: 'celeste', ojos: 'brillantes', boca: 'sonrisa', nariz: 'boton', item: 'mono', nombre: '' };
-    let avBorrador = null, avContador = 0;
+    // ===================== MASCOTA (prototipo) =====================
+    // Solo la estética por ahora: una mascota que parpadea en un cuarto blanco. Se guarda en este celular.
+    // ---------- Dibujo de la mascota (SVG 220 x 220; el piso está en y = 206) ----------
+    const AV_ESPECIES = { sapoperro: 'Sapoperro', ovejabeja: 'Ovejabeja', leonfante: 'Leonfante', gatocornio: 'Gatocornio' };
+    // [base, claro, contorno, manchas, melena]
+    const AV_COLORES = {
+      verde:    ['#A5DB86', '#D3F1BE', '#3F6B3B', '#86C76A', '#6FA857'],
+      rosa:     ['#F8B0CB', '#FDDCE8', '#8C3E62', '#EE91B6', '#D9789F'],
+      celeste:  ['#97D3F3', '#CDEDFC', '#2F5F84', '#73BCE5', '#5AA3D0'],
+      lila:     ['#BEA9F2', '#E2D8FC', '#56408F', '#A28BE6', '#8A71D2'],
+      amarillo: ['#FFD978', '#FFF0BF', '#86611E', '#F6C24E', '#E5A93A']
+    };
+    const AV_COLOR_N = { verde: 'Verde', rosa: 'Rosa', celeste: 'Celeste', lila: 'Lila', amarillo: 'Amarillo' };
+    const AV_OJOS = { brillantes: 'Brillantes', grandotes: 'Grandotes', sonadores: 'Soñadores', felices: 'Felices' };
+    const AV_BOCAS = { feliz: 'Feliz', timida: 'Tímida', gatito: 'Gatito', abierta: 'Abierta' };
+    const AV_ACCES = { ninguno: 'Ninguno', mono: 'Moñito', sombrerito: 'Sombrerito', lentes: 'Lentes', alitas: 'Alitas' };
+    let avContador = 0;
+
+    function avSVG(a, { vb = '0 0 220 220', clase = 'av', estilo = '' } = {}) {
+      const [c, cl, k, m, mel] = AV_COLORES[a.color] || AV_COLORES.verde, n = ++avContador, e = a.especie || 'sapoperro';
+      const crema = a.color === 'amarillo' ? '#FFF7DC' : '#FFEDB0', cremaK = k;
+      const L = `stroke="${k}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"`;
+      const piel = `url(#avP${n})`;
+      // Cabeza según especie
+      const cab = { sapoperro: { cx: 110, cy: 98, rx: 76, ry: 56 }, ovejabeja: { cx: 110, cy: 96, rx: 66, ry: 58 },
+                    leonfante: { cx: 110, cy: 98, rx: 64, ry: 56 }, gatocornio: { cx: 110, cy: 98, rx: 66, ry: 56 } }[e];
+      const ojoY = cab.cy + 4, ojoX = e === 'sapoperro' ? 30 : 27, bocaY = e === 'leonfante' ? cab.cy + 34 : cab.cy + 24;
+
+      // ---- detrás de todo: cola, alas ----
+      let atras = '';
+      if (a.acces === 'alitas') {
+        const ala = (s) => `<g transform="translate(${110 + s * 40} 150) scale(${s} 1)">
+          <path d="M0 0 C6 -30 30 -58 58 -62 C62 -50 58 -40 50 -34 C60 -32 62 -22 54 -14 C62 -10 60 2 48 4 C34 8 14 8 0 6Z" fill="#FFFFFF" stroke="#B3A6D9" stroke-width="2.5" stroke-linejoin="round"/>
+          <path d="M14 -6 C26 -10 38 -12 48 -12 M12 -16 C24 -26 36 -32 48 -36 M10 -26 C20 -40 34 -50 50 -54" fill="none" stroke="#DCD3F4" stroke-width="2" stroke-linecap="round"/></g>`;
+        atras += ala(1) + ala(-1);
+      }
+      if (e === 'ovejabeja') {
+        const alaB = (s) => `<g transform="translate(${110 + s * 46} 146) rotate(${s * -22}) scale(${s} 1)"><ellipse cx="26" cy="-14" rx="26" ry="16" fill="#E3F4FF" fill-opacity=".85" stroke="#8DB8D6" stroke-width="2.5"/>
+          <ellipse cx="20" cy="6" rx="18" ry="11" fill="#E3F4FF" fill-opacity=".85" stroke="#8DB8D6" stroke-width="2.5"/><path d="M8 -12 C18 -16 30 -16 40 -12" fill="none" stroke="#B6D7EC" stroke-width="2"/></g>`;
+        atras += alaB(1) + alaB(-1);
+      }
+      const cola = {
+        sapoperro: `<path class="cola" d="M160 178 C182 176 192 160 186 142 C196 150 200 170 186 184 C178 192 166 192 158 188Z" fill="${c}" ${L}/>`,
+        ovejabeja: `<path class="cola" d="M160 184 L182 192 L162 196Z" fill="#3A2C2A" ${L}/>`,
+        leonfante: `<g class="cola"><path d="M160 186 C182 186 192 172 190 156" fill="none" stroke="${k}" stroke-width="8" stroke-linecap="round"/><path d="M160 186 C182 186 192 172 190 156" fill="none" stroke="${c}" stroke-width="3.5" stroke-linecap="round"/>
+          <path d="M190 160 C180 150 184 136 192 140 C196 132 206 138 202 146 C210 150 204 162 194 160Z" fill="${mel}" ${L}/></g>`,
+        gatocornio: `<path class="cola" d="M160 188 C190 190 204 170 196 146 C192 136 182 138 186 148 C192 166 180 178 158 178Z" fill="${c}" ${L}/>`
+      }[e];
+      atras += cola;
+
+      // ---- melena / orejas de atrás ----
+      let detrasCab = '';
+      if (e === 'leonfante') {
+        // melena en festones (nubecita) alrededor de la cabeza
+        const N = 16, R = 80; let d = '';
+        for (let i = 0; i <= N; i++) { const ang = -Math.PI / 2 + Math.PI * 2 * i / N, x = 110 + Math.cos(ang) * R, y = 96 + Math.sin(ang) * R * .88;
+          if (i === 0) d += `M${x.toFixed(1)} ${y.toFixed(1)} `; else { const am = -Math.PI / 2 + Math.PI * 2 * (i - .5) / N, xm = 110 + Math.cos(am) * (R + 16), ym = 96 + Math.sin(am) * (R + 16) * .88; d += `Q${xm.toFixed(1)} ${ym.toFixed(1)} ${x.toFixed(1)} ${y.toFixed(1)} `; } }
+        detrasCab += `<path d="${d}Z" fill="${mel}" ${L}/>`;
+        detrasCab += `<ellipse cx="${110 - 66}" cy="100" rx="22" ry="26" fill="${c}" ${L}/><ellipse cx="${110 - 66}" cy="100" rx="12" ry="15" fill="#F9B9C8"/>
+                      <ellipse cx="${110 + 66}" cy="100" rx="22" ry="26" fill="${c}" ${L}/><ellipse cx="${110 + 66}" cy="100" rx="12" ry="15" fill="#F9B9C8"/>`;
+      }
+      if (e === 'gatocornio') {
+        const oreja = (s) => `<g transform="translate(110 0) scale(${s} 1)"><path d="M-62 74 L-58 22 L-22 50Z" fill="${c}" ${L}/><path d="M-54 64 L-52 34 L-32 52Z" fill="#F9B9C8"/></g>`;
+        detrasCab += oreja(1) + oreja(-1);
+      }
+      if (e === 'ovejabeja') {
+        detrasCab += `<path d="M90 48 C86 34 80 24 72 16" fill="none" ${L}/><circle cx="70" cy="14" r="7" fill="#3A2C2A" ${L}/>
+                      <path d="M130 48 C134 34 140 24 148 16" fill="none" ${L}/><circle cx="150" cy="14" r="7" fill="#3A2C2A" ${L}/>`;
+      }
+
+      // ---- cuerpo ----
+      const cuerpo = `<path d="M52 198 C38 166 56 126 110 122 C164 126 182 166 168 198 Z" fill="${piel}" ${L}/>`;
+      let rayas = '';
+      if (e === 'ovejabeja') rayas = `<clipPath id="avR${n}"><path d="M52 198 C38 166 56 126 110 122 C164 126 182 166 168 198 Z"/></clipPath>
+        <g clip-path="url(#avR${n})" fill="#3A2C2A" opacity=".85"><rect x="40" y="150" width="140" height="10"/><rect x="40" y="174" width="140" height="10"/></g>`;
+      const panza = `<ellipse cx="110" cy="174" rx="31" ry="26" fill="${crema}" ${L}/>`;
+      const pataT = (s) => `<g transform="translate(110 0) scale(${s} 1)"><ellipse cx="-56" cy="192" rx="27" ry="16" fill="${piel}" ${L}/>
+        <ellipse cx="-66" cy="197" rx="12" ry="7" fill="${crema}" ${L.replace('stroke-width="3"', 'stroke-width="2"')}/><circle cx="-56" cy="196" r="3" fill="${crema}"/></g>`;
+      const pataD = (s) => `<g transform="translate(110 0) scale(${s} 1)"><path d="M-46 152 C-50 170 -46 188 -38 198 C-32 204 -18 204 -18 196 C-20 182 -26 166 -30 154Z" fill="${piel}" ${L}/>
+        <path d="M-34 199 v-5 M-27 200 v-5" stroke="${k}" stroke-width="2" stroke-linecap="round"/></g>`;
+      let manchas = '';
+      if (e === 'sapoperro') manchas = `<g fill="${m}"><circle cx="66" cy="150" r="6"/><circle cx="154" cy="146" r="7"/><circle cx="162" cy="164" r="4"/><circle cx="60" cy="170" r="4"/></g>`;
+
+      // ---- cabeza ----
+      const cabeza = `<ellipse cx="${cab.cx}" cy="${cab.cy}" rx="${cab.rx}" ry="${cab.ry}" fill="${piel}" ${L}/>`;
+      let sobreCab = '';
+      if (e === 'sapoperro') {
+        const oreja = (s) => `<g transform="translate(110 0) scale(${s} 1)"><path d="M-62 64 C-88 64 -98 96 -92 124 C-90 132 -84 128 -84 122 C-80 130 -72 130 -72 120 C-66 126 -58 122 -60 112 C-56 96 -54 80 -50 70Z" fill="${mel}" ${L}/></g>`;
+        sobreCab += oreja(1) + oreja(-1);
+        sobreCab += `<path d="M100 44 C102 34 108 32 108 42 C110 32 118 32 116 44" fill="${c}" ${L}/>`;
+        sobreCab += `<g fill="${m}"><circle cx="72" cy="70" r="7"/><circle cx="150" cy="66" r="5"/><circle cx="160" cy="80" r="3.5"/><circle cx="62" cy="86" r="3.5"/></g>`;
+      }
+      if (e === 'ovejabeja') {
+        const bolas = [[62, 70, 15], [76, 54, 17], [96, 44, 18], [118, 42, 18], [140, 48, 17], [156, 64, 15], [86, 60, 12], [130, 58, 12], [110, 54, 13]];
+        sobreCab += bolas.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#FFFBF2" stroke="#CDBFA6" stroke-width="2.5"/>`).join('');
+        sobreCab += `<ellipse cx="46" cy="102" rx="16" ry="9" fill="${c}" ${L} transform="rotate(20 46 102)"/><ellipse cx="174" cy="102" rx="16" ry="9" fill="${c}" ${L} transform="rotate(-20 174 102)"/>`;
+      }
+      if (e === 'gatocornio') {
+        sobreCab += `<defs><linearGradient id="avH${n}" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFD6E7"/><stop offset=".5" stop-color="#E2D4FF"/><stop offset="1" stop-color="#CDEFFF"/></linearGradient></defs>
+          <path d="M100 48 L110 4 L120 48Z" fill="url(#avH${n})" stroke="#B48ACB" stroke-width="2.5" stroke-linejoin="round"/>
+          <path d="M103 38 L117 32 M105 26 L115 21 M107 15 L113 12" stroke="#B48ACB" stroke-width="2" stroke-linecap="round"/>
+          <path d="M84 46 C70 40 64 52 74 58 C66 62 72 72 82 66" fill="#FFB3D1" stroke="#D16C9C" stroke-width="2"/>
+          <path d="M92 44 C84 34 72 40 78 48" fill="#C9B6FF" stroke="#8C70D6" stroke-width="2"/>`;
+      }
+      const brillo = `<ellipse cx="${cab.cx - 36}" cy="${cab.cy - 30}" rx="16" ry="8" fill="#fff" opacity=".45" transform="rotate(-24 ${cab.cx - 36} ${cab.cy - 30})"/>`;
+      const cachetes = `<ellipse cx="${110 - ojoX - 16}" cy="${ojoY + 22}" rx="11" ry="7" fill="#FF8FAE" opacity=".6"/><ellipse cx="${110 + ojoX + 16}" cy="${ojoY + 22}" rx="11" ry="7" fill="#FF8FAE" opacity=".6"/>
+        <path d="M${110 - ojoX - 22} ${ojoY + 20} l3 3 M${110 - ojoX - 16} ${ojoY + 19} l3 3 M${110 + ojoX + 12} ${ojoY + 20} l3 3 M${110 + ojoX + 18} ${ojoY + 19} l3 3" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".8"/>`;
+
+      // ---- ojos ----
+      const ojo = (x, s) => ({
+        brillantes: `<g class="ojo"><ellipse cx="${x}" cy="${ojoY}" rx="13" ry="15" fill="url(#avO${n})"/><circle cx="${x + 4}" cy="${ojoY - 6}" r="5" fill="#fff"/><circle cx="${x - 4.5}" cy="${ojoY + 6}" r="2.3" fill="#fff"/></g>`,
+        grandotes: `<g class="ojo"><ellipse cx="${x}" cy="${ojoY}" rx="16" ry="18" fill="#2A1A14"/><ellipse cx="${x}" cy="${ojoY + 3}" rx="12.5" ry="13" fill="url(#avI${n})"/>
+          <circle cx="${x + 5}" cy="${ojoY - 7}" r="6" fill="#fff"/><circle cx="${x - 6}" cy="${ojoY + 5}" r="2.6" fill="#fff"/><circle cx="${x + 6}" cy="${ojoY + 8}" r="1.6" fill="#fff"/></g>`,
+        sonadores: `<g class="ojo"><path d="M${x - 13} ${ojoY - 2} Q${x} ${ojoY - 13} ${x + 13} ${ojoY - 2} Q${x + 13} ${ojoY + 14} ${x} ${ojoY + 14} Q${x - 13} ${ojoY + 14} ${x - 13} ${ojoY - 2}Z" fill="url(#avO${n})"/>
+          <circle cx="${x + 4}" cy="${ojoY + 2}" r="4.2" fill="#fff"/><circle cx="${x - 4}" cy="${ojoY + 8}" r="2" fill="#fff"/>
+          <path d="M${x - 15} ${ojoY - 1} Q${x} ${ojoY - 15} ${x + 15} ${ojoY - 1}" fill="none" stroke="#2A1F35" stroke-width="3.6" stroke-linecap="round"/>
+          <path d="M${x + s * 14} ${ojoY - 3} l${s * 6} -5 M${x + s * 10} ${ojoY - 8} l${s * 4} -6 M${x + s * 4} ${ojoY - 11} l${s * 1} -6" stroke="#2A1F35" stroke-width="2.4" stroke-linecap="round"/></g>`,
+        felices: `<path d="M${x - 11} ${ojoY + 4} Q${x} ${ojoY - 12} ${x + 11} ${ojoY + 4}" fill="none" stroke="#2A1F35" stroke-width="4.5" stroke-linecap="round"/>`
+      }[a.ojos] || '');
+
+      // ---- nariz (según especie) y boca ----
+      const nariz = {
+        sapoperro: `<ellipse cx="110" cy="${ojoY + 14}" rx="6.5" ry="4.5" fill="#3A2C2A"/><ellipse cx="108" cy="${ojoY + 12.5}" rx="2" ry="1.2" fill="#fff" opacity=".7"/>`,
+        ovejabeja: `<path d="M105 ${ojoY + 13} h10 l-5 5z" fill="#F08AA8" stroke="#C25B7C" stroke-width="1.5" stroke-linejoin="round"/>`,
+        leonfante: `<path d="M110 ${ojoY + 8} C110 ${ojoY + 22} 112 ${ojoY + 30} 122 ${ojoY + 32}" fill="none" stroke="${k}" stroke-width="16" stroke-linecap="round"/>
+                    <path d="M110 ${ojoY + 8} C110 ${ojoY + 22} 112 ${ojoY + 30} 122 ${ojoY + 32}" fill="none" stroke="${c}" stroke-width="10.5" stroke-linecap="round"/>
+                    <ellipse cx="124" cy="${ojoY + 32}" rx="3" ry="4" fill="${k}" opacity=".55"/>
+                    <path d="M105 ${ojoY + 16} q5 2 10 0 M106 ${ojoY + 22} q5 2 10 0" fill="none" stroke="${k}" stroke-width="1.8" stroke-linecap="round" opacity=".6"/>`,
+        gatocornio: `<path d="M106 ${ojoY + 13} h8 l-4 4.5z" fill="#F08AA8" stroke="#C25B7C" stroke-width="1.5" stroke-linejoin="round"/>`
+      }[e];
+      const bx = e === 'leonfante' ? 98 : 110, by = e === 'leonfante' ? ojoY + 34 : bocaY;
+      const boca = ({
+        feliz: `<path d="M${bx - 9} ${by - 2} q4.5 7 9 0 q4.5 7 9 0" fill="none" stroke="#2A1F35" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`,
+        timida: `<path d="M${bx - 7} ${by} q3.5 -3 7 0 q3.5 3 7 0" fill="none" stroke="#2A1F35" stroke-width="2.6" stroke-linecap="round"/>`,
+        gatito: `<path d="M${bx - 8} ${by - 3} q2 5 8 3 q6 2 8 -3" fill="none" stroke="#2A1F35" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>`,
+        abierta: `<path d="M${bx - 9} ${by - 3} Q${bx} ${by - 1} ${bx + 9} ${by - 3} Q${bx + 8} ${by + 11} ${bx} ${by + 11} Q${bx - 8} ${by + 11} ${bx - 9} ${by - 3}Z" fill="#7A2E46" stroke="#2A1F35" stroke-width="2"/><ellipse cx="${bx}" cy="${by + 6.5}" rx="5" ry="3.2" fill="#F48FA8"/>`
+      }[a.boca] || '');
+
+      // ---- accesorios del frente ----
+      const acces = {
+        ninguno: '', alitas: '',
+        mono: `<g transform="translate(${e === 'gatocornio' ? 150 : 152} ${e === 'ovejabeja' ? 50 : 56}) rotate(16)"><path d="M0 0 C-10 -16 -30 -14 -28 0 C-30 14 -10 16 0 0Z" fill="#F0565E" stroke="#9E2B3A" stroke-width="2.5" stroke-linejoin="round"/>
+          <path d="M0 0 C10 -16 30 -14 28 0 C30 14 10 16 0 0Z" fill="#F0565E" stroke="#9E2B3A" stroke-width="2.5" stroke-linejoin="round"/><circle r="6.5" fill="#E2404B" stroke="#9E2B3A" stroke-width="2.5"/>
+          <path d="M-22 -4 q6 2 10 6 M22 -4 q-6 2 -10 6" stroke="#FFB0B5" stroke-width="2" fill="none" stroke-linecap="round"/></g>`,
+        sombrerito: `<g transform="translate(${e === 'gatocornio' ? 132 : 110} ${e === 'ovejabeja' ? 34 : 46}) rotate(${e === 'gatocornio' ? 14 : -6})"><ellipse cx="0" cy="0" rx="42" ry="11" fill="#F6D58E" stroke="#A9773B" stroke-width="2.5"/>
+          <path d="M-22 -2 C-22 -26 22 -26 22 -2Z" fill="#F6D58E" stroke="#A9773B" stroke-width="2.5" stroke-linejoin="round"/><path d="M-22 -7 C-10 -3 10 -3 22 -7 L22 -2 C10 2 -10 2 -22 -2Z" fill="#F48FB1"/>
+          <g transform="translate(16 -8)"><circle r="5" fill="#fff" stroke="#E7A3C0" stroke-width="1.5"/><circle r="2" fill="#FFC94D"/></g></g>`,
+        lentes: `<g fill="#fff" fill-opacity=".18" stroke="#5B3B2A" stroke-width="3"><circle cx="${110 - ojoX}" cy="${ojoY}" r="19"/><circle cx="${110 + ojoX}" cy="${ojoY}" r="19"/></g>
+          <path d="M${110 - ojoX + 19} ${ojoY - 2} Q110 ${ojoY - 8} ${110 + ojoX - 19} ${ojoY - 2}" fill="none" stroke="#5B3B2A" stroke-width="3"/>`
+      }[a.acces] || '';
+
+      const defs = `<defs><radialGradient id="avP${n}" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="${cl}"/><stop offset=".6" stop-color="${c}"/><stop offset="1" stop-color="${m}"/></radialGradient>
+        <radialGradient id="avO${n}" cx="45%" cy="35%" r="70%"><stop offset="0" stop-color="#5A3B4E"/><stop offset="1" stop-color="#1E1426"/></radialGradient>
+        <radialGradient id="avI${n}" cx="50%" cy="70%" r="70%"><stop offset="0" stop-color="#C08457"/><stop offset=".6" stop-color="#6B3E2A"/><stop offset="1" stop-color="#2A1A14"/></radialGradient></defs>`;
+      return `<svg class="${clase}" viewBox="${vb}" style="${estilo}" aria-hidden="true">${defs}
+        <g class="cuerpo">${atras}${pataT(1)}${pataT(-1)}${cuerpo}${rayas}${manchas}${panza}${pataD(1)}${pataD(-1)}
+          ${detrasCab}${cabeza}${sobreCab}${brillo}${cachetes}${ojo(110 - ojoX, -1)}${ojo(110 + ojoX, 1)}${nariz}${boca}${acces}</g></svg>`;
+    }
+
+    const AV_DEF = { especie: 'sapoperro', color: 'verde', ojos: 'brillantes', boca: 'feliz', acces: 'mono', nombre: '' };
+    let avBorrador = null;
     const avClave = () => 'hv_avatar_' + (usuarioActual?.id || 'yo');
-    function avLeer() { try { return JSON.parse(localStorage.getItem(avClave()) || 'null'); } catch (_) { return null; } }
+    // Lee la mascota guardada (y convierte el avatar del primer prototipo, si existía)
+    function avLeer() {
+      let a = null; try { a = JSON.parse(localStorage.getItem(avClave()) || 'null'); } catch (_) {}
+      if (a && !a.especie) a = { ...AV_DEF, nombre: a.nombre || '', color: { menta: 'verde' }[a.color] || (AV_COLORES[a.color] ? a.color : 'verde'),
+        ojos: a.ojos === 'pestanas' ? 'sonadores' : 'brillantes', boca: { sonrisa: 'feliz', feliz: 'abierta', gatito: 'gatito', o: 'abierta' }[a.boca] || 'feliz',
+        acces: { mono: 'mono', gorrito: 'sombrerito' }[a.item] || 'ninguno' };
+      return a;
+    }
     function avGuardar(a) { try { localStorage.setItem(avClave(), JSON.stringify(a)); } catch (_) {} }
 
-    // Dibujo: lienzo 200 x 200, la base del cuerpo en y = 186
-    function avSVG(a, extra = '') {
-      const [c, cl, cd] = AV_COLORES[a.color] || AV_COLORES.celeste, avN = ++avContador;
-      const top = { bolita: 58, gotita: 26, huevito: 44 }[a.forma] || 58;
-      const cuerpo = {
-        bolita: 'M100 58 C150 58 172 96 172 130 C172 166 142 186 100 186 C58 186 28 166 28 130 C28 96 50 58 100 58Z',
-        gotita: 'M100 26 C112 52 168 88 168 132 C168 166 140 186 100 186 C60 186 32 166 32 132 C32 88 88 52 100 26Z',
-        huevito: 'M100 44 C142 44 164 96 164 136 C164 168 138 186 100 186 C62 186 36 168 36 136 C36 96 58 44 100 44Z'
-      }[a.forma] || '';
-      const ey = 122, ex = 24;
-      const ojo = (x) => ({
-        redondos: `<g class="ojo"><circle cx="${x}" cy="${ey}" r="7.5" fill="#2B2340"/><circle cx="${x + 2.5}" cy="${ey - 2.5}" r="2.4" fill="#fff"/></g>`,
-        brillantes: `<g class="ojo"><ellipse cx="${x}" cy="${ey}" rx="9.5" ry="11" fill="#2B2340"/><circle cx="${x + 3}" cy="${ey - 4}" r="3.6" fill="#fff"/><circle cx="${x - 3}" cy="${ey + 4}" r="1.7" fill="#fff"/></g>`,
-        puntitos: `<g class="ojo"><circle cx="${x}" cy="${ey}" r="4.2" fill="#2B2340"/></g>`,
-        pestanas: `<g class="ojo"><circle cx="${x}" cy="${ey}" r="8" fill="#2B2340"/><circle cx="${x + 2.6}" cy="${ey - 2.6}" r="2.5" fill="#fff"/>
-          <path d="M${x - 8} ${ey - 6} l-4 -4 M${x - 4} ${ey - 9} l-2 -5 M${x + 8} ${ey - 6} l4 -4" stroke="#2B2340" stroke-width="2.2" stroke-linecap="round"/></g>`
-      }[a.ojos] || '');
-      const my = 146;
-      const boca = a.item === 'chupete' ? '' : ({
-        sonrisa: `<path d="M90 ${my} Q100 ${my + 9} 110 ${my}" fill="none" stroke="#2B2340" stroke-width="3" stroke-linecap="round"/>`,
-        feliz: `<path d="M89 ${my - 2} Q100 ${my - 2} 111 ${my - 2} Q110 ${my + 12} 100 ${my + 12} Q90 ${my + 12} 89 ${my - 2}Z" fill="#7A2E46"/><ellipse cx="100" cy="${my + 7}" rx="5" ry="3.2" fill="#F48FA8"/>`,
-        gatito: `<path d="M88 ${my} q6 7 12 0 q6 7 12 0" fill="none" stroke="#2B2340" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`,
-        o: `<ellipse cx="100" cy="${my + 2}" rx="5" ry="6" fill="#7A2E46"/>`
-      }[a.boca] || '');
-      const nariz = ({
-        ninguna: '',
-        boton: `<ellipse cx="100" cy="135" rx="3.6" ry="2.6" fill="${cd}"/>`,
-        corazon: `<path d="M100 139 l-4.2 -4.2 a2.6 2.6 0 0 1 4.2 -3 a2.6 2.6 0 0 1 4.2 3z" fill="#F07FA0"/>`
-      }[a.nariz] || '');
-      const it = {
-        ninguno: '',
-        mono: `<g transform="translate(${a.forma === 'gotita' ? 100 : 128} ${top + (a.forma === 'gotita' ? 4 : 10)}) rotate(${a.forma === 'gotita' ? 0 : 18})">
-          <path d="M0 0 L-17 -10 Q-22 0 -17 10Z" fill="#FF7FA8"/><path d="M0 0 L17 -10 Q22 0 17 10Z" fill="#FF7FA8"/><circle r="5.5" fill="#FF5C91"/></g>`,
-        // el gorrito es la parte de arriba del mismo cuerpo, así siempre calza con la forma
-        gorrito: `<g><clipPath id="avCl${avN}"><rect x="0" y="0" width="200" height="${top + 40}"/></clipPath>
-          <path d="${cuerpo}" fill="#FFFFFF" clip-path="url(#avCl${avN})"/>
-          <path d="${cuerpo}" fill="none" stroke="#F5B8CF" stroke-width="2" clip-path="url(#avCl${avN})"/>
-          <rect x="20" y="${top + 34}" width="160" height="7" rx="3.5" fill="#F5B8CF" clip-path="url(#avCb${avN})"/>
-          <clipPath id="avCb${avN}"><path d="${cuerpo}"/></clipPath>
-          <path d="M100 ${top + 2} l2.4 5 5.4 .8 -3.9 3.8 .9 5.4 -4.8 -2.6 -4.8 2.6 .9 -5.4 -3.9 -3.8 5.4 -.8z" fill="#FFD978"/>
-          <circle cx="100" cy="${top - 4}" r="6.5" fill="#F5B8CF"/></g>`,
-        chupete: `<g><ellipse cx="100" cy="${my + 3}" rx="15" ry="8" fill="#8FD3F4"/><circle cx="100" cy="${my + 3}" r="5" fill="#FFFFFF"/><circle cx="100" cy="${my + 12}" r="5.5" fill="none" stroke="#8FD3F4" stroke-width="2.8"/></g>`,
-        babero: `<g><path d="M72 160 Q100 152 128 160 Q128 184 100 186 Q72 184 72 160Z" fill="#FFFFFF" stroke="#E4DEEE" stroke-width="2"/><path d="M95 170 l5 5 5 -5" fill="none" stroke="#F5B8CF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></g>`,
-        sonajero: `<g transform="translate(160 150) rotate(-24)"><rect x="-2.5" y="0" width="5" height="22" rx="2.5" fill="#FFC86B"/><circle cy="-7" r="11" fill="#FF9FC0"/><circle cx="-3" cy="-10" r="3" fill="#fff" opacity=".7"/></g>`
-      }[a.item] || '';
-      return `<svg class="av" viewBox="0 0 200 200" aria-hidden="true" ${extra}>
-        <defs><radialGradient id="avG${a.color}" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="${cl}"/><stop offset=".55" stop-color="${c}"/><stop offset="1" stop-color="${cd}"/></radialGradient></defs>
-        <g class="cuerpo">
-          <ellipse cx="78" cy="186" rx="15" ry="8" fill="${cd}"/><ellipse cx="122" cy="186" rx="15" ry="8" fill="${cd}"/>
-          <ellipse cx="34" cy="146" rx="9" ry="13" fill="${c}" transform="rotate(28 34 146)"/><ellipse cx="166" cy="146" rx="9" ry="13" fill="${c}" transform="rotate(-28 166 146)"/>
-          <path d="${cuerpo}" fill="url(#avG${a.color})"/>
-          <ellipse cx="74" cy="${top + 30}" rx="14" ry="8" fill="#fff" opacity=".35" transform="rotate(-25 74 ${top + 30})"/>
-          <ellipse cx="70" cy="140" rx="10" ry="6" fill="#FF8FB1" opacity=".55"/><ellipse cx="130" cy="140" rx="10" ry="6" fill="#FF8FB1" opacity=".55"/>
-          ${ojo(100 - ex)}${ojo(100 + ex)}${nariz}${boca}${it}
-        </g></svg>`;
+    // Decoración: cuarto (alfombra, hojitas, flores y destellos) y marco (estrellas, huellitas y hojas)
+    const avEstrella4 = (x, y, r, color, d = 0) => `<path class="av-tw" style="animation-delay:${d}s" d="M${x} ${y - r} Q${x + r * .22} ${y - r * .22} ${x + r} ${y} Q${x + r * .22} ${y + r * .22} ${x} ${y + r} Q${x - r * .22} ${y + r * .22} ${x - r} ${y} Q${x - r * .22} ${y - r * .22} ${x} ${y - r}Z" fill="${color}"/>`;
+    const avEstrella5 = (x, y, r, color, d = 0) => { let pts = ''; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; pts += `${(x + Math.cos(a) * rr).toFixed(1)},${(y + Math.sin(a) * rr).toFixed(1)} `; }
+      return `<polygon class="av-tw" style="animation-delay:${d}s" points="${pts}" fill="${color}" stroke="#E0A93B" stroke-width="1.2" stroke-linejoin="round"/>`; };
+    const avHuella = (x, y, r, rot = 0, color = '#C9A15A') => `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${r / 10})" fill="${color}"><ellipse cx="0" cy="4" rx="6" ry="5"/><circle cx="-6" cy="-3" r="2.6"/><circle cx="-2" cy="-7" r="2.6"/><circle cx="3" cy="-7" r="2.6"/><circle cx="7" cy="-3" r="2.6"/></g>`;
+    const avHoja = (x, y, r, rot, color = '#C9A6F0') => `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${r / 10})"><path d="M0 -10 C8 -4 8 6 0 10 C-8 6 -8 -4 0 -10Z" fill="${color}"/><path d="M0 -8 V9" stroke="#fff" stroke-width="1" opacity=".6"/></g>`;
+    function avDecoCuarto() {
+      const rama = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s} 1)"><path d="M0 0 C2 -16 6 -30 14 -42" fill="none" stroke="#7FB069" stroke-width="2.2" stroke-linecap="round"/>
+        ${[[3, -12, -40], [8, -24, 30], [10, -34, -35], [5, -6, 35]].map(([hx, hy, r]) => `<ellipse cx="${hx + (r > 0 ? 6 : -6)}" cy="${hy}" rx="7" ry="3.6" fill="#9CCB86" stroke="#6E9E5B" stroke-width="1.2" transform="rotate(${r} ${hx} ${hy})"/>`).join('')}</g>`;
+      const flor = (x, y, c) => `<g transform="translate(${x} ${y})">${[0, 72, 144, 216, 288].map(r => `<ellipse cx="0" cy="-5" rx="3.6" ry="5" fill="${c}" transform="rotate(${r})"/>`).join('')}<circle r="2.8" fill="#FFD25E"/></g>`;
+      return `<svg viewBox="0 0 300 258" preserveAspectRatio="none" aria-hidden="true">
+        <ellipse cx="150" cy="232" rx="112" ry="20" fill="#E9DFF8"/>
+        ${rama(34, 238, 1)}${rama(58, 244, -1)}${rama(262, 236, -1)}${rama(240, 246, 1)}
+        ${flor(76, 238, '#FF9BB8')}${flor(226, 240, '#B79BF0')}${flor(258, 246, '#FF9BB8')}
+        ${avEstrella4(52, 50, 9, '#C9B2F5', 0)}${avEstrella4(250, 70, 7, '#FFB3CB', .7)}${avEstrella4(36, 150, 6, '#FFC970', 1.3)}${avEstrella4(268, 160, 8, '#C9B2F5', 1.9)}
+        ${avEstrella4(214, 38, 5, '#FFC970', 2.2)}${avEstrella4(86, 104, 5, '#FFB3CB', 1)}</svg>`;
+    }
+    function avDecoMarco() {
+      const d = (estilo, vb, contenido) => `<svg class="av-deco" style="${estilo}" viewBox="0 0 ${vb} ${vb}" aria-hidden="true">${contenido}</svg>`;
+      return d('top:-30px;right:-14px;width:32px', 34, avEstrella5(17, 17, 15, '#FFD25E'))
+        + d('top:-26px;left:-12px;width:26px', 30, avEstrella4(15, 15, 13, '#C9B2F5', .4))
+        + d('top:34%;left:-18px;width:20px', 28, avEstrella5(14, 14, 11, '#FFB3CB', .9))
+        + d('top:22%;right:-17px;width:18px', 24, avEstrella4(12, 12, 10, '#FFB3CB', 1.6))
+        + d('bottom:22%;left:-18px;width:20px', 26, avHoja(13, 13, 11, -30))
+        + d('bottom:-14px;right:-14px;width:22px', 26, avHoja(13, 13, 11, 40, '#E8B98A'))
+        + d('top:58%;right:-18px;width:18px;opacity:.85', 26, avHuella(13, 14, 11, 18))
+        + d('bottom:-16px;left:18%;width:16px;opacity:.75', 26, avHuella(13, 14, 11, -14));
     }
     function avCuarto(a) {
-      return `<div class="av-cuarto">${a.nombre ? `<span class="av-nombre">${esc(a.nombre)}</span>` : ''}${avSVG(a)}</div>`;
+      return `<div style="position:relative">${avDecoMarco()}<div class="av-cuarto">${avDecoCuarto()}${a.nombre ? `<span class="av-nombre">${esc(a.nombre)}</span>` : ''}${avSVG(a)}</div></div>`;
     }
     function avBotonSanta() {
       const b = document.getElementById('badgeGruposTab'), n = b && !b.classList.contains('hidden') ? b.textContent : '';
@@ -2172,34 +2310,33 @@ Escríbele un deseo que apoye este propósito.`,
     function avRender() {
       const cont = document.getElementById('secAvatar'), a = avLeer();
       if (!a || avBorrador) return avEditor();
-      cont.innerHTML = `<section class="hv-card st-card">
-          <p class="st-kick text-center">Tu compañero</p>
+      cont.innerHTML = `<section class="hv-card st-card av-marco">
+          <p class="av-tit">Tu mascota</p>
           ${avCuarto(a)}
           <p class="st-mut text-center">Muy pronto podrás ganar monedas cumpliendo tus metas y comprarle cosas 🪙</p>
-          <button class="hv-ghost px-4 py-2 text-sm" onclick="avEditar()">✏️ Personalizar</button>
+          <button class="hv-ghost px-4 py-3 text-sm" onclick="avEditar()">✏️ Personalizar</button>
         </section>${avBotonSanta()}`;
     }
     function avEditar() { avBorrador = { ...AV_DEF, ...(avLeer() || {}) }; avEditor(); }
     function avElegir(k, v) { avBorrador[k] = v; avEditor(); }
     function avEditor() {
       if (!avBorrador) avBorrador = { ...AV_DEF, ...(avLeer() || {}) };
-      const a = avBorrador, nuevo = !avLeer();
-      const fila = (titulo, k, opciones, mini) => `<div class="av-grupo"><p class="av-lbl">${titulo}</p><div class="av-ops">${Object.entries(opciones).map(([v, n]) =>
-        `<button type="button" class="av-op${a[k] === v ? ' on' : ''}" onclick="avElegir('${k}','${v}')" aria-pressed="${a[k] === v}">${mini ? avSVG({ ...a, [k]: v, item: k === 'item' ? v : 'ninguno' }, 'style="width:2.4rem;height:2.4rem"') : ''}${n}</button>`).join('')}</div></div>`;
-      const cont = document.getElementById('secAvatar');
+      const a = avBorrador, nuevo = !avLeer(), cont = document.getElementById('secAvatar');
       const nombre = document.getElementById('avNombre')?.value ?? a.nombre;
-      cont.innerHTML = `<section class="hv-card st-card">
-          <p class="st-kick text-center">${nuevo ? 'Crea tu avatar' : 'Personaliza tu avatar'}</p>
+      const fila = (titulo, k, opciones) => `<div class="av-grupo"><p class="av-lbl">${titulo}</p><div class="av-ops">${Object.entries(opciones).map(([v, n]) =>
+        `<button type="button" class="av-op${a[k] === v ? ' on' : ''}" onclick="avElegir('${k}','${v}')" aria-pressed="${a[k] === v}">${n}</button>`).join('')}</div></div>`;
+      cont.innerHTML = `<section class="hv-card st-card av-marco">
+          <p class="av-tit">${nuevo ? '¡Crea tu mascota!' : 'Personaliza tu mascota'}</p>
           ${avCuarto({ ...a, nombre })}
-          <div class="av-grupo"><p class="av-lbl">Nombre</p><input id="avNombre" class="av-in" maxlength="16" placeholder="Ej: Lunita" value="${esc(nombre)}" oninput="avBorrador.nombre = this.value"></div>
-          ${fila('Forma', 'forma', AV_FORMAS, true)}
+          <div class="av-grupo"><p class="av-lbl">Nombre</p><input id="avNombre" class="av-in" maxlength="16" placeholder="Ej: Pochi 🐾" value="${esc(nombre)}" oninput="avBorrador.nombre = this.value"></div>
+          <div class="av-grupo"><p class="av-lbl">Especie</p><div class="av-esp">${Object.entries(AV_ESPECIES).map(([v, n]) =>
+            `<button type="button" class="${a.especie === v ? 'on' : ''}" onclick="avElegir('especie','${v}')" aria-pressed="${a.especie === v}">${avSVG({ ...a, especie: v, acces: 'ninguno' }, { vb: '14 -6 192 150', clase: 'av-mini' })}<span>${n}</span></button>`).join('')}</div></div>
           <div class="av-grupo"><p class="av-lbl">Color</p><div class="av-ops">${Object.entries(AV_COLORES).map(([v, [c]]) =>
             `<button type="button" class="av-sw${a.color === v ? ' on' : ''}" style="background:${c}" onclick="avElegir('color','${v}')" aria-label="${AV_COLOR_N[v]}" aria-pressed="${a.color === v}"></button>`).join('')}</div></div>
           ${fila('Ojos', 'ojos', AV_OJOS)}
           ${fila('Boca', 'boca', AV_BOCAS)}
-          ${fila('Nariz', 'nariz', AV_NARICES)}
-          ${fila('Elige un ítem', 'item', AV_ITEMS)}
-          <button class="hv-gold px-4 py-3" onclick="avConfirmar()">${nuevo ? '✨ Crear mi avatar' : 'Guardar cambios'}</button>
+          ${fila('Accesorios', 'acces', AV_ACCES)}
+          <button class="hv-gold px-4 py-3" onclick="avConfirmar()">${nuevo ? '✨ Crear mi mascota' : 'Guardar cambios'}</button>
           ${nuevo ? '' : '<button class="hv-ghost px-4 py-2 text-sm" onclick="avBorrador = null; avRender()">Cancelar</button>'}
         </section>${avBotonSanta()}`;
     }
