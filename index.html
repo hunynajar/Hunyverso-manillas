@@ -141,22 +141,23 @@
     .hv-bottom .hv-emo{font-size:1.3rem}
     .st-card{padding:1.1rem;display:grid;gap:.6rem}
     /* ===== MASCOTA (prototipo: solo estética; se guarda en este celular) ===== */
-    .av-marco{position:relative;overflow:visible;box-shadow:0 0 0 1px rgba(232,201,138,.35),0 0 28px -6px rgba(201,160,255,.55)}
-    .av-deco{position:absolute;pointer-events:none;z-index:2}
-    .av-cuarto{position:relative;border-radius:1.5rem;overflow:hidden;aspect-ratio:1/0.86;background:linear-gradient(180deg,#FFFFFF 0%,#FBF9FE 58%,#F1ECF8 58.3%,#F6F2FB 100%);
-      box-shadow:0 0 0 2px #E8DCFB,0 0 22px 2px rgba(201,160,255,.55)}
-    .av-cuarto svg{position:absolute;inset:0;width:100%;height:100%}
-    .av-cuarto svg.av{inset:auto;left:50%;bottom:3%;width:74%;height:auto;transform:translateX(-50%);overflow:visible}
+    /* Cuarto: pared blanca y piso lila que se desvanecen hacia los lados y hacia arriba (sin marco) */
+    .av-cuarto{position:relative;aspect-ratio:1/0.95;margin:0 -1.1rem;
+      background:linear-gradient(180deg,#FFFFFF 0%,#FCFAFE 66%,#EEE7F7 66.4%,#F3EEF9 100%);
+      -webkit-mask-image:radial-gradient(ellipse 60% 74% at 50% 70%,#000 42%,rgba(0,0,0,.6) 66%,transparent 100%),linear-gradient(180deg,#000 84%,transparent 100%);
+      -webkit-mask-composite:source-in;mask-image:radial-gradient(ellipse 60% 74% at 50% 70%,#000 42%,rgba(0,0,0,.6) 66%,transparent 100%),linear-gradient(180deg,#000 84%,transparent 100%);mask-composite:intersect}
+    .av-cuarto::before{content:"";position:absolute;left:0;right:0;top:66%;height:4px;background:linear-gradient(180deg,#E7DFF2,#F1ECF8)}
+    .av-cuarto::after{content:"";position:absolute;left:50%;bottom:10%;width:34%;height:6%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(80,60,120,.28),transparent);filter:blur(1px);animation:avSombra 3.6s ease-in-out infinite}
+    .av-cuarto svg.av{position:absolute;left:50%;bottom:11%;width:46%;height:auto;transform:translateX(-50%);overflow:visible;z-index:1}
     .av .cuerpo{transform-box:fill-box;transform-origin:50% 100%;animation:avRespira 3.6s ease-in-out infinite}
     .av .ojo{transform-box:fill-box;transform-origin:50% 50%;animation:avParpadeo 4.6s infinite}
     .av .cola{transform-box:fill-box;transform-origin:0% 80%;animation:avCola 2.4s ease-in-out infinite}
-    .av-tw{transform-box:fill-box;transform-origin:50% 50%;animation:avTw 2.8s ease-in-out infinite}
     @keyframes avRespira{0%,100%{transform:scale(1,1)}50%{transform:scale(1.02,.98)}}
+    @keyframes avSombra{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.04)}}
     @keyframes avParpadeo{0%,90%,100%{transform:scaleY(1)}93%,95%{transform:scaleY(.08)}}
     @keyframes avCola{0%,100%{transform:rotate(0)}50%{transform:rotate(-8deg)}}
-    @keyframes avTw{0%,100%{opacity:.35;transform:scale(.75)}50%{opacity:1;transform:scale(1.1)}}
-    @media(prefers-reduced-motion:reduce){.av *,.av-tw{animation:none!important}}
-    .av-nombre{position:absolute;left:50%;top:6%;transform:translateX(-50%);z-index:1;padding:.25rem .9rem;border-radius:999px;background:rgba(255,255,255,.92);box-shadow:0 0 0 1.5px #E8DCFB;color:#5b4a86;font-weight:800;font-size:.85rem;white-space:nowrap}
+    @media(prefers-reduced-motion:reduce){.av *,.av-cuarto::after{animation:none!important}}
+    .av-nombre{text-align:center;margin-top:-.4rem;font-family:var(--serif);font-size:1.15rem;letter-spacing:.06em;color:var(--gold-hi)}
     .av-tit{text-align:center;font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem;color:var(--gold-hi)}
     .av-grupo{display:grid;gap:.45rem}
     .av-lbl{font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
@@ -2116,6 +2117,9 @@ Escríbele un deseo que apoye este propósito.`,
     const AV_BOCAS = { feliz: 'Feliz', timida: 'Tímida', gatito: 'Gatito', abierta: 'Abierta' };
     const AV_ACCES = { ninguno: 'Ninguno', mono: 'Moñito', sombrerito: 'Sombrerito', lentes: 'Lentes', alitas: 'Alitas' };
     let avContador = 0;
+    // Ilustraciones por especie (sin cara). img: { color: 'mascotas/<especie>-<color>.webp' }; ojoY, ojoX (separación), bocaY y bocaDx en
+    // coordenadas del lienzo 220 x 220; mono / sombrero: [x, y, giro]; alasY / alasSep: dónde salen las alitas. Vacío = se usa el dibujo.
+    const AV_ARTE = {};
 
     function avSVG(a, { vb = '0 0 220 220', clase = 'av', estilo = '' } = {}) {
       const [c, cl, k, m, mel] = AV_COLORES[a.color] || AV_COLORES.verde, n = ++avContador, e = a.especie || 'sapoperro';
@@ -2125,15 +2129,19 @@ Escríbele un deseo que apoye este propósito.`,
       // Cabeza según especie
       const cab = { sapoperro: { cx: 110, cy: 98, rx: 76, ry: 56 }, ovejabeja: { cx: 110, cy: 96, rx: 66, ry: 58 },
                     leonfante: { cx: 110, cy: 98, rx: 64, ry: 56 }, gatocornio: { cx: 110, cy: 98, rx: 66, ry: 56 } }[e];
-      const ojoY = cab.cy + 4, ojoX = e === 'sapoperro' ? 30 : 27, bocaY = e === 'leonfante' ? cab.cy + 34 : cab.cy + 24;
+      let ojoY = cab.cy + 4, ojoX = e === 'sapoperro' ? 30 : 27, bocaY = e === 'leonfante' ? cab.cy + 34 : cab.cy + 24;
+      // Si hay ilustración para esta especie y color, se usa la imagen y encima va la carita (ver AV_ARTE)
+      const arte = AV_ARTE[e], src = arte && arte.img && arte.img[a.color];
+      if (src) ({ ojoY, ojoX, bocaY } = arte);
+      const P = (k, def) => (src && arte[k]) || def;   // posición de un accesorio: la del arte o la del dibujo
 
       // ---- detrás de todo: cola, alas ----
-      let atras = '';
+      let atras = '', alitas = '';
       if (a.acces === 'alitas') {
-        const ala = (s) => `<g transform="translate(${110 + s * 40} 150) scale(${s} 1)">
+        const ala = (s) => `<g transform="translate(${110 + s * P('alasSep', 40)} ${P('alasY', 150)}) scale(${s} 1)">
           <path d="M0 0 C6 -30 30 -58 58 -62 C62 -50 58 -40 50 -34 C60 -32 62 -22 54 -14 C62 -10 60 2 48 4 C34 8 14 8 0 6Z" fill="#FFFFFF" stroke="#B3A6D9" stroke-width="2.5" stroke-linejoin="round"/>
           <path d="M14 -6 C26 -10 38 -12 48 -12 M12 -16 C24 -26 36 -32 48 -36 M10 -26 C20 -40 34 -50 50 -54" fill="none" stroke="#DCD3F4" stroke-width="2" stroke-linecap="round"/></g>`;
-        atras += ala(1) + ala(-1);
+        alitas = ala(1) + ala(-1);
       }
       if (e === 'ovejabeja') {
         const alaB = (s) => `<g transform="translate(${110 + s * 46} 146) rotate(${s * -22}) scale(${s} 1)"><ellipse cx="26" cy="-14" rx="26" ry="16" fill="#E3F4FF" fill-opacity=".85" stroke="#8DB8D6" stroke-width="2.5"/>
@@ -2229,7 +2237,7 @@ Escríbele un deseo que apoye este propósito.`,
                     <path d="M105 ${ojoY + 16} q5 2 10 0 M106 ${ojoY + 22} q5 2 10 0" fill="none" stroke="${k}" stroke-width="1.8" stroke-linecap="round" opacity=".6"/>`,
         gatocornio: `<path d="M106 ${ojoY + 13} h8 l-4 4.5z" fill="#F08AA8" stroke="#C25B7C" stroke-width="1.5" stroke-linejoin="round"/>`
       }[e];
-      const bx = e === 'leonfante' ? 98 : 110, by = e === 'leonfante' ? ojoY + 34 : bocaY;
+      const bx = src ? 110 + (arte.bocaDx || 0) : e === 'leonfante' ? 98 : 110, by = src ? bocaY : e === 'leonfante' ? ojoY + 34 : bocaY;
       const boca = ({
         feliz: `<path d="M${bx - 9} ${by - 2} q4.5 7 9 0 q4.5 7 9 0" fill="none" stroke="#2A1F35" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`,
         timida: `<path d="M${bx - 7} ${by} q3.5 -3 7 0 q3.5 3 7 0" fill="none" stroke="#2A1F35" stroke-width="2.6" stroke-linecap="round"/>`,
@@ -2240,10 +2248,10 @@ Escríbele un deseo que apoye este propósito.`,
       // ---- accesorios del frente ----
       const acces = {
         ninguno: '', alitas: '',
-        mono: `<g transform="translate(${e === 'gatocornio' ? 150 : 152} ${e === 'ovejabeja' ? 50 : 56}) rotate(16)"><path d="M0 0 C-10 -16 -30 -14 -28 0 C-30 14 -10 16 0 0Z" fill="#F0565E" stroke="#9E2B3A" stroke-width="2.5" stroke-linejoin="round"/>
+        mono: `<g transform="translate(${P('mono', [e === 'gatocornio' ? 150 : 152, e === 'ovejabeja' ? 50 : 56, 16]).slice(0, 2).join(' ')}) rotate(${P('mono', [0, 0, 16])[2]})"><g transform="translate(0 0)"><path d="M0 0 C-10 -16 -30 -14 -28 0 C-30 14 -10 16 0 0Z" fill="#F0565E" stroke="#9E2B3A" stroke-width="2.5" stroke-linejoin="round"/>
           <path d="M0 0 C10 -16 30 -14 28 0 C30 14 10 16 0 0Z" fill="#F0565E" stroke="#9E2B3A" stroke-width="2.5" stroke-linejoin="round"/><circle r="6.5" fill="#E2404B" stroke="#9E2B3A" stroke-width="2.5"/>
-          <path d="M-22 -4 q6 2 10 6 M22 -4 q-6 2 -10 6" stroke="#FFB0B5" stroke-width="2" fill="none" stroke-linecap="round"/></g>`,
-        sombrerito: `<g transform="translate(${e === 'gatocornio' ? 132 : 110} ${e === 'ovejabeja' ? 34 : 46}) rotate(${e === 'gatocornio' ? 14 : -6})"><ellipse cx="0" cy="0" rx="42" ry="11" fill="#F6D58E" stroke="#A9773B" stroke-width="2.5"/>
+          <path d="M-22 -4 q6 2 10 6 M22 -4 q-6 2 -10 6" stroke="#FFB0B5" stroke-width="2" fill="none" stroke-linecap="round"/></g></g>`,
+        sombrerito: `<g transform="translate(${P('sombrero', [e === 'gatocornio' ? 132 : 110, e === 'ovejabeja' ? 34 : 46])[0]} ${P('sombrero', [0, e === 'ovejabeja' ? 34 : 46])[1]}) rotate(${P('sombrero', [0, 0, e === 'gatocornio' ? 14 : -6])[2]})"><ellipse cx="0" cy="0" rx="42" ry="11" fill="#F6D58E" stroke="#A9773B" stroke-width="2.5"/>
           <path d="M-22 -2 C-22 -26 22 -26 22 -2Z" fill="#F6D58E" stroke="#A9773B" stroke-width="2.5" stroke-linejoin="round"/><path d="M-22 -7 C-10 -3 10 -3 22 -7 L22 -2 C10 2 -10 2 -22 -2Z" fill="#F48FB1"/>
           <g transform="translate(16 -8)"><circle r="5" fill="#fff" stroke="#E7A3C0" stroke-width="1.5"/><circle r="2" fill="#FFC94D"/></g></g>`,
         lentes: `<g fill="#fff" fill-opacity=".18" stroke="#5B3B2A" stroke-width="3"><circle cx="${110 - ojoX}" cy="${ojoY}" r="19"/><circle cx="${110 + ojoX}" cy="${ojoY}" r="19"/></g>
@@ -2253,8 +2261,11 @@ Escríbele un deseo que apoye este propósito.`,
       const defs = `<defs><radialGradient id="avP${n}" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="${cl}"/><stop offset=".6" stop-color="${c}"/><stop offset="1" stop-color="${m}"/></radialGradient>
         <radialGradient id="avO${n}" cx="45%" cy="35%" r="70%"><stop offset="0" stop-color="#5A3B4E"/><stop offset="1" stop-color="#1E1426"/></radialGradient>
         <radialGradient id="avI${n}" cx="50%" cy="70%" r="70%"><stop offset="0" stop-color="#C08457"/><stop offset=".6" stop-color="#6B3E2A"/><stop offset="1" stop-color="#2A1A14"/></radialGradient></defs>`;
+      if (src) return `<svg class="${clase}" viewBox="${vb}" style="${estilo}" aria-hidden="true">${defs}
+        <g class="cuerpo">${alitas}<image href="${src}" x="0" y="0" width="220" height="220" preserveAspectRatio="xMidYMax meet"/>
+          ${cachetes.split('<path')[0]}${ojo(110 - ojoX, -1)}${ojo(110 + ojoX, 1)}${boca}${acces}</g></svg>`;
       return `<svg class="${clase}" viewBox="${vb}" style="${estilo}" aria-hidden="true">${defs}
-        <g class="cuerpo">${atras}${pataT(1)}${pataT(-1)}${cuerpo}${rayas}${manchas}${panza}${pataD(1)}${pataD(-1)}
+        <g class="cuerpo">${alitas}${atras}${pataT(1)}${pataT(-1)}${cuerpo}${rayas}${manchas}${panza}${pataD(1)}${pataD(-1)}
           ${detrasCab}${cabeza}${sobreCab}${brillo}${cachetes}${ojo(110 - ojoX, -1)}${ojo(110 + ojoX, 1)}${nariz}${boca}${acces}</g></svg>`;
     }
 
@@ -2271,36 +2282,8 @@ Escríbele un deseo que apoye este propósito.`,
     }
     function avGuardar(a) { try { localStorage.setItem(avClave(), JSON.stringify(a)); } catch (_) {} }
 
-    // Decoración: cuarto (alfombra, hojitas, flores y destellos) y marco (estrellas, huellitas y hojas)
-    const avEstrella4 = (x, y, r, color, d = 0) => `<path class="av-tw" style="animation-delay:${d}s" d="M${x} ${y - r} Q${x + r * .22} ${y - r * .22} ${x + r} ${y} Q${x + r * .22} ${y + r * .22} ${x} ${y + r} Q${x - r * .22} ${y + r * .22} ${x - r} ${y} Q${x - r * .22} ${y - r * .22} ${x} ${y - r}Z" fill="${color}"/>`;
-    const avEstrella5 = (x, y, r, color, d = 0) => { let pts = ''; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; pts += `${(x + Math.cos(a) * rr).toFixed(1)},${(y + Math.sin(a) * rr).toFixed(1)} `; }
-      return `<polygon class="av-tw" style="animation-delay:${d}s" points="${pts}" fill="${color}" stroke="#E0A93B" stroke-width="1.2" stroke-linejoin="round"/>`; };
-    const avHuella = (x, y, r, rot = 0, color = '#C9A15A') => `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${r / 10})" fill="${color}"><ellipse cx="0" cy="4" rx="6" ry="5"/><circle cx="-6" cy="-3" r="2.6"/><circle cx="-2" cy="-7" r="2.6"/><circle cx="3" cy="-7" r="2.6"/><circle cx="7" cy="-3" r="2.6"/></g>`;
-    const avHoja = (x, y, r, rot, color = '#C9A6F0') => `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${r / 10})"><path d="M0 -10 C8 -4 8 6 0 10 C-8 6 -8 -4 0 -10Z" fill="${color}"/><path d="M0 -8 V9" stroke="#fff" stroke-width="1" opacity=".6"/></g>`;
-    function avDecoCuarto() {
-      const rama = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s} 1)"><path d="M0 0 C2 -16 6 -30 14 -42" fill="none" stroke="#7FB069" stroke-width="2.2" stroke-linecap="round"/>
-        ${[[3, -12, -40], [8, -24, 30], [10, -34, -35], [5, -6, 35]].map(([hx, hy, r]) => `<ellipse cx="${hx + (r > 0 ? 6 : -6)}" cy="${hy}" rx="7" ry="3.6" fill="#9CCB86" stroke="#6E9E5B" stroke-width="1.2" transform="rotate(${r} ${hx} ${hy})"/>`).join('')}</g>`;
-      const flor = (x, y, c) => `<g transform="translate(${x} ${y})">${[0, 72, 144, 216, 288].map(r => `<ellipse cx="0" cy="-5" rx="3.6" ry="5" fill="${c}" transform="rotate(${r})"/>`).join('')}<circle r="2.8" fill="#FFD25E"/></g>`;
-      return `<svg viewBox="0 0 300 258" preserveAspectRatio="none" aria-hidden="true">
-        <ellipse cx="150" cy="232" rx="112" ry="20" fill="#E9DFF8"/>
-        ${rama(34, 238, 1)}${rama(58, 244, -1)}${rama(262, 236, -1)}${rama(240, 246, 1)}
-        ${flor(76, 238, '#FF9BB8')}${flor(226, 240, '#B79BF0')}${flor(258, 246, '#FF9BB8')}
-        ${avEstrella4(52, 50, 9, '#C9B2F5', 0)}${avEstrella4(250, 70, 7, '#FFB3CB', .7)}${avEstrella4(36, 150, 6, '#FFC970', 1.3)}${avEstrella4(268, 160, 8, '#C9B2F5', 1.9)}
-        ${avEstrella4(214, 38, 5, '#FFC970', 2.2)}${avEstrella4(86, 104, 5, '#FFB3CB', 1)}</svg>`;
-    }
-    function avDecoMarco() {
-      const d = (estilo, vb, contenido) => `<svg class="av-deco" style="${estilo}" viewBox="0 0 ${vb} ${vb}" aria-hidden="true">${contenido}</svg>`;
-      return d('top:-30px;right:-14px;width:32px', 34, avEstrella5(17, 17, 15, '#FFD25E'))
-        + d('top:-26px;left:-12px;width:26px', 30, avEstrella4(15, 15, 13, '#C9B2F5', .4))
-        + d('top:34%;left:-18px;width:20px', 28, avEstrella5(14, 14, 11, '#FFB3CB', .9))
-        + d('top:22%;right:-17px;width:18px', 24, avEstrella4(12, 12, 10, '#FFB3CB', 1.6))
-        + d('bottom:22%;left:-18px;width:20px', 26, avHoja(13, 13, 11, -30))
-        + d('bottom:-14px;right:-14px;width:22px', 26, avHoja(13, 13, 11, 40, '#E8B98A'))
-        + d('top:58%;right:-18px;width:18px;opacity:.85', 26, avHuella(13, 14, 11, 18))
-        + d('bottom:-16px;left:18%;width:16px;opacity:.75', 26, avHuella(13, 14, 11, -14));
-    }
     function avCuarto(a) {
-      return `<div style="position:relative">${avDecoMarco()}<div class="av-cuarto">${avDecoCuarto()}${a.nombre ? `<span class="av-nombre">${esc(a.nombre)}</span>` : ''}${avSVG(a)}</div></div>`;
+      return `<div class="av-cuarto">${avSVG(a)}</div>${a.nombre ? `<p class="av-nombre">${esc(a.nombre)}</p>` : ''}`;
     }
     function avBotonSanta() {
       const b = document.getElementById('badgeGruposTab'), n = b && !b.classList.contains('hidden') ? b.textContent : '';
@@ -2310,7 +2293,7 @@ Escríbele un deseo que apoye este propósito.`,
     function avRender() {
       const cont = document.getElementById('secAvatar'), a = avLeer();
       if (!a || avBorrador) return avEditor();
-      cont.innerHTML = `<section class="hv-card st-card av-marco">
+      cont.innerHTML = `<section class="hv-card st-card">
           <p class="av-tit">Tu mascota</p>
           ${avCuarto(a)}
           <p class="st-mut text-center">Muy pronto podrás ganar monedas cumpliendo tus metas y comprarle cosas 🪙</p>
@@ -2325,7 +2308,7 @@ Escríbele un deseo que apoye este propósito.`,
       const nombre = document.getElementById('avNombre')?.value ?? a.nombre;
       const fila = (titulo, k, opciones) => `<div class="av-grupo"><p class="av-lbl">${titulo}</p><div class="av-ops">${Object.entries(opciones).map(([v, n]) =>
         `<button type="button" class="av-op${a[k] === v ? ' on' : ''}" onclick="avElegir('${k}','${v}')" aria-pressed="${a[k] === v}">${n}</button>`).join('')}</div></div>`;
-      cont.innerHTML = `<section class="hv-card st-card av-marco">
+      cont.innerHTML = `<section class="hv-card st-card">
           <p class="av-tit">${nuevo ? '¡Crea tu mascota!' : 'Personaliza tu mascota'}</p>
           ${avCuarto({ ...a, nombre })}
           <div class="av-grupo"><p class="av-lbl">Nombre</p><input id="avNombre" class="av-in" maxlength="16" placeholder="Ej: Pochi 🐾" value="${esc(nombre)}" oninput="avBorrador.nombre = this.value"></div>
