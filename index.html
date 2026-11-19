@@ -140,6 +140,30 @@
     .hv-emo{display:inline-flex;align-items:center;justify-content:center;font-size:1rem;line-height:1}
     .hv-bottom .hv-emo{font-size:1.3rem}
     .st-card{padding:1.1rem;display:grid;gap:.6rem}
+    /* ===== AVATAR (prototipo: solo estética; se guarda en este celular) ===== */
+    .av-cuarto{position:relative;border-radius:1.4rem;overflow:hidden;aspect-ratio:1/0.82;background:linear-gradient(180deg,#FFFFFF 0%,#F6F4FA 62%,#ECE8F3 62.2%,#F3F0F8 100%);box-shadow:inset 0 0 0 1px rgba(201,182,242,.35)}
+    .av-cuarto::before{content:"";position:absolute;left:0;right:0;top:62%;height:5px;background:#E4DEEE}
+    .av-cuarto::after{content:"";position:absolute;left:50%;bottom:9%;width:46%;height:7%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(90,70,130,.22),transparent);animation:avSombra 3.6s ease-in-out infinite}
+    .av-cuarto svg.av{position:absolute;left:50%;bottom:10%;width:64%;transform:translateX(-50%);overflow:visible}
+    .av .cuerpo{transform-box:fill-box;transform-origin:50% 100%;animation:avRespira 3.6s ease-in-out infinite}
+    .av .ojo{transform-box:fill-box;transform-origin:50% 50%;animation:avParpadeo 4.6s infinite}
+    @keyframes avRespira{0%,100%{transform:scale(1,1)}50%{transform:scale(1.025,.975)}}
+    @keyframes avSombra{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.05)}}
+    @keyframes avParpadeo{0%,90%,100%{transform:scaleY(1)}93%,95%{transform:scaleY(.08)}}
+    @media(prefers-reduced-motion:reduce){.av *{animation:none!important}}
+    .av-nombre{position:absolute;left:50%;top:8%;transform:translateX(-50%);padding:.25rem .8rem;border-radius:999px;background:rgba(255,255,255,.9);box-shadow:0 0 0 1px #E4DEEE;color:#5b4a86;font-weight:700;font-size:.8rem;white-space:nowrap}
+    .av-grupo{display:grid;gap:.45rem}
+    .av-lbl{font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+    .av-ops{display:flex;flex-wrap:wrap;gap:.45rem}
+    .av-op{min-width:3.1rem;padding:.45rem .7rem;border-radius:.9rem;font-size:.78rem;font-weight:600;color:#E9E1F7;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(168,85,247,.3)}
+    .av-op.on{color:#2a1608;background:linear-gradient(135deg,#f9e2a8,#e3b36b);box-shadow:none}
+    .av-op svg{display:block;width:2.4rem;height:2.4rem;margin:0 auto}
+    .av-sw{width:2.3rem;height:2.3rem;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.25)}
+    .av-sw.on{box-shadow:0 0 0 3px #0B0714,0 0 0 5px var(--gold)}
+    .av-in{width:100%;padding:.7rem .9rem;border-radius:.9rem;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(168,85,247,.3);color:#E9E1F7}
+    .av-santa{display:flex;align-items:center;justify-content:space-between;gap:.8rem;width:100%;padding:1rem 1.1rem;text-align:left}
+    .av-santa .hv-badge{position:static}
+
     .st-kick{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
     .st-t{font-family:var(--serif);font-size:1.2rem;color:var(--gold-hi)}
     .st-h{font-family:var(--serif);font-size:1rem;color:var(--gold)}
@@ -489,7 +513,7 @@
     <nav class="hv-tabs" aria-label="Secciones">
       <button onclick="cambiarTab('inicio')" id="tabInicio" class="on"><svg class="ic"><use href="#i-lotus"/></svg><span>Inicio</span></button>
       <button onclick="cambiarTab('deseos')" id="tabDeseos" class=""><svg class="ic"><use href="#i-chat"/></svg><span>Chat</span><span id="badgeTab" class="hv-badge hidden"></span></button>
-      <button onclick="cambiarTab('grupos')" id="tabGrupos" class=""><span class="ic hv-emo" aria-hidden="true">🎁</span><span>Grupos</span><span id="badgeGruposTab" class="hv-badge hidden"></span></button>
+      <button onclick="cambiarTab('grupos')" id="tabGrupos" class=""><span class="ic hv-emo" aria-hidden="true">🐣</span><span>Avatar</span><span id="badgeGruposTab" class="hv-badge hidden"></span></button>
       <button onclick="cambiarTab('piedras')" id="tabPiedras" class=""><svg class="ic"><use href="#i-book"/></svg><span>Guía</span></button>
       <button onclick="cambiarTab('diario')" id="tabDiario" class=""><svg class="ic"><use href="#i-journal"/></svg><span>Diario</span></button>
       <button onclick="cambiarTab('perfil')" id="tabPerfil" class=""><svg class="ic"><use href="#i-user"/></svg><span>Perfil</span></button>
@@ -590,6 +614,7 @@
 
     <!-- RITUAL DE INTENCIONAMIENTO -->
     <div id="secRitual" class="hidden space-y-4"></div>
+    <div id="secAvatar" class="hidden space-y-4"></div>
     <div id="secSanta" class="hidden space-y-4"></div>
 
     <!-- SECCIÓN DIARIO -->
@@ -633,7 +658,7 @@
     <nav class="hv-bottom" aria-label="Navegación principal"><div class="in">
       <button id="bnInicio" onclick="cambiarTab('inicio')" class="on"><svg class="ic"><use href="#i-home"/></svg><span>Inicio</span></button>
       <button id="bnDeseos" onclick="cambiarTab('deseos')" class=""><svg class="ic"><use href="#i-spark"/></svg><span>Chat</span><span id="badgeBn" class="hv-badge hidden"></span></button>
-      <button id="bnGrupos" onclick="cambiarTab('grupos')" class=""><span class="ic hv-emo" aria-hidden="true">🎁</span><span>Grupos</span><span id="badgeGruposBn" class="hv-badge hidden"></span></button>
+      <button id="bnGrupos" onclick="cambiarTab('grupos')" class=""><span class="ic hv-emo" aria-hidden="true">🐣</span><span>Avatar</span><span id="badgeGruposBn" class="hv-badge hidden"></span></button>
       <button id="bnPiedras" onclick="cambiarTab('piedras')" class=""><svg class="ic"><use href="#i-gem"/></svg><span>Guía</span></button>
       <button id="bnDiario" onclick="cambiarTab('diario')" class=""><svg class="ic"><use href="#i-journal"/></svg><span>Diario</span></button>
       <button id="bnPerfil" onclick="cambiarTab('perfil')" class=""><svg class="ic"><use href="#i-user"/></svg><span>Perfil</span></button>
@@ -1685,7 +1710,7 @@ Escríbele un deseo que apoye este propósito.`,
         await db.rpc('santa_mis_avisos');
         ({ data, error } = await db.rpc('santa_mis_grupos'));
       }
-      const puntos = [document.getElementById('badgeGruposTab'), document.getElementById('badgeGruposBn')];
+      const puntos = [document.getElementById('badgeGruposTab'), document.getElementById('badgeGruposBn'), document.getElementById('badgeSantaBtn')];
       if (error || !Array.isArray(data)) { puntos.forEach(p => p && p.classList.add('hidden')); return 0; }
       const sinLeer = data.reduce((a, g) => a + (g.sin_leer || 0), 0);
       const pend = sinLeer + data.filter(g => g.accion).length;
@@ -1725,7 +1750,7 @@ Escríbele un deseo que apoye este propósito.`,
     }
 
     function stMostrar() {
-      ['secInicio','secDeseos','secPiedras','secDiario','secPerfil','secRitual'].forEach(id => document.getElementById(id).classList.add('hidden'));
+      ['secInicio','secDeseos','secPiedras','secDiario','secPerfil','secRitual','secAvatar'].forEach(id => document.getElementById(id).classList.add('hidden'));
       document.getElementById('secSanta').classList.remove('hidden');
       ['Inicio','Deseos','Grupos','Piedras','Diario','Perfil'].forEach(k => ['tab','bn'].forEach(pre => document.getElementById(pre + k)?.classList.toggle('on', k === 'Grupos')));
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1740,6 +1765,7 @@ Escríbele un deseo que apoye este propósito.`,
       const grupos = Array.isArray(data) ? data : [];
       const recientes = (Array.isArray(avisos) ? avisos : []).slice(0, 6);
       cont.innerHTML = `
+        <button class="hv-ghost px-4 py-2 text-sm" onclick="cambiarTab('grupos')">← Volver a mi avatar</button>
         <section class="hv-card st-card text-center">
           <p class="st-kick">Actividades con tus amigos</p>
           <h3 class="st-t">🎁 Grupos</h3>
@@ -2045,7 +2071,7 @@ Escríbele un deseo que apoye este propósito.`,
     }
 
     function cambiarTab(tab) {
-      const mapa = { inicio: ['secInicio','tabInicio','bnInicio'], deseos: ['secDeseos','tabDeseos','bnDeseos'], grupos: ['secSanta','tabGrupos','bnGrupos'],
+      const mapa = { inicio: ['secInicio','tabInicio','bnInicio'], deseos: ['secDeseos','tabDeseos','bnDeseos'], grupos: ['secAvatar','tabGrupos','bnGrupos'],
                      piedras: ['secPiedras','tabPiedras','bnPiedras'], diario: ['secDiario','tabDiario','bnDiario'],
                      perfil: ['secPerfil','tabPerfil','bnPerfil'] };
       Object.entries(mapa).forEach(([k, [sec, t, b]]) => {
@@ -2055,11 +2081,131 @@ Escríbele un deseo que apoye este propósito.`,
         document.getElementById(b).classList.toggle('on', on);
       });
       document.getElementById('secRitual').classList.add('hidden');
-      if (tab !== 'grupos') { stPararReloj(); stGrupo = null; }
-      if (tab === 'grupos') abrirSanta();
+      document.getElementById('secSanta').classList.add('hidden');
+      stPararReloj(); stGrupo = null;
+      if (tab === 'grupos') avRender();
       if (tab === 'deseos') cargarDeseosYChatGeneral();
       if (tab === 'diario') renderizarDiario();
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ===================== AVATAR (prototipo) =====================
+    // Por ahora solo la estética: un bebé que parpadea en un cuarto blanco. Se guarda en este celular.
+    const AV_FORMAS = { bolita: 'Bolita', gotita: 'Gotita', huevito: 'Huevito' };
+    const AV_COLORES = { celeste: ['#8ED3F7', '#C9ECFD', '#5AAFDB'], rosa: ['#F7A9C6', '#FDD7E5', '#DA7FA2'], menta: ['#93DFB8', '#CDF3DF', '#5FB98C'],
+                         lila: ['#BBA6F1', '#E2D8FC', '#8F79D3'], amarillo: ['#FFD978', '#FFEFC0', '#E2B547'] };
+    const AV_COLOR_N = { celeste: 'Celeste', rosa: 'Rosa', menta: 'Menta', lila: 'Lila', amarillo: 'Amarillo' };
+    const AV_OJOS = { redondos: 'Redondos', brillantes: 'Brillantes', puntitos: 'Puntitos', pestanas: 'Pestañas' };
+    const AV_BOCAS = { sonrisa: 'Sonrisa', feliz: 'Feliz', gatito: 'Gatito', o: 'Sorpresa' };
+    const AV_NARICES = { ninguna: 'Sin nariz', boton: 'Botón', corazon: 'Corazón' };
+    const AV_ITEMS = { ninguno: 'Ninguno', mono: 'Moñito', gorrito: 'Gorrito', chupete: 'Chupete', babero: 'Babero', sonajero: 'Sonajero' };
+    const AV_DEF = { forma: 'bolita', color: 'celeste', ojos: 'brillantes', boca: 'sonrisa', nariz: 'boton', item: 'mono', nombre: '' };
+    let avBorrador = null, avContador = 0;
+    const avClave = () => 'hv_avatar_' + (usuarioActual?.id || 'yo');
+    function avLeer() { try { return JSON.parse(localStorage.getItem(avClave()) || 'null'); } catch (_) { return null; } }
+    function avGuardar(a) { try { localStorage.setItem(avClave(), JSON.stringify(a)); } catch (_) {} }
+
+    // Dibujo: lienzo 200 x 200, la base del cuerpo en y = 186
+    function avSVG(a, extra = '') {
+      const [c, cl, cd] = AV_COLORES[a.color] || AV_COLORES.celeste, avN = ++avContador;
+      const top = { bolita: 58, gotita: 26, huevito: 44 }[a.forma] || 58;
+      const cuerpo = {
+        bolita: 'M100 58 C150 58 172 96 172 130 C172 166 142 186 100 186 C58 186 28 166 28 130 C28 96 50 58 100 58Z',
+        gotita: 'M100 26 C112 52 168 88 168 132 C168 166 140 186 100 186 C60 186 32 166 32 132 C32 88 88 52 100 26Z',
+        huevito: 'M100 44 C142 44 164 96 164 136 C164 168 138 186 100 186 C62 186 36 168 36 136 C36 96 58 44 100 44Z'
+      }[a.forma] || '';
+      const ey = 122, ex = 24;
+      const ojo = (x) => ({
+        redondos: `<g class="ojo"><circle cx="${x}" cy="${ey}" r="7.5" fill="#2B2340"/><circle cx="${x + 2.5}" cy="${ey - 2.5}" r="2.4" fill="#fff"/></g>`,
+        brillantes: `<g class="ojo"><ellipse cx="${x}" cy="${ey}" rx="9.5" ry="11" fill="#2B2340"/><circle cx="${x + 3}" cy="${ey - 4}" r="3.6" fill="#fff"/><circle cx="${x - 3}" cy="${ey + 4}" r="1.7" fill="#fff"/></g>`,
+        puntitos: `<g class="ojo"><circle cx="${x}" cy="${ey}" r="4.2" fill="#2B2340"/></g>`,
+        pestanas: `<g class="ojo"><circle cx="${x}" cy="${ey}" r="8" fill="#2B2340"/><circle cx="${x + 2.6}" cy="${ey - 2.6}" r="2.5" fill="#fff"/>
+          <path d="M${x - 8} ${ey - 6} l-4 -4 M${x - 4} ${ey - 9} l-2 -5 M${x + 8} ${ey - 6} l4 -4" stroke="#2B2340" stroke-width="2.2" stroke-linecap="round"/></g>`
+      }[a.ojos] || '');
+      const my = 146;
+      const boca = a.item === 'chupete' ? '' : ({
+        sonrisa: `<path d="M90 ${my} Q100 ${my + 9} 110 ${my}" fill="none" stroke="#2B2340" stroke-width="3" stroke-linecap="round"/>`,
+        feliz: `<path d="M89 ${my - 2} Q100 ${my - 2} 111 ${my - 2} Q110 ${my + 12} 100 ${my + 12} Q90 ${my + 12} 89 ${my - 2}Z" fill="#7A2E46"/><ellipse cx="100" cy="${my + 7}" rx="5" ry="3.2" fill="#F48FA8"/>`,
+        gatito: `<path d="M88 ${my} q6 7 12 0 q6 7 12 0" fill="none" stroke="#2B2340" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`,
+        o: `<ellipse cx="100" cy="${my + 2}" rx="5" ry="6" fill="#7A2E46"/>`
+      }[a.boca] || '');
+      const nariz = ({
+        ninguna: '',
+        boton: `<ellipse cx="100" cy="135" rx="3.6" ry="2.6" fill="${cd}"/>`,
+        corazon: `<path d="M100 139 l-4.2 -4.2 a2.6 2.6 0 0 1 4.2 -3 a2.6 2.6 0 0 1 4.2 3z" fill="#F07FA0"/>`
+      }[a.nariz] || '');
+      const it = {
+        ninguno: '',
+        mono: `<g transform="translate(${a.forma === 'gotita' ? 100 : 128} ${top + (a.forma === 'gotita' ? 4 : 10)}) rotate(${a.forma === 'gotita' ? 0 : 18})">
+          <path d="M0 0 L-17 -10 Q-22 0 -17 10Z" fill="#FF7FA8"/><path d="M0 0 L17 -10 Q22 0 17 10Z" fill="#FF7FA8"/><circle r="5.5" fill="#FF5C91"/></g>`,
+        // el gorrito es la parte de arriba del mismo cuerpo, así siempre calza con la forma
+        gorrito: `<g><clipPath id="avCl${avN}"><rect x="0" y="0" width="200" height="${top + 40}"/></clipPath>
+          <path d="${cuerpo}" fill="#FFFFFF" clip-path="url(#avCl${avN})"/>
+          <path d="${cuerpo}" fill="none" stroke="#F5B8CF" stroke-width="2" clip-path="url(#avCl${avN})"/>
+          <rect x="20" y="${top + 34}" width="160" height="7" rx="3.5" fill="#F5B8CF" clip-path="url(#avCb${avN})"/>
+          <clipPath id="avCb${avN}"><path d="${cuerpo}"/></clipPath>
+          <path d="M100 ${top + 2} l2.4 5 5.4 .8 -3.9 3.8 .9 5.4 -4.8 -2.6 -4.8 2.6 .9 -5.4 -3.9 -3.8 5.4 -.8z" fill="#FFD978"/>
+          <circle cx="100" cy="${top - 4}" r="6.5" fill="#F5B8CF"/></g>`,
+        chupete: `<g><ellipse cx="100" cy="${my + 3}" rx="15" ry="8" fill="#8FD3F4"/><circle cx="100" cy="${my + 3}" r="5" fill="#FFFFFF"/><circle cx="100" cy="${my + 12}" r="5.5" fill="none" stroke="#8FD3F4" stroke-width="2.8"/></g>`,
+        babero: `<g><path d="M72 160 Q100 152 128 160 Q128 184 100 186 Q72 184 72 160Z" fill="#FFFFFF" stroke="#E4DEEE" stroke-width="2"/><path d="M95 170 l5 5 5 -5" fill="none" stroke="#F5B8CF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></g>`,
+        sonajero: `<g transform="translate(160 150) rotate(-24)"><rect x="-2.5" y="0" width="5" height="22" rx="2.5" fill="#FFC86B"/><circle cy="-7" r="11" fill="#FF9FC0"/><circle cx="-3" cy="-10" r="3" fill="#fff" opacity=".7"/></g>`
+      }[a.item] || '';
+      return `<svg class="av" viewBox="0 0 200 200" aria-hidden="true" ${extra}>
+        <defs><radialGradient id="avG${a.color}" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="${cl}"/><stop offset=".55" stop-color="${c}"/><stop offset="1" stop-color="${cd}"/></radialGradient></defs>
+        <g class="cuerpo">
+          <ellipse cx="78" cy="186" rx="15" ry="8" fill="${cd}"/><ellipse cx="122" cy="186" rx="15" ry="8" fill="${cd}"/>
+          <ellipse cx="34" cy="146" rx="9" ry="13" fill="${c}" transform="rotate(28 34 146)"/><ellipse cx="166" cy="146" rx="9" ry="13" fill="${c}" transform="rotate(-28 166 146)"/>
+          <path d="${cuerpo}" fill="url(#avG${a.color})"/>
+          <ellipse cx="74" cy="${top + 30}" rx="14" ry="8" fill="#fff" opacity=".35" transform="rotate(-25 74 ${top + 30})"/>
+          <ellipse cx="70" cy="140" rx="10" ry="6" fill="#FF8FB1" opacity=".55"/><ellipse cx="130" cy="140" rx="10" ry="6" fill="#FF8FB1" opacity=".55"/>
+          ${ojo(100 - ex)}${ojo(100 + ex)}${nariz}${boca}${it}
+        </g></svg>`;
+    }
+    function avCuarto(a) {
+      return `<div class="av-cuarto">${a.nombre ? `<span class="av-nombre">${esc(a.nombre)}</span>` : ''}${avSVG(a)}</div>`;
+    }
+    function avBotonSanta() {
+      const b = document.getElementById('badgeGruposTab'), n = b && !b.classList.contains('hidden') ? b.textContent : '';
+      return `<button class="hv-card av-santa" onclick="abrirSanta()"><span><span class="st-kick" style="display:block">Actividades con tus amigos</span><span class="st-t">🎁 Jugar Santa Secreto</span></span>
+        <span class="flex items-center gap-2"><span id="badgeSantaBtn" class="hv-badge${n ? '' : ' hidden'}">${n}</span><span style="color:var(--gold);font-size:1.3rem">›</span></span></button>`;
+    }
+    function avRender() {
+      const cont = document.getElementById('secAvatar'), a = avLeer();
+      if (!a || avBorrador) return avEditor();
+      cont.innerHTML = `<section class="hv-card st-card">
+          <p class="st-kick text-center">Tu compañero</p>
+          ${avCuarto(a)}
+          <p class="st-mut text-center">Muy pronto podrás ganar monedas cumpliendo tus metas y comprarle cosas 🪙</p>
+          <button class="hv-ghost px-4 py-2 text-sm" onclick="avEditar()">✏️ Personalizar</button>
+        </section>${avBotonSanta()}`;
+    }
+    function avEditar() { avBorrador = { ...AV_DEF, ...(avLeer() || {}) }; avEditor(); }
+    function avElegir(k, v) { avBorrador[k] = v; avEditor(); }
+    function avEditor() {
+      if (!avBorrador) avBorrador = { ...AV_DEF, ...(avLeer() || {}) };
+      const a = avBorrador, nuevo = !avLeer();
+      const fila = (titulo, k, opciones, mini) => `<div class="av-grupo"><p class="av-lbl">${titulo}</p><div class="av-ops">${Object.entries(opciones).map(([v, n]) =>
+        `<button type="button" class="av-op${a[k] === v ? ' on' : ''}" onclick="avElegir('${k}','${v}')" aria-pressed="${a[k] === v}">${mini ? avSVG({ ...a, [k]: v, item: k === 'item' ? v : 'ninguno' }, 'style="width:2.4rem;height:2.4rem"') : ''}${n}</button>`).join('')}</div></div>`;
+      const cont = document.getElementById('secAvatar');
+      const nombre = document.getElementById('avNombre')?.value ?? a.nombre;
+      cont.innerHTML = `<section class="hv-card st-card">
+          <p class="st-kick text-center">${nuevo ? 'Crea tu avatar' : 'Personaliza tu avatar'}</p>
+          ${avCuarto({ ...a, nombre })}
+          <div class="av-grupo"><p class="av-lbl">Nombre</p><input id="avNombre" class="av-in" maxlength="16" placeholder="Ej: Lunita" value="${esc(nombre)}" oninput="avBorrador.nombre = this.value"></div>
+          ${fila('Forma', 'forma', AV_FORMAS, true)}
+          <div class="av-grupo"><p class="av-lbl">Color</p><div class="av-ops">${Object.entries(AV_COLORES).map(([v, [c]]) =>
+            `<button type="button" class="av-sw${a.color === v ? ' on' : ''}" style="background:${c}" onclick="avElegir('color','${v}')" aria-label="${AV_COLOR_N[v]}" aria-pressed="${a.color === v}"></button>`).join('')}</div></div>
+          ${fila('Ojos', 'ojos', AV_OJOS)}
+          ${fila('Boca', 'boca', AV_BOCAS)}
+          ${fila('Nariz', 'nariz', AV_NARICES)}
+          ${fila('Elige un ítem', 'item', AV_ITEMS)}
+          <button class="hv-gold px-4 py-3" onclick="avConfirmar()">${nuevo ? '✨ Crear mi avatar' : 'Guardar cambios'}</button>
+          ${nuevo ? '' : '<button class="hv-ghost px-4 py-2 text-sm" onclick="avBorrador = null; avRender()">Cancelar</button>'}
+        </section>${avBotonSanta()}`;
+    }
+    function avConfirmar() {
+      avBorrador.nombre = (document.getElementById('avNombre')?.value || '').trim().slice(0, 16);
+      avGuardar(avBorrador); avBorrador = null; avRender(); window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // ===================== RITUAL DE INTENCIONAMIENTO =====================
